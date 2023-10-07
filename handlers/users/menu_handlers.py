@@ -33,6 +33,7 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
     # Agar foydalanuvchidan Callback kelsa Callback natbibi o'zgartiramiz
     elif isinstance(message, CallbackQuery):
         call = message
+        print(f'{call} 36')
         await call.message.edit_reply_markup(markup)
 
 
@@ -41,14 +42,17 @@ async def list_subcategories(callback: CallbackQuery, category, **kwargs):
     markup = await subcategories_keyboard(category)
 
     # Xabar matnini o'zgartiramiz va keyboardni yuboramiz
-    await callback.message.edit_reply_markup(markup)
+
+    await callback.message.edit_text(text=f'Category:\n\n<b>{category}</b>',
+                                     reply_markup=markup)
 
 
 # Ost-kategoriyaga tegishli mahsulotlar ro'yxatini yuboruvchi funksiya
 async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
     markup = await items_keyboard(category, subcategory)
 
-    await callback.message.edit_text(text="Mahsulot tanlang", reply_markup=markup)
+    await callback.message.edit_text(text=f"Subcategory: \n\n<b>{subcategory}</b>",
+                                     reply_markup=markup)
 
 
 # Biror mahsulot uchun Xarid qilish tugmasini yuboruvchi funksiya
@@ -58,7 +62,9 @@ async def show_item(callback: CallbackQuery, category, subcategory, item_id):
     # Mahsulot haqida ma'lumotni bazadan olamiz
     item = await db.get_product(item_id)
 
-    text = f"{item['productname']}\n\n"
+    text = (f"Category\n<b>{category}</b>"
+            f"Subcategory\n<b>{subcategory}</b>"
+            f"{item['productname']}\n\n")
     text += (f"Miqdori: {item['item']} kg/dona"
              f"\n\nKilosi/donasi: {item['price']} so'm"
              f"\n\nJami: {item['summary']} so'm")

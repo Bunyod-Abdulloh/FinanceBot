@@ -118,9 +118,9 @@ class Database:
     #     sql = "UPDATE Products SET summary = price * item;"
     #     return await self.execute(sql, productname, execute=True)
 
-    async def select_user_products(self, user_id):
-        sql = "SELECT * FROM Products WHERE user_id=$1"
-        return await self.execute(sql, user_id, fetch=True)
+    # async def select_user_products(self, user_id):
+    #     sql = "SELECT * FROM Products WHERE user_id=$1"
+    #     return await self.execute(sql, user_id, fetch=True)
 
     async def get_categories(self):
         sql = "SELECT DISTINCT category_name FROM Products"

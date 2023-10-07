@@ -93,6 +93,15 @@ async def price_subcategory(message: types.Message, state: FSMContext):
     data = await state.get_data()
 
     category_name = data['category_name']
-    date = data['date']
     product_name = data['product_name']
-
+    date = data['date']
+    item = int(data['product_item'])
+    print(data)
+    # await db.add_date(
+    #     category_name=category_name,
+    #     product_name=product_name,
+    #     price=price,
+    #     item=item,
+    #     summary=price * item,
+    #     date=date
+    # )
