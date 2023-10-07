@@ -95,10 +95,12 @@ async def state_price(message: types.Message, state: FSMContext):
     data = await state.get_data()
     price = int(message.text)
     item = int(data['product_item'])
+    category_name = data['category_name']
+    product_name = data['product_name']
 
     await db.add_all(
-        category_name=data['category_name'],
-        productname=data['product_name'],
+        category_name=category_name,
+        productname=product_name,
         price=price,
         item=item,
         summary=price * item

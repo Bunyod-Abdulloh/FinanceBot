@@ -58,7 +58,7 @@ async def summary_or_item_subcategory(call: types.CallbackQuery):
 
 
 @dp.message_handler(state=FinanceSubcategory.item)
-async def item_subcategory(message: types.Message, state:FSMContext):
+async def item_subcategory(message: types.Message, state: FSMContext):
     await state.update_data(
         product_item=message.text
     )
@@ -69,16 +69,30 @@ async def item_subcategory(message: types.Message, state:FSMContext):
 
 
 @dp.message_handler(state=FinanceSubcategory.summary)
-async def summary_subcategory(message:types.Message, state:FSMContext):
+async def summary_subcategory(message: types.Message, state: FSMContext):
+    summary = int(message.text)
+
+    data = await state.get_data()
+    print(data)
+
+    # await db.add_date(
+    #     category_name=data['category_name'],
+    #     productname=data['product_name'],
+    #     price=price,
+    #     item=1,
+    #     summary=price * 1,
+    #     date=
+    # )
+
+
+@dp.message_handler(state=FinanceSubcategory.price)
+async def price_subcategory(message: types.Message, state: FSMContext):
+
     price = int(message.text)
 
     data = await state.get_data()
 
-    await db.add_all(
-        category_name=data['category_name'],
-        productname=data['product_name'],
-        price=price,
-        item=1,
-        summary=price * item,
+    category_name = data['category_name']
+    date = data['date']
+    product_name = data['product_name']
 
-    )
