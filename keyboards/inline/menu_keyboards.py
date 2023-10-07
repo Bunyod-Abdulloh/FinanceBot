@@ -62,7 +62,7 @@ async def subcategories_keyboard(category_name):
     for subcategory in subcategories:
 
         button_text = f"{subcategory[0]}"
-
+        print(type(subcategory[0]))
         # Tugma bosganda qaytuvchi callbackni yasaymiz: Keyingi bosqich +1 va kategoriyalar
         callback_data = make_callback_data(
             level=CURRENT_LEVEL + 1,

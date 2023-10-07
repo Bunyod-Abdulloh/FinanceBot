@@ -1,9 +1,19 @@
+import datetime
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.menu_keyboards import summary_or_item_keyboard
+from keyboards.default.start_keyboard import menu
+from keyboards.inline.menu_keyboards import summary_or_item_keyboard, categories_keyboard
 from loader import dp, db
 from states.user_states import FinanceSubcategory
+
+
+@dp.message_handler(text='Bosh menyu', state='*')
+async def main_menu(message: types.Message, state: FSMContext):
+    await message.answer(text='Bosh menyu',
+                         reply_markup=await categories_keyboard())
+    await state.finish()
 
 
 @dp.callback_query_handler(text_contains='addsubcategory')
@@ -12,8 +22,12 @@ async def add_subcategory(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(
         category_name=category
     )
+    await call.message.delete()
+
     await call.message.answer(
-        text='Sanani kiriting:\n\n<b>2023-10-03</b>'
+        text=f'Category: {category}'
+             f'\n\nSanani kiriting:\n<b>2023-10-03</b>',
+        reply_markup=menu
     )
     await FinanceSubcategory.add_date.set()
 
@@ -23,8 +37,12 @@ async def update_subcategory(message: types.Message, state: FSMContext):
     await state.update_data(
         date=message.text
     )
+    data = await state.get_data()
+
     await message.answer(
-        text='Mahsulot yoki harajat nomini kiriting:'
+        text=f'Category: {data["category_name"]}'
+             f'\nSubcategory: {message.text}'
+             f'\n\nMahsulot yoki harajat nomini kiriting:'
     )
     await FinanceSubcategory.add_product.set()
 
@@ -34,25 +52,43 @@ async def subcategory_product(message: types.Message, state: FSMContext):
     await state.update_data(
         product_name=message.text
     )
+    data = await state.get_data()
+
     await message.answer(
-        text='Mahsulot soni/og\'irligi yoki summani kiriting:',
+        text=f'Category: {data["category_name"]}'
+             f'\nSubcategory: {data["date"]}'
+             f'\nMahsulot nomi: {message.text}'
+             f'\n\nMahsulot soni/og\'irligi yoki summani kiriting:',
         reply_markup=summary_or_item_keyboard()
     )
     await FinanceSubcategory.summary_or_item.set()
 
 
 @dp.callback_query_handler(state=FinanceSubcategory.summary_or_item)
-async def summary_or_item_subcategory(call: types.CallbackQuery):
+async def summary_or_item_subcategory(call: types.CallbackQuery, state: FSMContext):
     await call.message.delete()
+
+    data = await state.get_data()
+
+    category = data['category_name']
+    subcategory = data['date']
+    product_name = data['product_name']
 
     if call.data == 'item':
         await call.message.answer(
-            text='Mahsulot soni/og\'irligini kiriting:'
+            text=f'Category: {category}'
+                 f'\nSubcategory: {subcategory}'
+                 f'\nMahsulot nomi: {product_name}'
+                 f'\n\nMahsulot vaznini kiriting:'
         )
         await FinanceSubcategory.item.set()
+
     elif call.data == 'summary':
         await call.message.answer(
-            text='Mahsulot summasini kiriting:'
+            text=f'Category: {category}'
+                 f'\nSubcategory: {subcategory}'
+                 f'\nMahsulot nomi: {product_name}'
+                 f'\n\nMahsulot summasini kiriting:'
         )
         await FinanceSubcategory.summary.set()
 
@@ -62,46 +98,72 @@ async def item_subcategory(message: types.Message, state: FSMContext):
     await state.update_data(
         product_item=message.text
     )
+
+    data = await state.get_data()
+    category = data['category_name']
+    subcategory = data['date']
+    product_name = data['product_name']
+    product_item = message.text
+
     await message.answer(
-        text='Mahsulot narxini kiriting:'
+        text=f'Category: {category}'
+             f'\nSubcategory: {subcategory}'
+             f'\nMahsulot nomi: {product_name}'
+             f'\nMahsulot vazni: {product_item} kg'
+             f'\n\nMahsulot narxini kiriting:'
     )
     await FinanceSubcategory.price.set()
 
 
 @dp.message_handler(state=FinanceSubcategory.summary)
 async def summary_subcategory(message: types.Message, state: FSMContext):
-    summary = int(message.text)
-
     data = await state.get_data()
-    print(data)
 
-    # await db.add_date(
-    #     category_name=data['category_name'],
-    #     productname=data['product_name'],
-    #     price=price,
-    #     item=1,
-    #     summary=price * 1,
-    #     date=
-    # )
+    category_name = data['category_name']
+    date = data['date']
+    product_name = data['product_name']
+    price = int(message.text)
+
+    await db.add_date(
+        category_name=category_name,
+        date=date,
+        productname=product_name,
+        price=price,
+        item=1,
+        summary=price * 1
+    )
+    await message.answer(text='Mahsulot bazaga qo\'shildi!',
+                         reply_markup=await categories_keyboard())
+    await state.finish()
 
 
 @dp.message_handler(state=FinanceSubcategory.price)
 async def price_subcategory(message: types.Message, state: FSMContext):
 
-    price = int(message.text)
-
     data = await state.get_data()
 
     category_name = data['category_name']
-    product_name = data['product_name']
     date = data['date']
-    item = int(data['product_item'])
-    print(data)
-    # await db.add_date(
-    #     category_name=category_name,
-    #     product_name=product_name,
-    #     price=price,
-    #     item=item,
-    #     summary=price * item,
-    #     date=date
-    # )
+    product_name = data['product_name']
+    product_item = int(data['product_item'])
+    price = int(message.text)
+
+    start_date = date
+    year = start_date.year
+    month = start_date.month
+    day = start_date.day
+
+    
+
+    await db.add_date(
+        category_name=category_name,
+        productname=product_name,
+        price=price,
+        item=product_item,
+        summary=price * product_item,
+        date=int(datetime.date(date))
+    )
+
+    await message.answer(text='Mahsulot bazaga qo\'shildi!',
+                         reply_markup=await categories_keyboard())
+    await state.finish()
