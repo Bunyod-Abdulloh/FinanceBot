@@ -66,10 +66,10 @@ async def show_item(callback: CallbackQuery, category, subcategory, item_id):
 
     text = (f"Category: <b>{category}</b>"
             f"\nSubcategory: <b>{subcategory}</b>"
-            f"\n\n{item['productname']}\n\n")
-    text += (f"Miqdori: {item['item']} kg/dona"
-             f"\n\nKilosi/donasi: {item['price']} so'm"
-             f"\n\nJami: {item['summary']} so'm")
+            f"\nMahsulot: <b>{item['productname']}\n</b>")
+    text += (f"Miqdori: <b>{item['item']} kg/dona</b>"
+             f"\nKilosi/donasi: <b>{item['price']} so'm</b>"
+             f"\n\nJami: <b>{item['summary']} so'm</b>")
 
     await callback.message.edit_text(text=text, reply_markup=markup)
 

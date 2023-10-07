@@ -18,14 +18,14 @@ async def main_menu(message: types.Message, state: FSMContext):
 
 @dp.callback_query_handler(text_contains='addsubcategory')
 async def add_subcategory(call: types.CallbackQuery, state: FSMContext):
-    category = call.data.split('_')[-1]
+    category_name = call.data.split('_')[-1]
     await state.update_data(
-        category_name=category
+        category_name=category_name
     )
     await call.message.delete()
 
     await call.message.answer(
-        text=f'Category: {category}'
+        text=f'Category: <b>{category_name}</b>'
              f'\n\nSanani kiriting:\n<b>2023-10-03</b>',
         reply_markup=menu
     )
@@ -34,14 +34,20 @@ async def add_subcategory(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=FinanceSubcategory.add_date)
 async def update_subcategory(message: types.Message, state: FSMContext):
+
+    date_state = message.text
+    date_split = date_state.split('-')
+    date = datetime.date(year=int(date_split[0]),
+                         month=int(date_split[1]),
+                         day=int(date_split[2]))
     await state.update_data(
-        date=message.text
+        date=date
     )
     data = await state.get_data()
 
     await message.answer(
-        text=f'Category: {data["category_name"]}'
-             f'\nSubcategory: {message.text}'
+        text=f'Category: <b>{data["category_name"]}</b>'
+             f'\nSubcategory: <b>{message.text}</b>'
              f'\n\nMahsulot yoki harajat nomini kiriting:'
     )
     await FinanceSubcategory.add_product.set()
@@ -55,9 +61,9 @@ async def subcategory_product(message: types.Message, state: FSMContext):
     data = await state.get_data()
 
     await message.answer(
-        text=f'Category: {data["category_name"]}'
-             f'\nSubcategory: {data["date"]}'
-             f'\nMahsulot nomi: {message.text}'
+        text=f'Category: <b>{data["category_name"]}</b>'
+             f'\nSubcategory: <b>{data["date"]}</b>'
+             f'\nMahsulot nomi: <b>{message.text}</b>'
              f'\n\nMahsulot soni/og\'irligi yoki summani kiriting:',
         reply_markup=summary_or_item_keyboard()
     )
@@ -76,18 +82,18 @@ async def summary_or_item_subcategory(call: types.CallbackQuery, state: FSMConte
 
     if call.data == 'item':
         await call.message.answer(
-            text=f'Category: {category}'
-                 f'\nSubcategory: {subcategory}'
-                 f'\nMahsulot nomi: {product_name}'
+            text=f'Category: <b>{category}</b>'
+                 f'\nSubcategory: <b>{subcategory}</b>'
+                 f'\nMahsulot nomi: <b>{product_name}</b>'
                  f'\n\nMahsulot vaznini kiriting:'
         )
         await FinanceSubcategory.item.set()
 
     elif call.data == 'summary':
         await call.message.answer(
-            text=f'Category: {category}'
-                 f'\nSubcategory: {subcategory}'
-                 f'\nMahsulot nomi: {product_name}'
+            text=f'Category: <b>{category}</b>'
+                 f'\nSubcategory: <b>{subcategory}</b>'
+                 f'\nMahsulot nomi: <b>{product_name}</b>'
                  f'\n\nMahsulot summasini kiriting:'
         )
         await FinanceSubcategory.summary.set()
@@ -106,10 +112,10 @@ async def item_subcategory(message: types.Message, state: FSMContext):
     product_item = message.text
 
     await message.answer(
-        text=f'Category: {category}'
-             f'\nSubcategory: {subcategory}'
-             f'\nMahsulot nomi: {product_name}'
-             f'\nMahsulot vazni: {product_item} kg'
+        text=f'Category: <b>{category}</b>'
+             f'\nSubcategory: <b>{subcategory}</b>'
+             f'\nMahsulot nomi: <b>{product_name}</b>'
+             f'\nMahsulot vazni: <b>{product_item} kg</b>'
              f'\n\nMahsulot narxini kiriting:'
     )
     await FinanceSubcategory.price.set()
@@ -148,20 +154,13 @@ async def price_subcategory(message: types.Message, state: FSMContext):
     product_item = int(data['product_item'])
     price = int(message.text)
 
-    start_date = date
-    year = start_date.year
-    month = start_date.month
-    day = start_date.day
-
-    
-
     await db.add_date(
         category_name=category_name,
         productname=product_name,
         price=price,
         item=product_item,
         summary=price * product_item,
-        date=int(datetime.date(date))
+        date=date
     )
 
     await message.answer(text='Mahsulot bazaga qo\'shildi!',
