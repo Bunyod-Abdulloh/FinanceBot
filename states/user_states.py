@@ -17,3 +17,13 @@ class FinanceSubcategory(StatesGroup):
     item = State()
     weight = State()
     price = State()
+
+
+class FinanceEditCategory(StatesGroup):
+    one = State()
+    two = State()
+
+
+class FinanceEditSubcategory(StatesGroup):
+    one = State()
+    two = State()

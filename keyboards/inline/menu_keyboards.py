@@ -34,14 +34,15 @@ async def categories_keyboard():
     categories = await db.get_categories()
 
     for category in categories:
+        print(category)
 
         callback_data = make_callback_data(
-            level=CURRENT_LEVEL + 1, category=category["category_name"]
+            level=CURRENT_LEVEL + 1, category=f"{category['category_name']}"
         )
 
         # Tugmani keyboardga qo'shamiz
         markup.insert(
-            InlineKeyboardButton(text=category["category_name"],
+            InlineKeyboardButton(text=f"{category['category_name']}",
                                  callback_data=callback_data)
         )
     markup.insert(
@@ -55,7 +56,7 @@ async def categories_keyboard():
 # Berilgan kategoriya ostidagi kategoriyalarni qaytaruvchi keyboard
 async def subcategories_keyboard(category_name):
     CURRENT_LEVEL = 1
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2)
 
     # Kategoriya ostidagi kategoriyalarni bazadan olamiz
     subcategories = await db.get_subcategories_distinct(category_name)
@@ -70,17 +71,21 @@ async def subcategories_keyboard(category_name):
             subcategory=subcategory[0],
         )
 
-        markup.insert(
+        markup.add(
             InlineKeyboardButton(text=button_text,
                                  callback_data=callback_data)
         )
-    markup.insert(
+    markup.add(
         InlineKeyboardButton(
             text='➕ Add',
             callback_data=f'addsubcategory_{category_name}'
         )
     )
-    # Ortga qaytish tugmasini yasaymiz (yuoqri qavatga qaytamiz)
+    markup.insert(
+        InlineKeyboardButton(
+            text='📝 Edit category',
+            callback_data=f'editcategory_{category_name}'
+        ))
     markup.row(
         InlineKeyboardButton(
             text="⬅️ Back",
