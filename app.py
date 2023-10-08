@@ -18,6 +18,7 @@ async def on_startup(dispatcher):
                      productname='Qizilolu',
                      price=price,
                      item=item,
+                     weight_or_item='kg',
                      summary=price * item)
 
     await set_default_commands(dispatcher)

@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from keyboards.inline.menu_keyboards import summary_or_item_keyboard, categories_keyboard
 from loader import dp, db
-from states.user_states import FinanceUser
+from states.user_states import FinanceCategory
 
 
 @dp.callback_query_handler(text='add_category', state='*')
@@ -11,141 +11,145 @@ async def add_category_call(call: types.CallbackQuery):
 
     await call.message.edit_text(
         text='Kategoriya nomini kiriting:')
-    await FinanceUser.add_category.set()
+    await FinanceCategory.add_category.set()
 
 
-@dp.message_handler(state=FinanceUser.add_category)
+@dp.message_handler(state=FinanceCategory.add_category)
 async def add_category(message: types.Message, state: FSMContext):
     await state.update_data(
         category_name=message.text
     )
 
     await message.answer(
-        text='Mahsulot yoki harajat nomini kiriting:'
+        text=f'Category: <b>{message.text}</b>'
+             f'\n\nMahsulot yoki harajat nomini kiriting:'
     )
-    await FinanceUser.add_product.set()
+    await FinanceCategory.add_product.set()
 
 
-@dp.message_handler(state=FinanceUser.add_product)
+@dp.message_handler(state=FinanceCategory.add_product)
 async def add_product(message: types.Message, state: FSMContext):
     await state.update_data(
         product_name=message.text
     )
 
+    data = await state.get_data()
+
     await message.answer(
-        text='Mahsulot soni/og\'irligi yoki summani kiriting:',
+        text=f'Category: <b>{data["category_name"]}</b>\n'
+             f'Product_name: <b>{message.text}</b>'
+             f'\n\nMahsulot soni yoki vaznini kiriting:'
+             f'\n(faqat raqam kiritilishi lozim!)',
         reply_markup=summary_or_item_keyboard()
     )
-    await FinanceUser.summary_or_item.set()
+    await FinanceCategory.summary_or_item.set()
 
 
-@dp.callback_query_handler(state=FinanceUser.summary_or_item)
+@dp.callback_query_handler(state=FinanceCategory.summary_or_item)
 async def summary_or_item(call: types.CallbackQuery, state: FSMContext):
     await call.message.delete()
 
+    data = await state.get_data()
+    text = (f'Category: <b>{data["category_name"]}</b>\n'
+            f'Product_name: <b>{data["product_name"]}</b>')
+
     if call.data == 'item':
         await call.message.answer(
-            text='Mahsulot sonini kiriting:'
+            text=f'{text}'
+                 f'\n\nMahsulot sonini kiriting:'
+                 f'\n(faqat raqam kiritilishi lozim!)'
         )
-        await FinanceUser.item.set()
+        await FinanceCategory.item.set()
 
     elif call.data == 'item_kg':
         await call.message.answer(
-            text='Mahsulot vaznini kiriting:'
+            text=f'{text}'
+                 f'\n\nMahsulot vaznini kiriting:'
+                 f'\n(faqat raqam kiritilishi lozim!)'
         )
-        await FinanceUser.kg.set()
-
-    elif call.data == 'summary':
-        await call.message.answer(
-            text='Mahsulot summasini kiriting:'
-        )
-        await FinanceUser.summary.set()
+        await FinanceCategory.weight.set()
 
 
-@dp.message_handler(state=FinanceUser.item)
+@dp.message_handler(state=FinanceCategory.item)
 async def state_item(message: types.Message, state: FSMContext):
 
     await state.update_data(
-        product_item=message.text
+        product_item=int(message.text)
     )
 
+    data = await state.get_data()
+
+    text = (f'Category: <b>{data["category_name"]}</b>\n'
+            f'Product_name: <b>{data["product_name"]}</b>\n'
+            f'Product_quantity: <b>{message.text}</b>')
     await message.answer(
-        text='Mahsulot narxini kiriting:'
+        text=f'{text}'
+             f'\n\nNarxni kiriting:'
+             f'\n(faqat raqam kiritilishi lozim!)'
     )
-    await FinanceUser.price.set()
+    await FinanceCategory.price.set()
 
 
-@dp.message_handler(state=FinanceUser.kg)
+@dp.message_handler(state=FinanceCategory.weight)
 async def state_kg(message: types.Message, state: FSMContext):
 
     await state.update_data(
-        product_kg=message.text
+        product_weight=int(message.text)
     )
-
-    await message.answer(
-        text='Mahsulot narxini kiriting:'
-    )
-    await FinanceUser.price.set()
-
-
-@dp.message_handler(state=FinanceUser.summary)
-async def state_summary(message: types.Message, state: FSMContext):
-    price = int(message.text)
 
     data = await state.get_data()
 
-    await db.add_all(
-        category_name=data['category_name'],
-        productname=data['product_name'],
-        price=price,
-        item=1,
-        summary=price * 1
-    )
+    text = (f'Category: <b>{data["category_name"]}</b>\n'
+            f'Product_name: <b>{data["product_name"]}</b>\n'
+            f'Product_weight: <b>{message.text}</b>')
 
     await message.answer(
-        text='Mahsulot bazaga qo\'shildi!',
-        reply_markup=await categories_keyboard()
+        text=f'{text}'
+             f'\n\nMahsulot narxini kiriting:'
+             f'\n(faqat raqam kiritilishi lozim!)'
     )
-    await state.finish()
+    await FinanceCategory.price.set()
 
 
-@dp.message_handler(state=FinanceUser.price)
+@dp.message_handler(state=FinanceCategory.price)
 async def state_price(message: types.Message, state: FSMContext):
 
     data = await state.get_data()
-    price = int(message.text)
-    item = int(data['product_item'])
+
     category_name = data['category_name']
     product_name = data['product_name']
+    price = int(message.text)
 
-    await db.add_all(
-        category_name=category_name,
-        productname=product_name,
-        price=price,
-        item=item,
-        summary=price * item
-    )
+    if 'product_weight' in data.keys():
+        product_weight = data['product_weight']
+
+        await db.add_all(
+            category_name=category_name,
+            productname=product_name,
+            price=price,
+            item=product_weight,
+            summary=product_weight * price,
+            weight_or_item='kg'
+        )
+
+    if 'product_item' in data.keys():
+
+        product_item = int(data['product_item'])
+
+        await db.add_all(
+            category_name=category_name,
+            productname=product_name,
+            price=price / product_item,
+            item=product_item,
+            summary=price,
+            weight_or_item='dona'
+        )
 
     await message.answer(
         text='Mahsulot bazaga qo\'shildi!',
         reply_markup=await categories_keyboard()
     )
     await state.finish()
-
-
-@dp.callback_query_handler(text_contains='addproduct', state='*')
-async def addproduct(call: types.CallbackQuery, state: FSMContext):
-
-    category = call.data.split('_')[1]
-    date = call.data.split('_')[-1]
-    await state.update_data(
-        category_name=category,
-        date=date
-    )
-    await call.message.answer(
-        text='Mahsulot yoki harajat nomini kiriting:'
-    )
-    await FinanceUser.add_product.set()
 
 
 @dp.callback_query_handler(text_contains='additem', state='*')

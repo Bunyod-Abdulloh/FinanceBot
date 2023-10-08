@@ -1,6 +1,7 @@
 from typing import Union
 
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from keyboards.inline.menu_keyboards import (
@@ -13,11 +14,10 @@ from keyboards.inline.menu_keyboards import (
 from loader import dp, db
 
 
-# Bosh menyu matni uchun handler
-@dp.message_handler(text="Bosh menyu")
-async def show_menu(message: types.Message):
-    # Foydalanuvchilarga barcha kategoriyalarni qaytaramiz
+@dp.message_handler(text="Bosh menyu", state="*")
+async def show_menu(message: types.Message, state:FSMContext):
     await list_categories(message)
+    await state.finish()
 
 
 # Kategoriyalarni qaytaruvchi funksiya. Callback query yoki Message qabul qilishi ham mumkin.
@@ -41,19 +41,33 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
 # Ost-kategoriyalarni qaytaruvchi funksiya
 async def list_subcategories(callback: CallbackQuery, category, **kwargs):
     markup = await subcategories_keyboard(category)
+    subcategories_summary = await db.get_subcategories_summary(
+        category_name=category
+    )
 
-    # Xabar matnini o'zgartiramiz va keyboardni yuboramiz
+    summ = 0
+    for summary in subcategories_summary:
+        summ += summary[0]
 
-    await callback.message.edit_text(text=f'Category: <b>{category}</b>',
+    await callback.message.edit_text(text=f'Category: <b>{category}</b>'
+                                          f'\n\nJami harajat: <b>{summ} so\'m</b>',
                                      reply_markup=markup)
 
 
 # Ost-kategoriyaga tegishli mahsulotlar ro'yxatini yuboruvchi funksiya
 async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
     markup = await items_keyboard(category, subcategory)
+    products_summary = await db.get_products(
+        category_name=category,
+        date=subcategory)
+
+    summ = 0
+    for summary in products_summary:
+        summ += summary[6]
 
     await callback.message.edit_text(text=f"Category: <b>{category}</b>"
-                                          f"\nSubcategory: <b>{subcategory}</b>",
+                                          f"\nSubcategory: <b>{subcategory}</b>"
+                                          f"\n\nJami harajat: <b>{summ} so'm</b>",
                                      reply_markup=markup)
 
 
@@ -63,13 +77,19 @@ async def show_item(callback: CallbackQuery, category, subcategory, item_id):
 
     # Mahsulot haqida ma'lumotni bazadan olamiz
     item = await db.get_product(item_id)
-
+    weight_or_item = item['weight_or_item']
     text = (f"Category: <b>{category}</b>"
             f"\nSubcategory: <b>{subcategory}</b>"
             f"\nMahsulot: <b>{item['productname']}\n</b>")
-    text += (f"Miqdori: <b>{item['item']} kg/dona</b>"
-             f"\nKilosi/donasi: <b>{item['price']} so'm</b>"
-             f"\n\nJami: <b>{item['summary']} so'm</b>")
+
+    if weight_or_item == 'kg':
+        text += (f"Miqdori: <b>{item['item']} {item['weight_or_item']}</b>"
+                 f"\nKilosi: <b>{item['price']} so'm</b>"
+                 f"\n\nJami: <b>{item['summary']} so'm</b>")
+    else:
+        text += (f"Miqdori: <b>{item['item']} {item['weight_or_item']}</b>"
+                 f"\nDonasi: <b>{item['price']} so'm</b>"
+                 f"\n\nJami: <b>{item['summary']} so'm</b>")
 
     await callback.message.edit_text(text=text, reply_markup=markup)
 

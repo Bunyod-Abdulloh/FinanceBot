@@ -58,11 +58,11 @@ async def subcategories_keyboard(category_name):
     markup = InlineKeyboardMarkup(row_width=1)
 
     # Kategoriya ostidagi kategoriyalarni bazadan olamiz
-    subcategories = await db.get_subcategories(category_name)
+    subcategories = await db.get_subcategories_distinct(category_name)
     for subcategory in subcategories:
 
         button_text = f"{subcategory[0]}"
-        print(type(subcategory[0]))
+
         # Tugma bosganda qaytuvchi callbackni yasaymiz: Keyingi bosqich +1 va kategoriyalar
         callback_data = make_callback_data(
             level=CURRENT_LEVEL + 1,
@@ -96,7 +96,7 @@ def summary_or_item_keyboard():
     markup = InlineKeyboardMarkup(row_width=2)
     markup.insert(
         InlineKeyboardButton(
-            text='Dona',
+            text='Soni',
             callback_data='item'
         )
     )
@@ -104,12 +104,6 @@ def summary_or_item_keyboard():
         InlineKeyboardButton(
             text='Kg',
             callback_data='item_kg'
-        )
-    )
-    markup.insert(
-        InlineKeyboardButton(
-            text='Summa',
-            callback_data='summary'
         )
     )
     return markup

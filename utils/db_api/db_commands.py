@@ -20,13 +20,13 @@ class Database:
         )
 
     async def execute(
-        self,
-        command,
-        *args,
-        fetch: bool = False,
-        fetchval: bool = False,
-        fetchrow: bool = False,
-        execute: bool = False,
+            self,
+            command,
+            *args,
+            fetch: bool = False,
+            fetchval: bool = False,
+            fetchrow: bool = False,
+            execute: bool = False,
     ):
         async with self.pool.acquire() as connection:
             connection: Connection
@@ -108,11 +108,11 @@ class Database:
         return await self.execute(sql, category_name, productname, price, item, weight_or_item, summary,
                                   fetchrow=True)
 
-    async def add_date(self, category_name, productname, price, item, summary, date):
+    async def add_date(self, category_name, productname, price, item, weight_or_item, summary, date):
         sql = ("INSERT INTO "
-               "Products (category_name, productname, price, item, summary, date)"
-               "VALUES($1, $2, $3, $4, $5, $6) returning *")
-        return await self.execute(sql, category_name, productname, price, item, summary, date,
+               "Products (category_name, productname, price, item, weight_or_item, summary, date)"
+               "VALUES($1, $2, $3, $4, $5, $6, $7) returning *")
+        return await self.execute(sql, category_name, productname, price, item, weight_or_item, summary, date,
                                   fetchrow=True)
 
     # async def update_summary(self, productname):
@@ -127,7 +127,11 @@ class Database:
         sql = "SELECT DISTINCT category_name FROM Products"
         return await self.execute(sql, fetch=True)
 
-    async def get_subcategories(self, category_name):
+    async def get_subcategories_summary(self, category_name):
+        sql = f"SELECT summary FROM Products WHERE category_name='{category_name}'"
+        return await self.execute(sql, fetch=True)
+
+    async def get_subcategories_distinct(self, category_name):
         sql = f"SELECT DISTINCT date FROM Products WHERE category_name='{category_name}'"
         return await self.execute(sql, fetch=True)
 
@@ -141,7 +145,6 @@ class Database:
 
     async def delete_products(self, product_id):
         await self.execute("DELETE FROM Products WHERE id=$1", product_id, execute=True)
-
 
     async def drop_products(self):
         await self.execute("DROP TABLE Products", execute=True)

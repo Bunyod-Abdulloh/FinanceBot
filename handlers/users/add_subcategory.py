@@ -9,13 +9,6 @@ from loader import dp, db
 from states.user_states import FinanceSubcategory
 
 
-@dp.message_handler(text='Bosh menyu', state='*')
-async def main_menu(message: types.Message, state: FSMContext):
-    await message.answer(text='Bosh menyu',
-                         reply_markup=await categories_keyboard())
-    await state.finish()
-
-
 @dp.callback_query_handler(text_contains='addsubcategory')
 async def add_subcategory(call: types.CallbackQuery, state: FSMContext):
     category_name = call.data.split('_')[-1]
@@ -63,8 +56,9 @@ async def subcategory_product(message: types.Message, state: FSMContext):
     await message.answer(
         text=f'Category: <b>{data["category_name"]}</b>'
              f'\nSubcategory: <b>{data["date"]}</b>'
-             f'\nMahsulot nomi: <b>{message.text}</b>'
-             f'\n\nMahsulot og\'irligi yoki summani kiriting:',
+             f'\nProduct_name: <b>{message.text}</b>'
+             f'\n\nMahsulot soni yoki vaznini kiriting:'
+             f'\n(faqat raqam kiritilishi lozim!',
         reply_markup=summary_or_item_keyboard()
     )
     await FinanceSubcategory.summary_or_item.set()
@@ -80,67 +74,75 @@ async def summary_or_item_subcategory(call: types.CallbackQuery, state: FSMConte
     subcategory = data['date']
     product_name = data['product_name']
 
+    text = (f'Category: <b>{category}</b>'
+            f'\nSubcategory: <b>{subcategory}</b>'
+            f'\nProduct_name: <b>{product_name}</b>')
+
     if call.data == 'item':
         await call.message.answer(
-            text=f'Category: <b>{category}</b>'
-                 f'\nSubcategory: <b>{subcategory}</b>'
-                 f'\nMahsulot nomi: <b>{product_name}</b>'
-                 f'\n\nMahsulot vaznini kiriting:'
+            text=f'{text}'
+                 f'\n\nMahsulot sonini kiriting:'
+                 f'\n(faqat raqam kiritilishi lozim!)'
         )
         await FinanceSubcategory.item.set()
 
-    elif call.data == 'summary':
+    elif call.data == 'item_kg':
         await call.message.answer(
-            text=f'Category: <b>{category}</b>'
-                 f'\nSubcategory: <b>{subcategory}</b>'
-                 f'\nMahsulot nomi: <b>{product_name}</b>'
-                 f'\n\nMahsulot summasini kiriting:'
+            text=f'{text}'
+                 f'\n\nMahsulot vaznini kiriting:'
+                 f'\n(faqat raqam kiritilishi lozim!)'
         )
-        await FinanceSubcategory.summary.set()
+        await FinanceSubcategory.weight.set()
 
 
 @dp.message_handler(state=FinanceSubcategory.item)
 async def item_subcategory(message: types.Message, state: FSMContext):
+    product_item = int(message.text)
+
     await state.update_data(
-        product_item=message.text
+        product_item=product_item
     )
 
     data = await state.get_data()
     category = data['category_name']
     subcategory = data['date']
     product_name = data['product_name']
-    product_item = message.text
+
+    text = (f'Category: <b>{category}</b>'
+            f'\nSubcategory: <b>{subcategory}</b>'
+            f'\nProduct_name: <b>{product_name}</b>'
+            f'\nProduct_quantity: <b>{product_item}</b>')
 
     await message.answer(
-        text=f'Category: <b>{category}</b>'
-             f'\nSubcategory: <b>{subcategory}</b>'
-             f'\nMahsulot nomi: <b>{product_name}</b>'
-             f'\nMahsulot vazni: <b>{product_item} kg</b>'
-             f'\n\nMahsulot narxini kiriting:'
+        text=f'{text}'
+             f'\n\nNarxni kiriting:'
+             f'\n(faqat raqam kiritilishi lozim!'
     )
     await FinanceSubcategory.price.set()
 
 
-@dp.message_handler(state=FinanceSubcategory.summary)
-async def summary_subcategory(message: types.Message, state: FSMContext):
+@dp.message_handler(state=FinanceSubcategory.weight)
+async def state_weight_subcategory(message: types.Message, state: FSMContext):
+    print(type(message.text))
+
+    product_weight = int(message.text)
+
+    await state.update_data(
+        product_weight=product_weight
+    )
+
     data = await state.get_data()
 
-    category_name = data['category_name']
-    date = data['date']
-    product_name = data['product_name']
-    price = int(message.text)
+    text = (f'Category: <b>{data["category_name"]}</b>\n'
+            f'Product_name: <b>{data["product_name"]}</b>\n'
+            f'Product_weight: <b>{message.text}</b>')
 
-    await db.add_date(
-        category_name=category_name,
-        date=date,
-        productname=product_name,
-        price=price,
-        item=1,
-        summary=price * 1
+    await message.answer(
+        text=f'{text}'
+             f'\n\nMahsulot narxini kiriting:'
+             f'\n(faqat raqam kiritilishi lozim!)'
     )
-    await message.answer(text='Mahsulot bazaga qo\'shildi!',
-                         reply_markup=await categories_keyboard())
-    await state.finish()
+    await FinanceSubcategory.price.set()
 
 
 @dp.message_handler(state=FinanceSubcategory.price)
@@ -151,17 +153,33 @@ async def price_subcategory(message: types.Message, state: FSMContext):
     category_name = data['category_name']
     date = data['date']
     product_name = data['product_name']
-    product_item = int(data['product_item'])
     price = int(message.text)
 
-    await db.add_date(
-        category_name=category_name,
-        productname=product_name,
-        price=price,
-        item=product_item,
-        summary=price * product_item,
-        date=date
-    )
+    if 'product_weight' in data.keys():
+        product_weight = data['product_weight']
+
+        await db.add_date(
+            category_name=category_name,
+            date=date,
+            productname=product_name,
+            price=price,
+            item=product_weight,
+            summary=product_weight * price,
+            weight_or_item='kg'
+        )
+
+    if 'product_item' in data.keys():
+        product_item = int(data['product_item'])
+
+        await db.add_date(
+            category_name=category_name,
+            date=date,
+            productname=product_name,
+            price=price / product_item,
+            item=product_item,
+            summary=price,
+            weight_or_item='dona'
+        )
 
     await message.answer(text='Mahsulot bazaga qo\'shildi!',
                          reply_markup=await categories_keyboard())
