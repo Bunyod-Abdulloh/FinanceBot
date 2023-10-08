@@ -64,7 +64,7 @@ async def subcategory_product(message: types.Message, state: FSMContext):
         text=f'Category: <b>{data["category_name"]}</b>'
              f'\nSubcategory: <b>{data["date"]}</b>'
              f'\nMahsulot nomi: <b>{message.text}</b>'
-             f'\n\nMahsulot soni/og\'irligi yoki summani kiriting:',
+             f'\n\nMahsulot og\'irligi yoki summani kiriting:',
         reply_markup=summary_or_item_keyboard()
     )
     await FinanceSubcategory.summary_or_item.set()

@@ -93,11 +93,17 @@ async def subcategories_keyboard(category_name):
 
 
 def summary_or_item_keyboard():
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2)
     markup.insert(
         InlineKeyboardButton(
-            text='Mahsulot soni/og\'irligi',
+            text='Dona',
             callback_data='item'
+        )
+    )
+    markup.insert(
+        InlineKeyboardButton(
+            text='Kg',
+            callback_data='item_kg'
         )
     )
     markup.insert(

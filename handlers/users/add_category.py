@@ -45,9 +45,16 @@ async def summary_or_item(call: types.CallbackQuery, state: FSMContext):
 
     if call.data == 'item':
         await call.message.answer(
-            text='Mahsulot soni/og\'irligini kiriting:'
+            text='Mahsulot sonini kiriting:'
         )
         await FinanceUser.item.set()
+
+    elif call.data == 'item_kg':
+        await call.message.answer(
+            text='Mahsulot vaznini kiriting:'
+        )
+        await FinanceUser.kg.set()
+
     elif call.data == 'summary':
         await call.message.answer(
             text='Mahsulot summasini kiriting:'
@@ -60,6 +67,19 @@ async def state_item(message: types.Message, state: FSMContext):
 
     await state.update_data(
         product_item=message.text
+    )
+
+    await message.answer(
+        text='Mahsulot narxini kiriting:'
+    )
+    await FinanceUser.price.set()
+
+
+@dp.message_handler(state=FinanceUser.kg)
+async def state_kg(message: types.Message, state: FSMContext):
+
+    await state.update_data(
+        product_kg=message.text
     )
 
     await message.answer(

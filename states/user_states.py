@@ -6,6 +6,7 @@ class FinanceUser(StatesGroup):
     add_product = State()
     summary_or_item = State()
     item = State()
+    kg = State()
     summary = State()
     price = State()
 

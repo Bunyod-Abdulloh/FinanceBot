@@ -94,17 +94,18 @@ class Database:
         productname VARCHAR(50) NULL,        
         price INT NOT NULL,        
         item INT NULL,
+        weight_or_item TEXT NULL,
         summary INT NULL,
         date DATE NOT NULL DEFAULT CURRENT_DATE
         );
         """
         await self.execute(sql, execute=True)
 
-    async def add_all(self, category_name, productname, price, item, summary):
+    async def add_all(self, category_name, productname, price, item, summary, weight_or_item):
         sql = ("INSERT INTO "
-               "Products (category_name, productname, price, item, summary)"
-               "VALUES($1, $2, $3, $4, $5) returning *")
-        return await self.execute(sql, category_name, productname, price, item, summary,
+               "Products (category_name, productname, price, item, weight_or_item, summary)"
+               "VALUES($1, $2, $3, $4, $5, $6) returning *")
+        return await self.execute(sql, category_name, productname, price, item, weight_or_item, summary,
                                   fetchrow=True)
 
     async def add_date(self, category_name, productname, price, item, summary, date):
