@@ -12,14 +12,15 @@ async def on_startup(dispatcher):
     await db.drop_products()
     # await db.create_table_users()
     await db.create_table_finance()
-    price = 5000
-    item = 9
-    await db.add_all(category_name='Ro\'zg\'orlik',
-                     productname='Qizilolu',
-                     price=price,
-                     item=item,
-                     weight_or_item='kg',
-                     summary=price * item)
+
+    # price = 5000
+    # item = 9
+    # await db.add_all(category_name="Ro`zg`orlik",
+    #                  productname='Qizilolu',
+    #                  price=price,
+    #                  item=item,
+    #                  weight_or_item='kg',
+    #                  summary=price * item)
 
     await set_default_commands(dispatcher)
 

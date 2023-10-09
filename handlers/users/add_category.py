@@ -117,6 +117,10 @@ async def state_price(message: types.Message, state: FSMContext):
     data = await state.get_data()
 
     category_name = data['category_name']
+
+    if "'" in category_name:
+        category_name = category_name.replace("'", "`")
+
     product_name = data['product_name']
     price = int(message.text)
 

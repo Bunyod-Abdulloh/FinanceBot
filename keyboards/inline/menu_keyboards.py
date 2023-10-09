@@ -33,23 +33,24 @@ async def categories_keyboard():
 
     categories = await db.get_categories()
 
-    for category in categories:
-        print(category)
-
-        callback_data = make_callback_data(
-            level=CURRENT_LEVEL + 1, category=f"{category['category_name']}"
-        )
-
-        # Tugmani keyboardga qo'shamiz
+    if categories:
+        for category in categories:
+            callback_data = make_callback_data(
+                level=CURRENT_LEVEL + 1, category=f"{category['category_name']}"
+            )
+            markup.insert(
+                InlineKeyboardButton(text=f"{category['category_name']}",
+                                     callback_data=callback_data)
+            )
         markup.insert(
-            InlineKeyboardButton(text=f"{category['category_name']}",
-                                 callback_data=callback_data)
+            InlineKeyboardButton(text='➕ Add',
+                                 callback_data='add_category')
         )
-    markup.insert(
-        InlineKeyboardButton(text='➕ Add',
-                             callback_data='add_category')
-    )
-    # Keyboardni qaytaramiz
+    else:
+        markup.insert(
+            InlineKeyboardButton(text='➕ Add',
+                                 callback_data='add_category')
+        )
     return markup
 
 
