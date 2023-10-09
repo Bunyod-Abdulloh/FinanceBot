@@ -119,7 +119,7 @@ def summary_or_item_keyboard():
 async def items_keyboard(category_name, subcategory_name):
     CURRENT_LEVEL = 2
 
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2)
 
     # Ost-kategorioyaga tegishli barcha mahsulotlarni olamiz
     items = await db.get_products(category_name, subcategory_name)
@@ -134,19 +134,25 @@ async def items_keyboard(category_name, subcategory_name):
             subcategory=subcategory_name,
             item_id=item["id"],
         )
-        markup.insert(
+        markup.add(
             InlineKeyboardButton(
                 text=button_text,
                 callback_data=callback_data)
         )
-    markup.insert(
+    markup.add(
         InlineKeyboardButton(
             text='➕ Add',
             callback_data=f'addproduct_{category_name}_{subcategory_name}'
         )
     )
+    markup.insert(
+        InlineKeyboardButton(
+            text='📝 Edit subcategory',
+            callback_data=f'editsubcategory_{subcategory_name}'
+        )
+    )
     # Ortga qaytish tugmasi
-    markup.row(
+    markup.add(
         InlineKeyboardButton(
             text="⬅️ Back",
             callback_data=make_callback_data(
@@ -158,21 +164,26 @@ async def items_keyboard(category_name, subcategory_name):
     return markup
 
 
-# Berilgan mahsulot uchun Xarid qilish va Ortga yozuvlarini chiqaruvchi tugma keyboard
 def item_keyboard(category, subcategory, item_id):
     CURRENT_LEVEL = 3
     markup = InlineKeyboardMarkup(row_width=2)
 
+    markup.add(
+        InlineKeyboardButton(
+            text=f"➕ Add",
+            callback_data=f"additem_{item_id}"
+        )
+    )
     markup.insert(
         InlineKeyboardButton(
             text='❌ Delete',
             callback_data=f'deleteproduct_{item_id}'
         )
     )
-    markup.insert(
+    markup.add(
         InlineKeyboardButton(
-            text=f"➕ Add",
-            callback_data=f"additem_{item_id}"
+            text='📝 Edit product',
+            callback_data=f'editproduct_{item_id}'
         )
     )
     markup.add(

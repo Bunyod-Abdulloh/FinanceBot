@@ -115,13 +115,17 @@ class Database:
         return await self.execute(sql, category_name, productname, price, item, weight_or_item, summary, date,
                                   fetchrow=True)
 
-    async def update_category_name(self, category_name):
-        sql = "UPDATE Products SET category_name = $1"
-        return await self.execute(sql, category_name, execute=True)
+    async def update_category_name(self, new_category, old_category):
+        sql = f"UPDATE Products SET category_name='{new_category}' WHERE category_name='{old_category}'"
+        return await self.execute(sql, execute=True)
 
-    async def update_subcategory_name(self, subcategory_name):
-            sql = "UPDATE Products SET date = $1"
-            return await self.execute(sql, subcategory_name, execute=True)
+    async def update_subcategory_name(self, new_subcategory, old_subcategory):
+            sql = f"UPDATE Products SET date='{new_subcategory}' WHERE date='{old_subcategory}'"
+            return await self.execute(sql, execute=True)
+
+    async def update_product_name(self, new_product, old_product_id):
+        sql = f"UPDATE Products SET productname='{new_product}' WHERE id='{old_product_id}'"
+        return await self.execute(sql, execute=True)
 
     # async def select_user_products(self, user_id):
     #     sql = "SELECT * FROM Products WHERE user_id=$1"

@@ -19,11 +19,7 @@ class FinanceSubcategory(StatesGroup):
     price = State()
 
 
-class FinanceEditCategory(StatesGroup):
-    one = State()
-    two = State()
-
-
-class FinanceEditSubcategory(StatesGroup):
-    one = State()
-    two = State()
+class FinanceEdit(StatesGroup):
+    category = State()
+    subcategory = State()
+    product = State()
