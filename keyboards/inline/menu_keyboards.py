@@ -25,6 +25,73 @@ def make_callback_data(level, category="0", subcategory="0", item_id="0"):
 # 3 - Yagona mahsulot
 
 
+def main_menu():
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        InlineKeyboardButton(
+            text='📥 Kirim',
+            callback_data='incoming'
+        )
+    )
+    markup.add(
+        InlineKeyboardButton(
+            text='📤 Chiqim',
+            callback_data='outgoing'
+        )
+    )
+    markup.add(
+        InlineKeyboardButton(
+            text='📔 Yon daftar',
+            callback_data='notebook'
+        )
+    )
+    return markup
+
+
+def buttons_generator(database: list, current_page: int, all_pages: int):
+    key = InlineKeyboardMarkup(
+        row_width=3
+    )
+    if len(database) > 2:
+        for i in database:
+            key.add(
+                InlineKeyboardButton(
+                    text=i[0],  # user full_namesi
+                    callback_data=f"message_{i}"  # user_idsi
+                )
+            )
+        key.add(
+            InlineKeyboardButton(
+                text='➕ Add',
+                callback_data='add_category'
+            )
+        )
+        key.add(
+            InlineKeyboardButton(
+                text="⬅️ Orqaga",
+                callback_data="prev"
+            )
+        )
+        key.insert(
+            InlineKeyboardButton(
+                text=f"{current_page}/{all_pages}",
+                callback_data="pages"
+            )
+        )
+        key.insert(
+            InlineKeyboardButton(
+                text="Oldinga ➡️",
+                callback_data="next"
+            )
+        )
+    else:
+        key.add(
+            InlineKeyboardButton(
+                text='➕ Add',
+                callback_data='add_category'
+            ))
+    return key
+
 # Kategoriyalar uchun keyboard yasab olamiz
 async def categories_keyboard():
     CURRENT_LEVEL = 0
