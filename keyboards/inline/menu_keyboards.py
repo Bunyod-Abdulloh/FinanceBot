@@ -59,13 +59,11 @@ async def subcategories_keyboard(category_name):
     CURRENT_LEVEL = 1
     markup = InlineKeyboardMarkup(row_width=2)
 
-    # Kategoriya ostidagi kategoriyalarni bazadan olamiz
     subcategories = await db.get_subcategories_distinct(category_name)
     for subcategory in subcategories:
 
         button_text = f"{subcategory[0]}"
 
-        # Tugma bosganda qaytuvchi callbackni yasaymiz: Keyingi bosqich +1 va kategoriyalar
         callback_data = make_callback_data(
             level=CURRENT_LEVEL + 1,
             category=category_name,
