@@ -127,7 +127,7 @@ async def state_price(message: types.Message, state: FSMContext):
     if 'product_weight' in data.keys():
         product_weight = data['product_weight']
 
-        await db.add_all(
+        await db.add_outgoing(
             category_name=category_name,
             productname=product_name,
             price=price,
@@ -140,7 +140,7 @@ async def state_price(message: types.Message, state: FSMContext):
 
         product_item = int(data['product_item'])
 
-        await db.add_all(
+        await db.add_outgoing(
             category_name=category_name,
             productname=product_name,
             price=price / product_item,

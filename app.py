@@ -9,9 +9,9 @@ from utils.set_bot_commands import set_default_commands
 async def on_startup(dispatcher):
     await db.create()
     # await db.drop_users()
-    await db.drop_products()
+    # await db.drop_outgoing()
     # await db.create_table_users()
-    await db.create_table_finance()
+    await db.create_table_outgoing()
 
     # price = 5000
     # item = 9
