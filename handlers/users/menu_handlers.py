@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from keyboards.inline.menu_keyboards import (
+from keyboards.inline.out_keyboards import (
     menu_cd,
     categories_keyboard,
     subcategories_keyboard,
@@ -41,7 +41,7 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
 # Ost-kategoriyalarni qaytaruvchi funksiya
 async def list_subcategories(callback: CallbackQuery, category, **kwargs):
     markup = await subcategories_keyboard(category)
-    subcategories_summary = await db.get_subcategories_summary(
+    subcategories_summary = await db.get_subsummary_out(
         category_name=category
     )
 
@@ -57,7 +57,7 @@ async def list_subcategories(callback: CallbackQuery, category, **kwargs):
 # Ost-kategoriyaga tegishli mahsulotlar ro'yxatini yuboruvchi funksiya
 async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
     markup = await items_keyboard(category, subcategory)
-    products_summary = await db.get_products(
+    products_summary = await db.get_products_out(
         category_name=category,
         date=subcategory)
 
@@ -76,7 +76,7 @@ async def show_item(callback: CallbackQuery, category, subcategory, item_id):
     markup = item_keyboard(category, subcategory, item_id)
 
     # Mahsulot haqida ma'lumotni bazadan olamiz
-    item = await db.get_product(item_id)
+    item = await db.get_product_out(item_id)
     weight_or_item = item['weight_or_item']
     text = (f"Category: <b>{category}</b>"
             f"\nSubcategory: <b>{subcategory}</b>"

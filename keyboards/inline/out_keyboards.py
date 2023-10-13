@@ -25,7 +25,7 @@ def make_callback_data(level, category="0", subcategory="0", item_id="0"):
 # 3 - Yagona mahsulot
 
 
-def main_menu():
+async def main_menu():
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
         InlineKeyboardButton(
@@ -54,7 +54,7 @@ async def categories_keyboard():
 
     markup = InlineKeyboardMarkup(row_width=1)
 
-    categories = await db.get_categories()
+    categories = await db.get_categories_out()
 
     if categories:
         for category in categories:
@@ -82,7 +82,7 @@ async def subcategories_keyboard(category_name):
     CURRENT_LEVEL = 1
     markup = InlineKeyboardMarkup(row_width=2)
 
-    subcategories = await db.get_subcategories_distinct(category_name)
+    subcategories = await db.get_subdistinct_out(category_name)
     for subcategory in subcategories:
 
         button_text = f"{subcategory[0]}"
@@ -143,7 +143,7 @@ async def items_keyboard(category_name, subcategory_name):
     markup = InlineKeyboardMarkup(row_width=2)
 
     # Ost-kategorioyaga tegishli barcha mahsulotlarni olamiz
-    items = await db.get_products(category_name, subcategory_name)
+    items = await db.get_products_out(category_name, subcategory_name)
     for item in items:
         # Tugma matnini yasaymiz
         button_text = f"{item['productname']}"

@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.menu_keyboards import summary_or_item_keyboard, categories_keyboard
+from keyboards.inline.out_keyboards import summary_or_item_keyboard, categories_keyboard
 from loader import dp, db
 from states.user_states import FinanceCategory
 
