@@ -56,7 +56,7 @@ async def categories_keyboard():
 
     categories = await db.get_categories()
 
-    if len(categories) == 99:
+    if categories:
         for category in categories:
             callback_data = make_callback_data(
                 level=CURRENT_LEVEL + 1, category=f"{category['category_name']}"

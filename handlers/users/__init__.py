@@ -7,4 +7,3 @@ from . import edit_category
 from . import edit_subcategory
 from . import edit_product
 from . import incoming_handler
-from . import outgoing_handler
