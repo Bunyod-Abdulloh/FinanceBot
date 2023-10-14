@@ -123,11 +123,13 @@ async def state_price(message: types.Message, state: FSMContext):
 
     product_name = data['product_name']
     price = int(message.text)
+    user_id = int(message.from_user.id)
 
     if 'product_weight' in data.keys():
         product_weight = data['product_weight']
 
-        await db.add_outgoing(
+        await db.add_out(
+            user_id=user_id,
             category_name=category_name,
             productname=product_name,
             price=price,
@@ -140,7 +142,8 @@ async def state_price(message: types.Message, state: FSMContext):
 
         product_item = int(data['product_item'])
 
-        await db.add_outgoing(
+        await db.add_out(
+            user_id=user_id,
             category_name=category_name,
             productname=product_name,
             price=price / product_item,
@@ -151,7 +154,7 @@ async def state_price(message: types.Message, state: FSMContext):
 
     await message.answer(
         text='Mahsulot bazaga qo\'shildi!',
-        reply_markup=await categories_keyboard()
+        reply_markup=await categories_keyboard(user_id=user_id)
     )
     await state.finish()
 

@@ -1,5 +1,6 @@
 import logging
 
+from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
@@ -49,12 +50,12 @@ async def main_menu():
 
 
 # Kategoriyalar uchun keyboard yasab olamiz
-async def categories_keyboard():
+async def categories_keyboard(user_id: int):
     CURRENT_LEVEL = 0
 
     markup = InlineKeyboardMarkup(row_width=1)
 
-    categories = await db.get_categories_out()
+    categories = await db.get_categories_out(user_id=user_id)
 
     if categories:
         for category in categories:
@@ -74,15 +75,22 @@ async def categories_keyboard():
             InlineKeyboardButton(text='➕ Add',
                                  callback_data='add_category')
         )
+    markup.add(
+        InlineKeyboardButton(
+            text='⬅️ Back',
+            callback_data='back_main_menu'
+        )
+    )
     return markup
 
 
 # Berilgan kategoriya ostidagi kategoriyalarni qaytaruvchi keyboard
-async def subcategories_keyboard(category_name):
+async def subcategories_keyboard(category_name, user_id: int):
     CURRENT_LEVEL = 1
     markup = InlineKeyboardMarkup(row_width=2)
 
-    subcategories = await db.get_subdistinct_out(category_name)
+    subcategories = await db.get_subdistinct_out(category_name=category_name, user_id=user_id)
+    print(subcategories)
     for subcategory in subcategories:
 
         button_text = f"{subcategory[0]}"
@@ -137,14 +145,15 @@ def summary_or_item_keyboard():
 
 
 # Ostkategoriyaga tegishli mahsulotlar uchun keyboard yasaymiz
-async def items_keyboard(category_name, subcategory_name):
+async def items_keyboard(category_name, subcategory_name, user_id: int):
     CURRENT_LEVEL = 2
 
     markup = InlineKeyboardMarkup(row_width=2)
 
     # Ost-kategorioyaga tegishli barcha mahsulotlarni olamiz
-    items = await db.get_products_out(category_name, subcategory_name)
+    items = await db.get_products_out(date=subcategory_name, user_id=user_id)
     for item in items:
+        print(item)
         # Tugma matnini yasaymiz
         button_text = f"{item['productname']}"
 

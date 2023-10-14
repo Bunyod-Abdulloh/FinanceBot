@@ -89,10 +89,12 @@ class Database:
     async def create_table_outgoing(self):
         sql = """
         CREATE TABLE IF NOT EXISTS Outgoing (
-        id SERIAL,        
-        category_name VARCHAR(50) NULL,              
+        id SERIAL,
+        user_id BIGINT NULL,        
+        category_name VARCHAR(50) NULL,
+        subcategory_name VARCHAR(50) NULL,              
         productname VARCHAR(50) NULL,        
-        price INT NOT NULL,        
+        price INT NULL,        
         item INT NULL,
         weight_or_item TEXT NULL,
         summary INT NULL,
@@ -101,50 +103,63 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
-    async def add_out(self, category_name, productname, price, item, summary, weight_or_item):
-        sql = ("INSERT INTO "
-               "Outgoing (category_name, productname, price, item, weight_or_item, summary)"
-               "VALUES($1, $2, $3, $4, $5, $6) returning *")
-        return await self.execute(sql, category_name, productname, price, item, weight_or_item, summary,
-                                  fetchrow=True)
+    # async def first_addcategory_out(self, category_name, user_id):
+    #     sql = "INSERT INTO Outgoing (category_name, user_id) VALUES ($1, $2) returning *"
+    #     return await self.execute(sql, category_name, user_id, fetchrow=True)
 
-    async def add_date_out(self, category_name, productname, price, item, weight_or_item, summary, date):
+    async def first_add_out(self, category_name, subcategory_name, user_id):
+        sql = "INSERT INTO Outgoing (category_name, subcategory_name, user_id) VALUES ($1, $2, $3) returning *"
+        return await self.execute(sql, category_name, subcategory_name, user_id,  fetchrow=True)
+
+    async def add_out(self, user_id, category_name, productname, price, item, summary, weight_or_item):
         sql = ("INSERT INTO "
-               "Outgoing (category_name, productname, price, item, weight_or_item, summary, date)"
+               "Outgoing (user_id, category_name, productname, price, item, weight_or_item, summary)"
                "VALUES($1, $2, $3, $4, $5, $6, $7) returning *")
-        return await self.execute(sql, category_name, productname, price, item, weight_or_item, summary, date,
+        return await self.execute(sql, user_id, category_name, productname, price, item, weight_or_item, summary,
                                   fetchrow=True)
 
-    async def update_categoryname_out(self, new_category, old_category):
-        sql = f"UPDATE Outgoing SET category_name='{new_category}' WHERE category_name='{old_category}'"
+    async def add_date_out(self, user_id, category_name, productname, price, item, weight_or_item, summary, date):
+        sql = ("INSERT INTO "
+               "Outgoing (user_id, category_name, productname, price, item, weight_or_item, summary, date)"
+               "VALUES($1, $2, $3, $4, $5, $6, $7, $8) returning *")
+        return await self.execute(sql, user_id, category_name, productname, price, item, weight_or_item, summary, date,
+                                  fetchrow=True)
+
+    async def update_categoryname_out(self, new_category, old_category, user_id):
+        sql = (f"UPDATE Outgoing SET category_name='{new_category}' WHERE category_name='{old_category}' AND "
+               f"user_id='{user_id}'")
         return await self.execute(sql, execute=True)
 
-    async def update_subcategoryname_out(self, new_subcategory, old_subcategory):
-            sql = f"UPDATE Outgoing SET date='{new_subcategory}' WHERE date='{old_subcategory}'"
+    async def update_subcategoryname_out(self, new_subcategory, old_subcategory, user_id):
+            sql = f"UPDATE Outgoing SET date='{new_subcategory}' WHERE date='{old_subcategory}' AND user_id='{user_id}'"
             return await self.execute(sql, execute=True)
 
-    async def update_productname_out(self, new_product, old_product_id):
-        sql = f"UPDATE Outgoing SET productname='{new_product}' WHERE id='{old_product_id}'"
+    async def update_productname_out(self, new_product, old_product_id, user_id):
+        sql = f"UPDATE Outgoing SET productname='{new_product}' WHERE id='{old_product_id}' AND user_id='{user_id}'"
         return await self.execute(sql, execute=True)
+
+    async def update_user_id(self, product_id, user_id):
+            sql = f"UPDATE Outgoing SET user_id='{user_id}' WHERE id='{product_id}'"
+            return await self.execute(sql, execute=True)
 
     # async def select_user_Outgoing(self, user_id):
     #     sql = "SELECT * FROM Outgoing WHERE user_id=$1"
     #     return await self.execute(sql, user_id, fetch=True)
 
-    async def get_categories_out(self):
-        sql = "SELECT DISTINCT category_name FROM Outgoing"
+    async def get_categories_out(self, user_id):
+        sql = f"SELECT DISTINCT category_name FROM Outgoing WHERE user_id='{user_id}'"
         return await self.execute(sql, fetch=True)
 
-    async def get_subsummary_out(self, category_name):
-        sql = f"SELECT summary FROM Outgoing WHERE category_name='{category_name}'"
+    async def get_subsummary_out(self, category_name, user_id):
+        sql = f"SELECT summary FROM Outgoing WHERE category_name='{category_name}' AND user_id='{user_id}'"
         return await self.execute(sql, fetch=True)
 
-    async def get_subdistinct_out(self, category_name):
-        sql = f"SELECT DISTINCT date FROM Outgoing WHERE category_name='{category_name}'"
+    async def get_subdistinct_out(self, category_name, user_id):
+        sql = f"SELECT DISTINCT subcategory_name FROM Outgoing WHERE category_name='{category_name}' AND user_id='{user_id}'"
         return await self.execute(sql, fetch=True)
 
-    async def get_products_out(self, category_name, date):
-        sql = f"SELECT * FROM Outgoing WHERE category_name='{category_name}' AND date='{date}'"
+    async def get_products_out(self, date, user_id):
+        sql = f"SELECT * FROM Outgoing WHERE date='{date}' AND user_id='{user_id}'"
         return await self.execute(sql, fetch=True)
 
     async def get_product_out(self, product_id):

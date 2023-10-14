@@ -4,6 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from data.config import ADMINS
 from keyboards.inline.out_keyboards import (
     menu_cd,
     categories_keyboard,
@@ -15,7 +16,7 @@ from loader import dp, db
 
 
 @dp.message_handler(text="Bosh menyu", state="*")
-async def show_menu(message: types.Message, state:FSMContext):
+async def show_menu(message: types.Message, state: FSMContext):
     await list_categories(message)
     await state.finish()
 
@@ -24,7 +25,14 @@ async def show_menu(message: types.Message, state:FSMContext):
 # **kwargs yordamida esa boshqa parametrlarni ham qabul qiladi: (category, subcategory, item_id)
 async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
     # Keyboardni chaqiramiz
-    markup = await categories_keyboard()
+    user_id = str(message.from_user.id)
+
+    if user_id in ADMINS:
+        user_id = int(ADMINS[0])
+    else:
+        user_id = int(user_id)
+
+    markup = await categories_keyboard(user_id=user_id)
 
     # Agar foydalanuvchidan Message kelsa Keyboardni yuboramiz
     if isinstance(message, Message):
@@ -40,14 +48,15 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
 
 # Ost-kategoriyalarni qaytaruvchi funksiya
 async def list_subcategories(callback: CallbackQuery, category, **kwargs):
-    markup = await subcategories_keyboard(category)
-    subcategories_summary = await db.get_subsummary_out(
-        category_name=category
-    )
+    markup = await subcategories_keyboard(category_name=category, user_id=int(callback.from_user.id))
+    # subcategories_summary = await db.get_subsummary_out(
+    #     category_name=category,
+    #     user_id=callback.from_user.id
+    # )
 
     summ = 0
-    for summary in subcategories_summary:
-        summ += summary[0]
+    # for summary in subcategories_summary:
+    #     summ += summary[0]
 
     await callback.message.edit_text(text=f'Category: <b>{category}</b>'
                                           f'\n\nJami harajat: <b>{summ} so\'m</b>',
@@ -56,14 +65,17 @@ async def list_subcategories(callback: CallbackQuery, category, **kwargs):
 
 # Ost-kategoriyaga tegishli mahsulotlar ro'yxatini yuboruvchi funksiya
 async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
-    markup = await items_keyboard(category, subcategory)
+    markup = await items_keyboard(category_name=category,
+                                  subcategory_name=subcategory,
+                                  user_id=int(callback.from_user.id))
     products_summary = await db.get_products_out(
-        category_name=category,
-        date=subcategory)
+        date=subcategory,
+        user_id=callback.from_user.id
+    )
 
     summ = 0
     for summary in products_summary:
-        summ += summary[6]
+        summ += summary[7]
 
     await callback.message.edit_text(text=f"Category: <b>{category}</b>"
                                           f"\nSubcategory: <b>{subcategory}</b>"
@@ -112,7 +124,7 @@ async def navigate(call: CallbackQuery, callback_data: dict):
     subcategory = callback_data.get("subcategory")
 
     # Mahsulot ID raqami (har doim ham bo'lavermaydi)
-    item_id = int(callback_data.get("item_id"))
+    item_id = callback_data.get("item_id")
 
     # Har bir Level (qavatga) mos funksiyalarni yozib chiqamiz
     levels = {
