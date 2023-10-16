@@ -94,9 +94,6 @@ class Database:
         category_name VARCHAR(50) NULL,
         subcategory_name VARCHAR(50) NULL,              
         productname VARCHAR(50) NULL,        
-        price INT NULL,        
-        item INT NULL,
-        weight_or_item TEXT NULL,
         summary INT NULL,
         date DATE NOT NULL DEFAULT CURRENT_DATE
         );
@@ -107,23 +104,34 @@ class Database:
     #     sql = "INSERT INTO Outgoing (category_name, user_id) VALUES ($1, $2) returning *"
     #     return await self.execute(sql, category_name, user_id, fetchrow=True)
 
-    async def first_add_out(self, category_name, subcategory_name, user_id):
-        sql = "INSERT INTO Outgoing (category_name, subcategory_name, user_id) VALUES ($1, $2, $3) returning *"
-        return await self.execute(sql, category_name, subcategory_name, user_id,  fetchrow=True)
+    async def first_add_out(self, category_name, subcategory_name, user_id, summary):
+        sql = ("INSERT INTO Outgoing (category_name, subcategory_name, user_id, summary) "
+               "VALUES ($1, $2, $3, $4) returning *")
+        return await self.execute(sql, category_name, subcategory_name, user_id, summary,  fetchrow=True)
 
-    async def add_out(self, user_id, category_name, productname, price, item, summary, weight_or_item):
-        sql = ("INSERT INTO "
-               "Outgoing (user_id, category_name, productname, price, item, weight_or_item, summary)"
-               "VALUES($1, $2, $3, $4, $5, $6, $7) returning *")
-        return await self.execute(sql, user_id, category_name, productname, price, item, weight_or_item, summary,
-                                  fetchrow=True)
+    async def get_sum_category(self, user_id, category_name):
+        sql = f"SELECT SUM(summary) FROM Outgoing WHERE user_id=$1 AND category_name=$2"
+        return await self.execute(sql, user_id, category_name, fetchval=True)
 
-    async def add_date_out(self, user_id, category_name, productname, price, item, weight_or_item, summary, date):
-        sql = ("INSERT INTO "
-               "Outgoing (user_id, category_name, productname, price, item, weight_or_item, summary, date)"
-               "VALUES($1, $2, $3, $4, $5, $6, $7, $8) returning *")
-        return await self.execute(sql, user_id, category_name, productname, price, item, weight_or_item, summary, date,
-                                  fetchrow=True)
+    async def get_sum_subcategory(self, user_id, subcategory_name):
+        sql = f"SELECT SUM(summary) FROM Outgoing WHERE user_id=$1 AND subcategory_name=$2"
+        return await self.execute(sql, user_id, subcategory_name, fetchval=True)
+
+    # async def add_out(self, user_id, category_name, subcategory_name, productname, price, item, summary,
+    #                   weight_or_item):
+    #     sql = ("INSERT INTO "
+    #            "Outgoing (user_id, category_name, subcategory_name, productname, price, item, weight_or_item, summary)"
+    #            "VALUES($1, $2, $3, $4, $5, $6, $7) returning *")
+    #     return await self.execute(sql, user_id, category_name, subcategory_name, productname, price, item,
+    #                               weight_or_item, summary,
+    #                               fetchrow=True)
+    #
+    # async def add_date_out(self, user_id, category_name, productname, price, item, weight_or_item, summary, date):
+    #     sql = ("INSERT INTO "
+    #            "Outgoing (user_id, category_name, productname, price, item, weight_or_item, summary, date)"
+    #            "VALUES($1, $2, $3, $4, $5, $6, $7, $8) returning *")
+    #     return await self.execute(sql, user_id, category_name, productname, price, item, weight_or_item, summary, date,
+    #                               fetchrow=True)
 
     async def update_categoryname_out(self, new_category, old_category, user_id):
         sql = (f"UPDATE Outgoing SET category_name='{new_category}' WHERE category_name='{old_category}' AND "
@@ -155,11 +163,12 @@ class Database:
         return await self.execute(sql, fetch=True)
 
     async def get_subdistinct_out(self, category_name, user_id):
-        sql = f"SELECT DISTINCT subcategory_name FROM Outgoing WHERE category_name='{category_name}' AND user_id='{user_id}'"
+        sql = (f"SELECT DISTINCT subcategory_name FROM Outgoing WHERE category_name='{category_name}' AND "
+               f"user_id='{user_id}'")
         return await self.execute(sql, fetch=True)
 
-    async def get_products_out(self, date, user_id):
-        sql = f"SELECT * FROM Outgoing WHERE date='{date}' AND user_id='{user_id}'"
+    async def get_products_out(self, subcategory_name, user_id):
+        sql = f"SELECT * FROM Outgoing WHERE subcategory_name='{subcategory_name}' AND user_id='{user_id}'"
         return await self.execute(sql, fetch=True)
 
     async def get_product_out(self, product_id):

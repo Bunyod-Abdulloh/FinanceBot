@@ -3,20 +3,15 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 class FinanceCategory(StatesGroup):
     add_category = State()
-    add_product = State()
-    summary_or_item = State()
-    item = State()
-    weight = State()
-    price = State()
+    add_subcategory = State()
+    summary = State()
+    summary_check = State()
 
 
 class FinanceSubcategory(StatesGroup):
-    add_date = State()
-    add_product = State()
-    summary_or_item = State()
-    item = State()
-    weight = State()
-    price = State()
+    aso_subcategory = State()
+    aso_summary = State()
+    aso_summary_check = State()
 
 
 class FinanceEdit(StatesGroup):

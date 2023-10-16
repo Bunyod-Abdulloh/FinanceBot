@@ -7,12 +7,13 @@ from keyboards.inline.out_keyboards import main_menu
 
 from loader import dp, db
 
-category_name = ["Kommunal to'lovlar", "Internet", "Telefon"]
-subcategory_name = ["Elektr energiya", "Ichimlik suv", "Issiq suv", "Chiqindi", "Uy", "O'zim"]
+category_name = ["Kommunal to`lovlar", "Internet", "Telefon"]
+subcategory_name = ["Issiq suv", "Sovuq suv", "Elektr energiya", "Gaz", "Uy", "Mening raqamim"]
 
-for n in category_name:
-    if "'" in category_name:
-    category_name = category_name.replace("'", "`")
+# for n in category_name:
+#     if "'" in category_name:
+#     category_name = category_name.replace("'", "`")
+
 
 @dp.message_handler(CommandStart(), state='*')
 async def bot_start(message: types.Message, state: FSMContext):
@@ -24,42 +25,49 @@ async def bot_start(message: types.Message, state: FSMContext):
     await state.finish()
 
     user_id = int(message.from_user.id)
-
+    summary = 0
+    
     await db.first_add_out(
-        category_name=,
-        subcategory_name='Elektr energiya',
-        user_id=user_id
+        category_name=category_name[0],
+        subcategory_name=subcategory_name[0],
+        user_id=user_id,
+        summary=summary
     )
     await db.first_add_out(
-            category_name="Kommunal to'lovlar",
-            subcategory_name='Ichimlik suvi',
-            user_id=user_id
-        )
+        category_name=category_name[0],
+        subcategory_name=subcategory_name[1],
+        user_id=user_id,
+        summary=summary
+    )
     await db.first_add_out(
-            category_name="Kommunal to'lovlar",
-            subcategory_name='Gaz',
-            user_id=user_id
-        )
+        category_name=category_name[0],
+        subcategory_name=subcategory_name[2],
+        user_id=user_id,
+        summary=summary
+    )
     await db.first_add_out(
-            category_name="Kommunal to'lovlar",
-            subcategory_name='Chiqindi',
-            user_id=user_id
-        )
+        category_name=category_name[0],
+        subcategory_name=subcategory_name[3],
+        user_id=user_id,
+        summary=summary
+    )
     await db.first_add_out(
-                category_name="Kommunal to'lovlar",
-                subcategory_name='Issiq suv va issiqlik ta\'minoti',
-                user_id=user_id
-            )
+        category_name=category_name[1],
+        subcategory_name=subcategory_name[4],
+        user_id=user_id,
+        summary=summary
+    )
     await db.first_add_out(
-                category_name="Internet",
-                subcategory_name='Uy',
-                user_id=user_id
-            )
-    await db.first_add_out(
-                category_name="Telefon",
-                subcategory_name='O\'zim',
-                user_id=user_id
-            )
+        category_name=category_name[2],
+        subcategory_name=subcategory_name[5],
+        user_id=user_id,
+        summary=summary
+    )
+    # await db.first_add_out(
+    #             category_name="Telefon",
+    #             subcategory_name='O\'zim',
+    #             user_id=user_id, summary=summary
+    #         )
 
 
 @dp.callback_query_handler(text='back_main_menu', state='*')

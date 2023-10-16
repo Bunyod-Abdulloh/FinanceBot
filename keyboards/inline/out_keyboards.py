@@ -53,7 +53,7 @@ async def main_menu():
 async def categories_keyboard(user_id: int):
     CURRENT_LEVEL = 0
 
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2)
 
     categories = await db.get_categories_out(user_id=user_id)
 
@@ -62,22 +62,22 @@ async def categories_keyboard(user_id: int):
             callback_data = make_callback_data(
                 level=CURRENT_LEVEL + 1, category=f"{category['category_name']}"
             )
-            markup.insert(
+            markup.add(
                 InlineKeyboardButton(text=f"{category['category_name']}",
                                      callback_data=callback_data)
             )
-        markup.insert(
-            InlineKeyboardButton(text='➕ Add',
+        markup.add(
+            InlineKeyboardButton(text='➕ Kategoriya qo\'shish',
                                  callback_data='add_category')
         )
     else:
-        markup.insert(
-            InlineKeyboardButton(text='➕ Add',
+        markup.add(
+            InlineKeyboardButton(text='➕ Kategoriya qo\'shish',
                                  callback_data='add_category')
         )
     markup.add(
         InlineKeyboardButton(
-            text='⬅️ Back',
+            text='⬅️ Ortga',
             callback_data='back_main_menu'
         )
     )
@@ -87,10 +87,10 @@ async def categories_keyboard(user_id: int):
 # Berilgan kategoriya ostidagi kategoriyalarni qaytaruvchi keyboard
 async def subcategories_keyboard(category_name, user_id: int):
     CURRENT_LEVEL = 1
-    markup = InlineKeyboardMarkup(row_width=2)
+    markup = InlineKeyboardMarkup(row_width=3)
 
     subcategories = await db.get_subdistinct_out(category_name=category_name, user_id=user_id)
-    print(subcategories)
+
     for subcategory in subcategories:
 
         button_text = f"{subcategory[0]}"
@@ -100,45 +100,28 @@ async def subcategories_keyboard(category_name, user_id: int):
             category=category_name,
             subcategory=subcategory[0],
         )
-
         markup.add(
             InlineKeyboardButton(text=button_text,
                                  callback_data=callback_data)
         )
+
     markup.add(
         InlineKeyboardButton(
-            text='➕ Add',
+            text='➕ Subkategoriya qo\'shish',
             callback_data=f'addsubcategory_{category_name}'
         )
     )
-    markup.insert(
+    markup.add(
         InlineKeyboardButton(
-            text='📝 Edit category',
+            text='📝 Kategoriyani o\'zgartirish',
             callback_data=f'editcategory_{category_name}'
         ))
-    markup.row(
+    markup.add(
         InlineKeyboardButton(
-            text="⬅️ Back",
+            text="⬅️ Ortga",
             callback_data=make_callback_data(
                 level=CURRENT_LEVEL - 1
             )
-        )
-    )
-    return markup
-
-
-def summary_or_item_keyboard():
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.insert(
-        InlineKeyboardButton(
-            text='Soni',
-            callback_data='item'
-        )
-    )
-    markup.insert(
-        InlineKeyboardButton(
-            text='Kg',
-            callback_data='item_kg'
         )
     )
     return markup
@@ -151,40 +134,40 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
     markup = InlineKeyboardMarkup(row_width=2)
 
     # Ost-kategorioyaga tegishli barcha mahsulotlarni olamiz
-    items = await db.get_products_out(date=subcategory_name, user_id=user_id)
-    for item in items:
-        print(item)
+    items = await db.get_products_out(subcategory_name=subcategory_name, user_id=user_id)
+
+    # for item in items:
         # Tugma matnini yasaymiz
-        button_text = f"{item['productname']}"
+        # button_text = f"{item['productname']}"
 
         # Tugma bosganda qaytuvchi callbackni yasaymiz: Keyingi bosqich +1 va kategoriyalar
-        callback_data = make_callback_data(
-            level=CURRENT_LEVEL + 1,
-            category=category_name,
-            subcategory=subcategory_name,
-            item_id=item["id"],
-        )
-        markup.add(
-            InlineKeyboardButton(
-                text=button_text,
-                callback_data=callback_data)
-        )
+        # callback_data = make_callback_data(
+        #     level=CURRENT_LEVEL + 1,
+        #     category=category_name,
+        #     subcategory=subcategory_name,
+        #     item_id=item["id"],
+        # )
+        # markup.add(
+        #     InlineKeyboardButton(
+        #         text=button_text,
+        #         callback_data=callback_data)
+        # )
     markup.add(
         InlineKeyboardButton(
-            text='➕ Add',
+            text='➕ Qo\'shish',
             callback_data=f'addproduct_{category_name}_{subcategory_name}'
         )
     )
-    markup.insert(
+    markup.add(
         InlineKeyboardButton(
-            text='📝 Edit subcategory',
+            text='📝 Subkategoriyani o\'zgartirish',
             callback_data=f'editsubcategory_{subcategory_name}'
         )
     )
     # Ortga qaytish tugmasi
     markup.add(
         InlineKeyboardButton(
-            text="⬅️ Back",
+            text="⬅️ Ortga",
             callback_data=make_callback_data(
                 level=CURRENT_LEVEL - 1,
                 category=category_name
@@ -196,6 +179,7 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
 
 def item_keyboard(category, subcategory, item_id):
     CURRENT_LEVEL = 3
+
     markup = InlineKeyboardMarkup(row_width=2)
 
     markup.add(
@@ -218,10 +202,17 @@ def item_keyboard(category, subcategory, item_id):
     )
     markup.add(
         InlineKeyboardButton(
-            text="⬅️ Back",
+            text="⬅️ Ortga",
             callback_data=make_callback_data(
                 level=CURRENT_LEVEL - 1, category=category, subcategory=subcategory
             ),
         )
     )
     return markup
+
+
+yes_no_buttons = InlineKeyboardMarkup(row_width=2)
+yes_no_buttons.add(InlineKeyboardButton(text="✅ Ha",
+                                        callback_data="yes_button"))
+yes_no_buttons.insert(InlineKeyboardButton(text="♻️ Qayta kiritish",
+                                           callback_data="again_button"))
