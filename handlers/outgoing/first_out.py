@@ -9,6 +9,7 @@ from loader import dp, db
 async def outgoing_(call: types.CallbackQuery):
 
     user_id = str(call.from_user.id)
+    all_summary = await db.get_sum_all_out(user_id=call.from_user.id)
 
     if user_id in ADMINS:
         user_id = int(ADMINS[0])
@@ -16,7 +17,8 @@ async def outgoing_(call: types.CallbackQuery):
         user_id = int(user_id)
 
     await call.message.edit_text(
-        text="Bo'lim: <b>📤 Chiqim</b>",
+        text=f"Bo'lim: <b>📤 Chiqim</b>"
+             f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{all_summary} so'm</b>",
         reply_markup=await categories_keyboard(user_id=user_id)
     )
 

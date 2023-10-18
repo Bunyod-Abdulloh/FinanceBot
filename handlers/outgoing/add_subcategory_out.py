@@ -3,7 +3,7 @@ import math
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_point, replace_float
+from handlers.all.all_functions import replace_float, replace_point_bottom_line
 from keyboards.default.start_keyboard import menu
 from keyboards.inline.out_keyboards import categories_keyboard, yes_no_buttons
 from loader import dp, db
@@ -30,7 +30,7 @@ async def aso_step_one(call: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(state=FinanceSubcategory.aso_subcategory)
 async def aso_step_two(message: types.Message, state: FSMContext):
 
-    subcategory_name = await replace_point(message=message.text)
+    subcategory_name = await replace_point_bottom_line(message=message.text)
 
     data = await state.get_data()
 
@@ -61,7 +61,7 @@ async def subcategory_summary_out(message: types.Message, state: FSMContext):
         text=f"Bo'lim: <b>📤 Chiqim</b>"
              f"\nKategoriya: <b>{data['category_name']}</b>"
              f"\nSubkategoriya: <b>{data['subcategory_name']}</b>"
-             f"\nHarajat summasi: <b>{summary}</b>"
+             f"\nHarajat summasi: <b>{summary} so'm</b>"
              f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
         reply_markup=yes_no_buttons
     )

@@ -18,3 +18,12 @@ class FinanceEdit(StatesGroup):
     category = State()
     subcategory = State()
     product = State()
+
+
+class MoneyOut(StatesGroup):
+    add_money = State()
+    reduce_amount = State()
+
+
+class PayHistoryOut(StatesGroup):
+    add_money = State()

@@ -1,7 +1,10 @@
-async def replace_point(message):
+async def replace_point_bottom_line(message):
 
     if "'" in message:
         incoming = message.replace("'", "")
+
+    elif "_" in message:
+        incoming = message.replace("_", "")
 
     else:
         incoming = message
@@ -20,4 +23,4 @@ async def replace_float(message):
     else:
         incoming = message
 
-    return incoming
+    return int(incoming)

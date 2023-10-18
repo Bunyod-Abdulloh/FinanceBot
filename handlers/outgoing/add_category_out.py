@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_function, replace_point, replace_float
+from handlers.all.all_functions import replace_float, replace_point_bottom_line
 from keyboards.default.start_keyboard import menu
 from keyboards.inline.out_keyboards import categories_keyboard, yes_no_buttons
 from loader import dp, db
@@ -26,7 +26,7 @@ async def add_category_call(call: types.CallbackQuery):
 @dp.message_handler(state=FinanceCategory.add_category)
 async def add_category(message: types.Message, state: FSMContext):
 
-    category_name = await replace_point(message=message.text)
+    category_name = await replace_point_bottom_line(message=message.text)
 
     await state.update_data(
         category_name=category_name
@@ -43,7 +43,7 @@ async def add_category(message: types.Message, state: FSMContext):
 @dp.message_handler(state=FinanceCategory.add_subcategory)
 async def add_subcategory_out(message: types.Message, state: FSMContext):
 
-    subcategory_name = await replace_point(message=message.text)
+    subcategory_name = await replace_point_bottom_line(message=message.text)
 
     await state.update_data(
         subcategory_name=subcategory_name

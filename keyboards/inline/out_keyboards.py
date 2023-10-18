@@ -59,11 +59,12 @@ async def categories_keyboard(user_id: int):
 
     if categories:
         for category in categories:
+            summary = await db.get_sum_category(user_id=user_id, category_name=category[0])
             callback_data = make_callback_data(
-                level=CURRENT_LEVEL + 1, category=f"{category['category_name']}"
+                level=CURRENT_LEVEL + 1, category=f"{category[0]}"
             )
             markup.add(
-                InlineKeyboardButton(text=f"{category['category_name']}",
+                InlineKeyboardButton(text=f"{category[0]} | {summary} so'm",
                                      callback_data=callback_data)
             )
         markup.add(
@@ -92,8 +93,8 @@ async def subcategories_keyboard(category_name, user_id: int):
     subcategories = await db.get_subdistinct_out(category_name=category_name, user_id=user_id)
 
     for subcategory in subcategories:
-
-        button_text = f"{subcategory[0]}"
+        summary = await db.get_sum_subcategory(user_id=user_id, subcategory_name=subcategory[0])
+        button_text = f"{subcategory[0]} | {summary} so'm"
 
         callback_data = make_callback_data(
             level=CURRENT_LEVEL + 1,
@@ -127,35 +128,21 @@ async def subcategories_keyboard(category_name, user_id: int):
     return markup
 
 
-# Ostkategoriyaga tegishli mahsulotlar uchun keyboard yasaymiz
 async def items_keyboard(category_name, subcategory_name, user_id: int):
     CURRENT_LEVEL = 2
 
+    subcategory = await db.get_products_out(subcategory_name=subcategory_name, user_id=user_id)
+
     markup = InlineKeyboardMarkup(row_width=2)
 
-    # Ost-kategorioyaga tegishli barcha mahsulotlarni olamiz
-    items = await db.get_products_out(subcategory_name=subcategory_name, user_id=user_id)
-
-    # for item in items:
-        # Tugma matnini yasaymiz
-        # button_text = f"{item['productname']}"
-
-        # Tugma bosganda qaytuvchi callbackni yasaymiz: Keyingi bosqich +1 va kategoriyalar
-        # callback_data = make_callback_data(
-        #     level=CURRENT_LEVEL + 1,
-        #     category=category_name,
-        #     subcategory=subcategory_name,
-        #     item_id=item["id"],
-        # )
-        # markup.add(
-        #     InlineKeyboardButton(
-        #         text=button_text,
-        #         callback_data=callback_data)
-        # )
-    markup.add(
+    markup.row(
         InlineKeyboardButton(
-            text='➕ Qo\'shish',
-            callback_data=f'addproduct_{category_name}_{subcategory_name}'
+            text="➖ Summa ayirish",
+            callback_data=f"reduceamount_{subcategory[0]}"
+        ),
+        InlineKeyboardButton(
+            text="➕ Summa qo'shish",
+            callback_data=f"addmoney_{subcategory[0]}"
         )
     )
     markup.add(
@@ -164,7 +151,8 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
             callback_data=f'editsubcategory_{subcategory_name}'
         )
     )
-    # Ortga qaytish tugmasi
+    markup.add(InlineKeyboardButton(text="📜 To'lovlar tarixi",
+                                    callback_data=f"payhistory_{user_id}"))
     markup.add(
         InlineKeyboardButton(
             text="⬅️ Ortga",
