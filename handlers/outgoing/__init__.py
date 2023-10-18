@@ -6,4 +6,5 @@ from . import edit_product_out
 from . import edit_subcategory_out
 from . import first_out
 from . import money_out
+from . import payhistory_out
 

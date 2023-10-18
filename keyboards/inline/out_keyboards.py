@@ -152,7 +152,7 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
         )
     )
     markup.add(InlineKeyboardButton(text="📜 To'lovlar tarixi",
-                                    callback_data=f"payhistory_{user_id}"))
+                                    callback_data=f"payhistory_{subcategory[0]}"))
     markup.add(
         InlineKeyboardButton(
             text="⬅️ Ortga",

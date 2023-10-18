@@ -19,7 +19,7 @@ from loader import dp, db
 async def show_menu(message: types.Message, state: FSMContext):
 
     await message.answer(
-        text="DastyorRobotga xush kelibsiz!",
+        text="IqtisodchiRobotga xush kelibsiz!",
         reply_markup=await main_menu()
     )
     await state.finish()
@@ -80,29 +80,6 @@ async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
                                      reply_markup=markup)
 
 
-# Biror mahsulot uchun Xarid qilish tugmasini yuboruvchi funksiya
-async def show_item(callback: CallbackQuery, category, subcategory, item_id):
-    markup = item_keyboard(category, subcategory, item_id)
-
-    # Mahsulot haqida ma'lumotni bazadan olamiz
-    item = await db.get_product_out(item_id)
-    weight_or_item = item['weight_or_item']
-    text = (f"Category: <b>{category}</b>"
-            f"\nSubcategory: <b>{subcategory}</b>"
-            f"\nMahsulot: <b>{item['productname']}\n</b>")
-
-    if weight_or_item == 'kg':
-        text += (f"Miqdori: <b>{item['item']} {item['weight_or_item']}</b>"
-                 f"\nKilosi: <b>{item['price']} so'm</b>"
-                 f"\n\nJami: <b>{item['summary']} so'm</b>")
-    else:
-        text += (f"Miqdori: <b>{item['item']} {item['weight_or_item']}</b>"
-                 f"\nDonasi: <b>{item['price']} so'm</b>"
-                 f"\n\nJami: <b>{item['summary']} so'm</b>")
-
-    await callback.message.edit_text(text=text, reply_markup=markup)
-
-
 # Yuqoridagi barcha funksiyalar uchun yagona handler
 @dp.callback_query_handler(menu_cd.filter())
 async def navigate(call: CallbackQuery, callback_data: dict):
@@ -128,7 +105,6 @@ async def navigate(call: CallbackQuery, callback_data: dict):
         "0": list_categories,  # Kategoriyalarni qaytaramiz
         "1": list_subcategories,  # Ost-kategoriyalarni qaytaramiz
         "2": list_items,  # Mahsulotlarni qaytaramiz
-        "3": show_item,  # Mahsulotni ko'rsatamiz
     }
 
     # Foydalanuvchidan kelgan Level qiymatiga mos funksiyani chaqiramiz
@@ -138,3 +114,5 @@ async def navigate(call: CallbackQuery, callback_data: dict):
     await current_level_function(
         call, category=category, subcategory=subcategory, item_id=item_id
     )
+
+#"3": show_item,  # Mahsulotni ko'rsatamiz
