@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_float, replace_point_bottom_line
+from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text
 from keyboards.default.start_keyboard import menu
 from keyboards.inline.out_keyboards import categories_keyboard, yes_no_buttons
 from loader import dp, db
@@ -17,6 +17,7 @@ async def add_category_call(call: types.CallbackQuery):
 
     await call.message.answer(
         text=f"Bo'lim: <b>📤 Chiqim</b>"
+             f"\n\n{warning_text}"
              f"\n\nKategoriya nomini kiriting:",
         reply_markup=menu
     )
@@ -35,6 +36,7 @@ async def add_category(message: types.Message, state: FSMContext):
     await message.answer(
         text=f"Bo'lim: <b>📤 Chiqim</b>"
              f"\nKategoriya: <b>{category_name}</b>"
+             f"\n\n{warning_text}"
              f"\n\nSubkategoriya nomini kiriting:"
     )
     await FinanceCategory.add_subcategory.set()

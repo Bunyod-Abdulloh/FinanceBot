@@ -24,3 +24,7 @@ async def replace_float(message):
         incoming = message
 
     return int(incoming)
+
+
+warning_text = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda <b>', _, -, !, ?</b> kabi belgilardan "
+                "foydalanmasligingizni iltimos qilamiz!")
