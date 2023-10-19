@@ -16,8 +16,8 @@ async def ph_addmoney(call: types.CallbackQuery, state: FSMContext):
     product = await db.get_product_out(product_id=product_id)
 
     await state.update_data(
-        product_id=product_id,
-        summary=product[2]
+        category_name=product[0],
+        subcategory_name=product[1]
     )
 
     await call.message.edit_text(
@@ -38,9 +38,10 @@ async def add_money_out(message: types.Message, state: FSMContext):
         money = await replace_float(message=message.text)
         user_id = message.from_user.id
 
-        await db.update_productsum_out(summary=money + data['summary'],
-                                       product_id=int(data['product_id']),
-                                       user_id=user_id)
+        await db.first_add_out(category_name=data['category_name'],
+                               subcategory_name=data['subcategory_name'],
+                               summary=money,
+                               user_id=user_id)
 
         await message.answer(text="Summa qo'shildi",
                              reply_markup=await categories_keyboard(user_id=user_id))

@@ -40,7 +40,7 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
 
     # Agar foydalanuvchidan Message kelsa Keyboardni yuboramiz
     if isinstance(message, Message):
-        await message.answer(text=f"Bo'lim: <b>📤 Chiqim</b>"
+        await message.answer(text=f"<b>📤 Chiqim</b>"
                                   f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{summary} so'm</b>",
                              reply_markup=markup)
 
@@ -48,7 +48,7 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
     elif isinstance(message, CallbackQuery):
         call = message
 
-        await call.message.edit_text(text=f"Bo'lim: <b>📤 Chiqim</b>"
+        await call.message.edit_text(text=f"<b>📤 Chiqim</b>"
                                           f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{summary} so'm</b>",
                                      reply_markup=markup)
 
@@ -59,8 +59,8 @@ async def list_subcategories(callback: CallbackQuery, category, **kwargs):
     summa = await db.get_sum_category(user_id=int(callback.from_user.id),
                                       category_name=category)
 
-    await callback.message.edit_text(text=f"Bo'lim: <b>📤 Chiqim</b>"
-                                          f"\nKategoriya: <b>{category}</b>"
+    await callback.message.edit_text(text=f"<b>📤 Chiqim > "
+                                          f"{category}</b>"
                                           f"\n\n{category} uchun jami harajat: <b>{summa} so'm</b>",
                                      reply_markup=markup)
 
@@ -73,9 +73,9 @@ async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
     summa = await db.get_sum_subcategory(user_id=callback.from_user.id,
                                          subcategory_name=subcategory)
 
-    await callback.message.edit_text(text="Bo'lim: <b>📤 Chiqim</b>"
-                                          f"\nKategoriya: <b>{category}</b>"
-                                          f"\nSubkategoriya: <b>{subcategory}</b>"                                          
+    await callback.message.edit_text(text="<b>📤 Chiqim > "
+                                          f"{category} > "
+                                          f"{subcategory}</b>"                                          
                                           f"\n\n{subcategory} uchun jami harajat: <b>{summa} so'm</b>",
                                      reply_markup=markup)
 

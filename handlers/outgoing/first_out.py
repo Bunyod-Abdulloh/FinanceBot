@@ -17,7 +17,7 @@ async def outgoing_(call: types.CallbackQuery):
         user_id = int(user_id)
 
     await call.message.edit_text(
-        text=f"Bo'lim: <b>📤 Chiqim</b>"
+        text=f"<b>📤 Chiqim</b>"
              f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{all_summary} so'm</b>",
         reply_markup=await categories_keyboard(user_id=user_id)
     )
