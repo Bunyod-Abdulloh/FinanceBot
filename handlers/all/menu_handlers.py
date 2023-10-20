@@ -17,7 +17,6 @@ from loader import dp, db
 
 @dp.message_handler(text="Bosh menyu", state="*")
 async def show_menu(message: types.Message, state: FSMContext):
-
     await message.answer(
         text="IqtisodchiRobotga xush kelibsiz!",
         reply_markup=await main_menu()
@@ -26,7 +25,6 @@ async def show_menu(message: types.Message, state: FSMContext):
 
 
 async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
-
     user_id = str(message.from_user.id)
 
     if user_id in ADMINS:
@@ -74,22 +72,29 @@ async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
                                          subcategory_name=subcategory)
 
     await callback.message.edit_text(text="<b>📤 Chiqim > "
-                                          f"{category} > "
-                                          f"{subcategory}</b>"                                          
+                                          f"{category} > 1"
+                                          f"{subcategory}</b>"
                                           f"\n\n{subcategory} uchun jami harajat: <b>{summa} so'm</b>",
                                      reply_markup=markup)
 
 
 # Yuqoridagi barcha funksiyalar uchun yagona handler
 @dp.callback_query_handler(menu_cd.filter())
-async def navigate(call: CallbackQuery, callback_data: dict):
+async def navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """
     :param call: Handlerga kelgan Callback query
     :param callback_data: Tugma bosilganda kelgan ma'lumotlar
+    :param state: Levelni stateda saqlash
     """
-
     # Foydalanuvchi so'ragan Level (qavat)
     current_level = callback_data.get("level")
+
+    if current_level == "2":
+        for key, value in callback_data.items():
+            print(key)
+            await state.update_data(
+                {key: value}
+            )
 
     # Foydalanuvchi so'ragan Kategoriya
     category = callback_data.get("category")
@@ -115,4 +120,4 @@ async def navigate(call: CallbackQuery, callback_data: dict):
         call, category=category, subcategory=subcategory, item_id=item_id
     )
 
-#"3": show_item,  # Mahsulotni ko'rsatamiz
+# "3": show_item,  # Mahsulotni ko'rsatamiz

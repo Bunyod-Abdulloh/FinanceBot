@@ -4,6 +4,8 @@ import logging
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from handlers.all.menu_handlers import navigate
+from keyboards.inline.out_keyboards import back_out
 from loader import dp, db
 
 
@@ -31,8 +33,18 @@ async def phout_product_history(call: types.CallbackQuery, state: FSMContext):
             else:
                 for data in date:
                     history += f"{data[0]} | {data[1]} so'm\n"
-                await call.message.edit_text(text=f"{history}\nJami: {summary} so'm")
+                await call.message.edit_text(text=f"{history}\nJami: {summary} so'm",
+                                             reply_markup=back_out)
             history = " "
     except Exception as err:
         logging.error(err)
 
+
+@dp.callback_query_handler(text="back_out", state="*")
+async def pho_back_out(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+
+    await navigate(call=call,
+                   callback_data=data,
+                   state=state)
+    await state.finish()

@@ -7,15 +7,15 @@ from aiogram.utils.callback_data import CallbackData
 from loader import db
 
 # Turli tugmalar uchun CallbackData-obyektlarni yaratib olamiz
-menu_cd = CallbackData("show_menu", "level", "category", "subcategory", "item_id")
-buy_item = CallbackData("buy", "item_id")
+menu_cd = CallbackData("show_menu", "level", "category", "subcategory")
+# buy_item = CallbackData("buy", )
 
 
 # Quyidagi funksiya yordamida menyudagi har bir element uchun calbback data yaratib olinadi
 # Agar mahsulot kategoriyasi, ost-kategoriyasi va id raqami berilmagan bo'lsa 0 ga teng bo'ladi
-def make_callback_data(level, category="0", subcategory="0", item_id="0"):
+def make_callback_data(level, category="0", subcategory="0"):
     return menu_cd.new(
-        level=level, category=category, subcategory=subcategory, item_id=item_id
+        level=level, category=category, subcategory=subcategory
     )
 
 
@@ -206,4 +206,4 @@ yes_no_buttons.insert(InlineKeyboardButton(text="♻️ Qayta kiritish",
                                            callback_data="again_button"))
 
 back_out = InlineKeyboardMarkup(row_width=1)
-back_out.row(InlineKeyboardButton(text="⬅️ Ortga", callback_data="back_out_"))
+back_out.row(InlineKeyboardButton(text="⬅️ Ortga", callback_data="back_out"))
