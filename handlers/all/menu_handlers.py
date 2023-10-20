@@ -72,7 +72,7 @@ async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
                                          subcategory_name=subcategory)
 
     await callback.message.edit_text(text="<b>📤 Chiqim > "
-                                          f"{category} > 1"
+                                          f"{category} > "
                                           f"{subcategory}</b>"
                                           f"\n\n{subcategory} uchun jami harajat: <b>{summa} so'm</b>",
                                      reply_markup=markup)
@@ -86,12 +86,13 @@ async def navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
     :param callback_data: Tugma bosilganda kelgan ma'lumotlar
     :param state: Levelni stateda saqlash
     """
-    # Foydalanuvchi so'ragan Level (qavat)
+
+    await state.finish()
+
     current_level = callback_data.get("level")
 
     if current_level == "2":
         for key, value in callback_data.items():
-            print(key)
             await state.update_data(
                 {key: value}
             )

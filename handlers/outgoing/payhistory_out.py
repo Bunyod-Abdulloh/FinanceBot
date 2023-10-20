@@ -24,17 +24,25 @@ async def phout_product_history(call: types.CallbackQuery, state: FSMContext):
                                                subcategory_name=subcategory_name)
 
         if date:
+            state_data = await state.get_data()
             history = " "
-            if len(history) == 4000:
-                await call.message.edit_text(text="To'lovlaringiz tarixi ko'pligi sababli sanalar oralig'ini "
-                                                  "kiritishingizni so'raymiz!"
-                                                  "Sanalar oralig'i quyidagi tartibda kiritilishi lozim:"
-                                                  "\n\nYIL-OY-KUN ")
-            else:
-                for data in date:
-                    history += f"{data[0]} | {data[1]} so'm\n"
-                await call.message.edit_text(text=f"{history}\nJami: {summary} so'm",
-                                             reply_markup=back_out)
+            c = 0
+            for data in date:
+                c += 1
+                history += f"{c}) {data[0]} | {data[1]} so'm\n"
+
+                if len(history) == 4000:
+                    await call.message.edit_text(text="To'lovlaringiz tarixi ko'pligi sababli sanalar oralig'ini "
+                                                      "kiritishingizni so'raymiz!"
+                                                      "Sanalar oralig'i quyidagi tartibda kiritilishi lozim:"
+                                                      "\n\nYIL-OY-KUN ")
+                    await navigate(call=call,
+                                   callback_data=state_data,
+                                   state=state)
+                    await state.finish()
+            await call.message.edit_text(text=f"{history}\nJami: {summary} so'm",
+                                         reply_markup=back_out
+                                         )
             history = " "
     except Exception as err:
         logging.error(err)
@@ -42,9 +50,9 @@ async def phout_product_history(call: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(text="back_out", state="*")
 async def pho_back_out(call: types.CallbackQuery, state: FSMContext):
-    data = await state.get_data()
+    state_data = await state.get_data()
 
     await navigate(call=call,
-                   callback_data=data,
+                   callback_data=state_data,
                    state=state)
-    await state.finish()
+    # await state.finish()
