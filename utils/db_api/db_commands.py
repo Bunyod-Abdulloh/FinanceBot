@@ -95,14 +95,10 @@ class Database:
         subcategory_name VARCHAR(50) NULL,              
         history VARCHAR(5000) NULL,        
         summary INT NULL,
-        date DATE NOT NULL DEFAULT CURRENT_DATE
+        date TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
         """
         await self.execute(sql, execute=True)
-
-    # async def first_addcategory_out(self, category_name, user_id):
-    #     sql = "INSERT INTO Outgoing (category_name, user_id) VALUES ($1, $2) returning *"
-    #     return await self.execute(sql, category_name, user_id, fetchrow=True)
 
     async def first_add_out(self, category_name, subcategory_name, user_id, summary):
         sql = ("INSERT INTO Outgoing (category_name, subcategory_name, user_id, summary) "
@@ -128,22 +124,6 @@ class Database:
     async def get_sum_subcategory(self, user_id, subcategory_name):
         sql = f"SELECT SUM(summary) FROM Outgoing WHERE user_id=$1 AND subcategory_name=$2"
         return await self.execute(sql, user_id, subcategory_name, fetchval=True)
-
-    # async def add_out(self, user_id, category_name, subcategory_name, productname, price, item, summary,
-    #                   weight_or_item):
-    #     sql = ("INSERT INTO "
-    #            "Outgoing (user_id, category_name, subcategory_name, productname, price, item, weight_or_item, summary)"
-    #            "VALUES($1, $2, $3, $4, $5, $6, $7) returning *")
-    #     return await self.execute(sql, user_id, category_name, subcategory_name, productname, price, item,
-    #                               weight_or_item, summary,
-    #                               fetchrow=True)
-    #
-    # async def add_date_out(self, user_id, category_name, productname, price, item, weight_or_item, summary, date):
-    #     sql = ("INSERT INTO "
-    #            "Outgoing (user_id, category_name, productname, price, item, weight_or_item, summary, date)"
-    #            "VALUES($1, $2, $3, $4, $5, $6, $7, $8) returning *")
-    #     return await self.execute(sql, user_id, category_name, productname, price, item, weight_or_item, summary, date,
-    #                               fetchrow=True)
 
     async def update_productsum_out(self, summary, product_id, user_id):
         sql = f"""UPDATE Outgoing SET summary ='{summary}' WHERE id='{product_id}' AND user_id='{user_id}'"""
@@ -194,6 +174,10 @@ class Database:
     async def getdate_subcategory_out(self, user_id, subcategory_name):
         sql = f"SELECT date, summary FROM Outgoing WHERE user_id='{user_id}' AND subcategory_name='{subcategory_name}'"
         return await self.execute(sql, fetch=True)
+
+    async def date_to_char_out(self, current_date):
+        sql = f"SELECT TO_CHAR(date=$1, 'YYYY-MM-DD HH24:MM:SS') FROM Outgoing"
+        return await self.execute(sql, current_date, fetch=True)
 
     async def delete_product_out(self, product_id):
         await self.execute("DELETE FROM Outgoing WHERE id=$1", product_id, execute=True)

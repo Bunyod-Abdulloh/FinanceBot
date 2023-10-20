@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -27,21 +28,13 @@ async def phout_product_history(call: types.CallbackQuery, state: FSMContext):
                                                   "kiritishingizni so'raymiz!"
                                                   "Sanalar oralig'i quyidagi tartibda kiritilishi lozim:"
                                                   "\n\nYIL-OY-KUN ")
-            for data in date:
-                history += f"{data[0]} | {data[1]} so'm\n"
-            #
-            #     await db.add_history(user_id=call.from_user.id,
-            #                          history=f" | {data[1]} so'm",
-            #                          subcategory_name=subcategory_name
-            #                          )
-            #     await asyncio.sleep(3)
-            #
-            # history = await db.get_history(user_id=call.from_user.id,
-            #                                subcategory_name=subcategory_name)
-            await call.message.edit_text(text=f"{history}\n<b>Jami: {summary} so'm</b>")
-
-            print(len(history))
-
+            else:
+                for data in date:
+                    print(data[0])
+                    # to_char = await db.date_to_char_out(current_date=data[0])
+                    history += f" | {data[1]} so'm\n"
+                await call.message.edit_text(text=f"{history}\nJami: {summary} so'm")
+            history = " "
     except Exception as err:
-        print(err)
+        logging.error(err)
 
