@@ -30,9 +30,7 @@ async def phout_product_history(call: types.CallbackQuery, state: FSMContext):
                                                   "\n\nYIL-OY-KUN ")
             else:
                 for data in date:
-                    print(data[0])
-                    # to_char = await db.date_to_char_out(current_date=data[0])
-                    history += f" | {data[1]} so'm\n"
+                    history += f"{data[0]} | {data[1]} so'm\n"
                 await call.message.edit_text(text=f"{history}\nJami: {summary} so'm")
             history = " "
     except Exception as err:

@@ -146,10 +146,6 @@ class Database:
             sql = f"UPDATE Outgoing SET user_id='{user_id}' WHERE id='{product_id}'"
             return await self.execute(sql, execute=True)
 
-    # async def select_user_Outgoing(self, user_id):
-    #     sql = "SELECT * FROM Outgoing WHERE user_id=$1"
-    #     return await self.execute(sql, user_id, fetch=True)
-
     async def get_categories_out(self, user_id):
         sql = f"SELECT DISTINCT category_name FROM Outgoing WHERE user_id='{user_id}'"
         return await self.execute(sql, fetch=True)
@@ -174,10 +170,6 @@ class Database:
     async def getdate_subcategory_out(self, user_id, subcategory_name):
         sql = f"SELECT date, summary FROM Outgoing WHERE user_id='{user_id}' AND subcategory_name='{subcategory_name}'"
         return await self.execute(sql, fetch=True)
-
-    async def date_to_char_out(self, current_date):
-        sql = f"SELECT TO_CHAR(date=$1, 'YYYY-MM-DD HH24:MM:SS') FROM Outgoing"
-        return await self.execute(sql, current_date, fetch=True)
 
     async def delete_product_out(self, product_id):
         await self.execute("DELETE FROM Outgoing WHERE id=$1", product_id, execute=True)
