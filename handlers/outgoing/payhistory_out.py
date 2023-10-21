@@ -8,6 +8,7 @@ from aiogram.dispatcher import FSMContext
 from handlers.all.menu_handlers import navigate
 # from handlers.all.sample import buttons_generator
 from keyboards.inline.out_keyboards import buttons_generator
+from handlers.all.all_functions import next_page_key
 from loader import dp, db
 
 
@@ -24,6 +25,7 @@ async def phout_product_history(call: types.CallbackQuery, state: FSMContext):
                                                 subcategory_name=subcategory_name)
 
         if date:
+
             history = " "
             count = 0
             summary = 0
