@@ -25,23 +25,6 @@ son = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 PAGE_COUNT = 25
 
 
-def buttons_generator(current_page: int, all_pages: int, next_page=False):
-    key = InlineKeyboardMarkup(
-        row_width=3
-    )
-    if next_page:
-        key.add(InlineKeyboardButton(text="⬅️ Ortga",
-                                     callback_data="back_out_two"))
-    else:
-        key.add(InlineKeyboardButton(text="⬅️ Ortga",
-                                     callback_data="back_out"))
-
-        key.insert(InlineKeyboardButton(text=f"{current_page}/{all_pages}",
-                                        callback_data="pages"))
-
-        key.insert(InlineKeyboardButton(text="Oldinga ➡️",
-                                        callback_data="next"))
-    return key
 
 
 @dp.message_handler(text='Xabarlar', state='*')
