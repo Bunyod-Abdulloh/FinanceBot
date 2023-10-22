@@ -1,43 +1,54 @@
 from aiogram.dispatcher import FSMContext
-
-
-from handlers.all.menu_handlers import navigate
-from keyboards.inline.history_ikeys import buttons_generator, PAGE_COUNT
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from loader import dp, db
 from aiogram import types
 
 from states.user_states import PayHistoryOut
 
 
-@dp.callback_query_handler(text="back_sub", state="*")
-async def get_user_details(call: types.CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-
-    await navigate(call=call,
-                   callback_data=data,
-                   state=state)
+PAGE_COUNT = 50
 
 
-@dp.callback_query_handler(text_contains="pages", state="*")
-async def display_page(call: types.CallbackQuery):
-    current_page = call.data.split("_")[1]
-    await call.answer(text=f"Siz {current_page} - sahifadasiz!", show_alert=True)
+def buttons_generator(current_page: int, all_pages: int, subcategory: str):
+    key = InlineKeyboardMarkup(
+        row_width=3
+    )
+    key.add(
+        InlineKeyboardButton(
+            text="⬅️ Ortga",
+            callback_data="prev"
+        ))
+
+    key.insert(
+        InlineKeyboardButton(
+            text=f"{current_page}/{all_pages}",
+            callback_data="pages"
+        )
+    )
+
+    key.insert(InlineKeyboardButton(
+        text="Oldinga ➡️",
+        callback_data="next"
+    )
+    )
+    key.add(InlineKeyboardButton(
+        text=f"↩️ {subcategory}ga qaytish",
+        callback_data="back_sub"
+    ))
+    return key
 
 
 @dp.callback_query_handler(text_contains="historyproduct", state="*")
-async def phout_main_menu(call: types.CallbackQuery, state: FSMContext):
-
+async def sasasample(call: types.CallbackQuery, state: FSMContext):
     subcategory_name = call.data.split("_")[1]
     get_data = await db.getdate_subcategory_out(user_id=call.from_user.id,
                                                 subcategory_name=subcategory_name)
     summary = await db.get_sum_subcategory(user_id=call.from_user.id,
                                            subcategory_name=subcategory_name)
-
     if summary == 0:
         await call.answer(text=f"{subcategory_name} uchun to'lovlar mavjud emas!", show_alert=True)
 
     else:
-        await call.message.delete()
 
         current_page = 1
 
@@ -60,6 +71,14 @@ async def phout_main_menu(call: types.CallbackQuery, state: FSMContext):
         )
         history = " "
         await PayHistoryOut.one.set()
+
+
+@dp.callback_query_handler(state="user_select_messages", text_contains="message_")
+async def get_user_details(call: types.CallbackQuery, state: FSMContext):
+    await call.answer(
+        text=f"You are selected {call.data.split('_')[1]} number",
+        show_alert=True
+    )
 
 
 @dp.callback_query_handler(state=PayHistoryOut.one)

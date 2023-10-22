@@ -27,42 +27,44 @@ async def bot_start(message: types.Message, state: FSMContext):
     user_id = int(message.from_user.id)
     summary = 0
     
-    await db.first_add_out(
-        category_name=category_name[0],
-        subcategory_name=subcategory_name[0],
-        user_id=user_id,
-        summary=2000
-    )
-    await db.first_add_out(
-        category_name=category_name[0],
-        subcategory_name=subcategory_name[1],
-        user_id=user_id,
-        summary=2000
-    )
-    await db.first_add_out(
-        category_name=category_name[0],
-        subcategory_name=subcategory_name[2],
-        user_id=user_id,
-        summary=summary
-    )
-    await db.first_add_out(
-        category_name=category_name[0],
-        subcategory_name=subcategory_name[3],
-        user_id=user_id,
-        summary=summary
-    )
-    await db.first_add_out(
-        category_name=category_name[1],
-        subcategory_name=subcategory_name[4],
-        user_id=user_id,
-        summary=2000
-    )
-    await db.first_add_out(
-        category_name=category_name[2],
-        subcategory_name=subcategory_name[5],
-        user_id=user_id,
-        summary=5000
-    )
+    for n in range(100):
+        summary += 1
+        await db.first_add_out(
+            category_name=category_name[0],
+            subcategory_name=subcategory_name[0],
+            user_id=user_id,
+            summary=summary
+        )
+        await db.first_add_out(
+            category_name=category_name[0],
+            subcategory_name=subcategory_name[1],
+            user_id=user_id,
+            summary=summary
+        )
+        await db.first_add_out(
+            category_name=category_name[0],
+            subcategory_name=subcategory_name[2],
+            user_id=user_id,
+            summary=summary
+        )
+        await db.first_add_out(
+            category_name=category_name[0],
+            subcategory_name=subcategory_name[3],
+            user_id=user_id,
+            summary=summary
+        )
+        await db.first_add_out(
+            category_name=category_name[1],
+            subcategory_name=subcategory_name[4],
+            user_id=user_id,
+            summary=summary
+        )
+        await db.first_add_out(
+            category_name=category_name[2],
+            subcategory_name=subcategory_name[5],
+            user_id=user_id,
+            summary=summary
+        )
     # await db.first_add_out(
     #             category_name="Telefon",
     #             subcategory_name='O\'zim',

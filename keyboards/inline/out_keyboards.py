@@ -167,67 +167,8 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
     return markup
 
 
-def item_keyboard(category, subcategory, item_id):
-    CURRENT_LEVEL = 3
-
-    markup = InlineKeyboardMarkup(row_width=2)
-
-    markup.add(
-        InlineKeyboardButton(
-            text=f"➕ Add",
-            callback_data=f"additem_{item_id}"
-        )
-    )
-    markup.insert(
-        InlineKeyboardButton(
-            text='❌ Delete',
-            callback_data=f'deleteproduct_{item_id}'
-        )
-    )
-    markup.add(
-        InlineKeyboardButton(
-            text='📝 Edit product',
-            callback_data=f'editproduct_{item_id}'
-        )
-    )
-    markup.add(
-        InlineKeyboardButton(
-            text="⬅️ Ortga",
-            callback_data=make_callback_data(
-                level=CURRENT_LEVEL - 1, category=category, subcategory=subcategory
-            ),
-        )
-    )
-    return markup
-
-
 yes_no_buttons = InlineKeyboardMarkup(row_width=2)
 yes_no_buttons.add(InlineKeyboardButton(text="✅ Ha",
                                         callback_data="yes_button"))
 yes_no_buttons.insert(InlineKeyboardButton(text="♻️ Qayta kiritish",
                                            callback_data="again_button"))
-
-back_out = InlineKeyboardMarkup(row_width=1)
-back_out.row(InlineKeyboardButton(text="⬅️ Ortga", callback_data="back_out"))
-
-
-def buttons_generator(current_page: int = None, all_pages: int = None, next_page=False, prev_page=False):
-    key = InlineKeyboardMarkup(
-        row_width=3
-    )
-    if next_page:
-        key.add(InlineKeyboardButton(text="⬅️ Ortga",
-                                     callback_data="back_out"))
-    elif prev_page:
-        key.add(InlineKeyboardButton(text="⬅️ Ortga",
-                                     callback_data="prev_out"))
-    else:
-        key.add(InlineKeyboardButton(text="⬅️ Ortga",
-                                     callback_data="back_out"))
-
-        key.insert(InlineKeyboardButton(text=f"{current_page}/{all_pages}",
-                                        callback_data="pages"))
-
-        key.insert(InlineKeyboardButton(text="Oldinga ➡️",
-                                        callback_data="next"))
-    return key
