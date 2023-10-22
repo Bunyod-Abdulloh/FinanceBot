@@ -113,6 +113,7 @@ class Database:
         sql = "SELECT history FROM Outgoing WHERE user_id=$1 AND subcategory_name=$2"
         return await self.execute(sql, user_id, subcategory_name, fetchrow=True)
 
+    # ==================== SUMMARY ====================
     async def get_sum_all_out(self, user_id):
         sql = f"SELECT SUM(summary) FROM Outgoing WHERE user_id=$1"
         return await self.execute(sql, user_id, fetchval=True)

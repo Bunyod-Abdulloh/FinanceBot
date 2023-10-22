@@ -26,4 +26,5 @@ class MoneyOut(StatesGroup):
 
 
 class PayHistoryOut(StatesGroup):
-    add_money = State()
+    one = State()
+    two = State()

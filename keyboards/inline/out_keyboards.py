@@ -211,13 +211,16 @@ back_out = InlineKeyboardMarkup(row_width=1)
 back_out.row(InlineKeyboardButton(text="⬅️ Ortga", callback_data="back_out"))
 
 
-def buttons_generator(current_page: int = None, all_pages: int = None, next_page=False):
+def buttons_generator(current_page: int = None, all_pages: int = None, next_page=False, prev_page=False):
     key = InlineKeyboardMarkup(
         row_width=3
     )
     if next_page:
         key.add(InlineKeyboardButton(text="⬅️ Ortga",
                                      callback_data="back_out"))
+    elif prev_page:
+        key.add(InlineKeyboardButton(text="⬅️ Ortga",
+                                     callback_data="prev_out"))
     else:
         key.add(InlineKeyboardButton(text="⬅️ Ortga",
                                      callback_data="back_out"))
