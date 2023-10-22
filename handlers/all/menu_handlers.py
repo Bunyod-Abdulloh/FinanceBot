@@ -10,7 +10,7 @@ from keyboards.inline.out_keyboards import (
     categories_keyboard,
     subcategories_keyboard,
     items_keyboard,
-    item_keyboard, main_menu,
+    main_menu
 )
 from loader import dp, db
 
@@ -91,11 +91,11 @@ async def navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
 
     current_level = callback_data.get("level")
 
-    if current_level == "2":
-        for key, value in callback_data.items():
-            await state.update_data(
-                {key: value}
-            )
+    # if current_level == "2":
+    for key, value in callback_data.items():
+        await state.update_data(
+            {key: value}
+        )
 
     # Foydalanuvchi so'ragan Kategoriya
     category = callback_data.get("category")

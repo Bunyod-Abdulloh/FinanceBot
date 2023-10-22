@@ -127,7 +127,7 @@ class Database:
         return await self.execute(sql, user_id, subcategory_name, fetchval=True)
 
     async def update_productsum_out(self, summary, product_id, user_id):
-        sql = f"""UPDATE Outgoing SET summary ='{summary}' WHERE id='{product_id}' AND user_id='{user_id}'"""
+        sql = f"UPDATE Outgoing SET summary ='{summary}' WHERE id='{product_id}' AND user_id='{user_id}'"
         return await self.execute(sql, execute=True)
 
     async def update_categoryname_out(self, new_category, old_category, user_id):
@@ -160,6 +160,11 @@ class Database:
                f"user_id='{user_id}'")
         return await self.execute(sql, fetch=True)
 
+    async def get_subdistinct_(self, category_name, user_id):
+        sql = (f"SELECT DISTINCT ON (subcategory_name) subcategory_name, summary FROM Outgoing "
+               f"WHERE category_name='{category_name}' AND user_id='{user_id}'")
+        return await self.execute(sql, fetch=True)
+
     async def get_products_out(self, subcategory_name, user_id):
         sql = f"SELECT id FROM Outgoing WHERE subcategory_name='{subcategory_name}' AND user_id='{user_id}'"
         return await self.execute(sql, fetchrow=True)
@@ -168,9 +173,19 @@ class Database:
         sql = f"SELECT category_name, subcategory_name, summary FROM Outgoing WHERE id={product_id}"
         return await self.execute(sql, fetchrow=True)
 
+    # ================================SELECT DATE================================================================
     async def getdate_subcategory_out(self, user_id, subcategory_name):
         sql = f"SELECT date, summary FROM Outgoing WHERE user_id='{user_id}' AND subcategory_name='{subcategory_name}'"
         return await self.execute(sql, fetch=True)
+
+    async def getdate_category_out(self, user_id, category_name):
+        psql = (f"SELECT DISTINCT subcategory_name FROM Outgoing "
+                f"WHERE category_name='{category_name}' AND user_id='{user_id}'")
+        return await self.execute(psql, fetch=True)
+
+        # sql = (f"SELECT subcategory_name, date, summary FROM Outgoing WHERE user_id='{user_id}' "
+        #        f"AND category_name='{category_name}'")
+        # return await self.execute(sql, fetch=True)
 
     async def delete_product_out(self, product_id):
         await self.execute("DELETE FROM Outgoing WHERE id=$1", product_id, execute=True)

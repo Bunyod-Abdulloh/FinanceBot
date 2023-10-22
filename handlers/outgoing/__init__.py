@@ -7,3 +7,4 @@ from . import edit_subcategory_out
 from . import first_out
 from . import money_out
 from . import payhistory_out
+from . import subhistory_out

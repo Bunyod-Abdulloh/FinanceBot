@@ -1,31 +1,17 @@
-import logging
 
-from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 from loader import db
 
-# Turli tugmalar uchun CallbackData-obyektlarni yaratib olamiz
+
 menu_cd = CallbackData("show_menu", "level", "category", "subcategory")
 
 
-# buy_item = CallbackData("buy", )
-
-
-# Quyidagi funksiya yordamida menyudagi har bir element uchun calbback data yaratib olinadi
-# Agar mahsulot kategoriyasi, ost-kategoriyasi va id raqami berilmagan bo'lsa 0 ga teng bo'ladi
 def make_callback_data(level, category="0", subcategory="0"):
     return menu_cd.new(
         level=level, category=category, subcategory=subcategory
     )
-
-
-# Bizning menu 3 qavat (LEVEL) dan iborat
-# 0 - Kategoriyalar
-# 1 - Ost-kategoriyalar
-# 2 - Mahsulotlar
-# 3 - Yagona mahsulot
 
 
 async def main_menu():
@@ -115,10 +101,11 @@ async def subcategories_keyboard(category_name, user_id: int):
         )
     )
     markup.add(
-        InlineKeyboardButton(
-            text=f'📝 {category_name} o\'zgartirish',
-            callback_data=f'editcategory_{category_name}'
-        ))
+        InlineKeyboardButton(text=f'📝 {category_name} o\'zgartirish',
+                             callback_data=f'editcategory_{category_name}'))
+
+    markup.add(InlineKeyboardButton(text="📜 To'lovlar tarixi",
+                                    callback_data=f"historysub_{category_name}"))
     markup.add(
         InlineKeyboardButton(
             text="⬅️ Ortga",

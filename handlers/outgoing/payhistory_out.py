@@ -45,7 +45,7 @@ async def phout_main_menu(call: types.CallbackQuery, state: FSMContext):
             all_pages = len(get_data) // PAGE_COUNT
         else:
             all_pages = len(get_data) // PAGE_COUNT + 1
-        # 200 // 25
+
         key = buttons_generator(current_page=current_page, all_pages=all_pages,
                                 subcategory=subcategory_name)
         history = " "
