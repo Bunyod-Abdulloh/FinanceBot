@@ -1,9 +1,7 @@
-
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 from loader import db
-
 
 menu_cd = CallbackData("show_menu", "level", "category", "subcategory")
 
@@ -52,24 +50,44 @@ async def categories_keyboard(user_id: int):
                 level=CURRENT_LEVEL + 1, category=f"{category[0]}"
             )
             markup.add(
-                InlineKeyboardButton(text=f"{category[0]} | {summary} so'm",
-                                     callback_data=callback_data)
+                InlineKeyboardButton(
+                    text=f"{category[0]} | {summary} so'm",
+                    callback_data=callback_data
+                )
             )
         markup.add(
-            InlineKeyboardButton(text='➕ Qo\'shish',
-                                 callback_data='add_category')
+            InlineKeyboardButton(
+                text="ℹ️ Excel(xls) shaklda yuklab olish",
+                callback_data="downloadall"
+            )
+        )
+        markup.add(
+            InlineKeyboardButton(
+                text="📜 To'lovlar tarixi",
+                callback_data=f"historycategory"
+            )
+        )
+        markup.row(
+            InlineKeyboardButton(
+                text='⬅️ Ortga',
+                callback_data='back_main_menu'
+            ),
+            InlineKeyboardButton(
+                text='➕ Qo\'shish',
+                callback_data='add_category'
+            )
         )
     else:
-        markup.add(
-            InlineKeyboardButton(text='➕ Qo\'shish',
-                                 callback_data='add_category')
+        markup.row(
+            InlineKeyboardButton(
+                text='⬅️ Ortga',
+                callback_data='back_main_menu'
+            ),
+            InlineKeyboardButton(
+                text='➕ Qo\'shish',
+                callback_data='add_category'
+            )
         )
-    markup.add(
-        InlineKeyboardButton(
-            text='⬅️ Ortga',
-            callback_data='back_main_menu'
-        )
-    )
     return markup
 
 
@@ -90,28 +108,39 @@ async def subcategories_keyboard(category_name, user_id: int):
             subcategory=subcategory[0],
         )
         markup.add(
-            InlineKeyboardButton(text=button_text,
-                                 callback_data=callback_data)
+            InlineKeyboardButton(
+                text=button_text,
+                callback_data=callback_data
+            )
         )
-
     markup.add(
         InlineKeyboardButton(
-            text='➕ Qo\'shish',
-            callback_data=f'addsubcategory_{category_name}'
+            text=f'📝 {category_name} o\'zgartirish',
+            callback_data=f'editcategory_{category_name}'
         )
     )
     markup.add(
-        InlineKeyboardButton(text=f'📝 {category_name} o\'zgartirish',
-                             callback_data=f'editcategory_{category_name}'))
-
-    markup.add(InlineKeyboardButton(text="📜 To'lovlar tarixi",
-                                    callback_data=f"historysub_{category_name}"))
+        InlineKeyboardButton(
+            text="📜 To'lovlar tarixi",
+            callback_data=f"historysub_{category_name}"
+        )
+    )
     markup.add(
+        InlineKeyboardButton(
+            text="ℹ️ Excel(xls) shaklda yuklab olish",
+            callback_data=f"downloadcategory_{category_name}"
+        )
+    )
+    markup.row(
         InlineKeyboardButton(
             text="⬅️ Ortga",
             callback_data=make_callback_data(
                 level=CURRENT_LEVEL - 1
             )
+        ),
+        InlineKeyboardButton(
+            text='➕ Qo\'shish',
+            callback_data=f'addsubcategory_{category_name}'
         )
     )
     return markup
@@ -126,12 +155,12 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
 
     markup.row(
         InlineKeyboardButton(
-            text="➖ Summa ayirish",
-            callback_data=f"reduceamount_{subcategory[0]}"
-        ),
-        InlineKeyboardButton(
             text="➕ Summa qo'shish",
             callback_data=f"addmoney_{subcategory[0]}"
+        ),
+        InlineKeyboardButton(
+            text="📜 To'lovlar tarixi",
+            callback_data=f"historyproduct_{subcategory_name}"
         )
     )
     markup.add(
@@ -140,8 +169,18 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
             callback_data=f'editsubcategory_{subcategory_name}'
         )
     )
-    markup.add(InlineKeyboardButton(text="📜 To'lovlar tarixi",
-                                    callback_data=f"historyproduct_{subcategory_name}"))
+    markup.add(
+        InlineKeyboardButton(
+            text=f'❌ {subcategory_name} o\'chirish',
+            callback_data=f'deletesubcategory_{subcategory_name}'
+        )
+    )
+    markup.add(
+        InlineKeyboardButton(
+            text="ℹ️ Excel(xls) shaklda yuklab olish",
+            callback_data=f"downloadsub_{category_name}"
+        )
+    )
     markup.add(
         InlineKeyboardButton(
             text="⬅️ Ortga",

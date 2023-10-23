@@ -28,4 +28,4 @@ class MoneyOut(StatesGroup):
 class PayHistoryOut(StatesGroup):
     one = State()
     subcategory = State()
-
+    category = State()

@@ -1,6 +1,7 @@
 import logging
 
 from aiogram import Dispatcher
+from aiogram.dispatcher import FSMContext
 
 from data.config import ADMINS
 

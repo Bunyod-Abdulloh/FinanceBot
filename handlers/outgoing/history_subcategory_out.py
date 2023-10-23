@@ -40,7 +40,8 @@ async def historysub_out(call: types.CallbackQuery, state: FSMContext):
                 summary = await db.get_sum_subcategory(user_id=user_id, subcategory_name=data[0])
                 history += f"{data[0]} | {summary} so'm\n"
 
-            await call.message.answer(text=f"{history}\nJami: {category_summary} so'm",
+            await call.message.answer(text=f"<b>📤 Chiqim > {category} > 📜 To'lovlar tarixi</b>"
+                                           f"\n\n{history}\nJami: {category_summary} so'm",
                                       reply_markup=key)
             await state.update_data(
                 current_page=current_page, all_pages=all_pages
@@ -74,8 +75,6 @@ async def sh_message_handler(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
     subcategory = await db.getdate_category_out(category_name=category, user_id=user_id)
     category_summary = await db.get_sum_category(user_id=user_id, category_name=category)
-    # get_data = await db.getdate_category_out(user_id=user_id,
-    #                                          category_name=category)
 
     all_messages = subcategory[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
 
@@ -87,7 +86,8 @@ async def sh_message_handler(call: types.CallbackQuery, state: FSMContext):
         summary = await db.get_sum_subcategory(user_id=user_id, subcategory_name=data[0])
         history += f"{data[0]} | {summary} so'm\n"
 
-    await call.message.answer(text=f"{history}\nJami: {category_summary} so'm",
+    await call.message.answer(text=f"<b>📤 Chiqim > {category} > 📜 To'lovlar tarixi</b>"
+                                   f"\n\n{history}\nJami: {category_summary} so'm",
                               reply_markup=key)
     history = " "
     await state.update_data(

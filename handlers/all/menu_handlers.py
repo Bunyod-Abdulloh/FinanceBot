@@ -91,7 +91,6 @@ async def navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
 
     current_level = callback_data.get("level")
 
-    # if current_level == "2":
     for key, value in callback_data.items():
         await state.update_data(
             {key: value}
