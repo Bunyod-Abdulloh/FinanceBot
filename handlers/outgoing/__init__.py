@@ -9,3 +9,6 @@ from . import money_out
 from . import history_category_out
 from . import history_subcategory_out
 from . import history_product_out
+from . import download_category_out
+from . import download_subcategory_out
+from . import download_product_out

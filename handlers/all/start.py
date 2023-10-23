@@ -17,6 +17,7 @@ subcategory_name = ["Issiq suv", "Sovuq suv", "Elektr energiya", "Gaz", "Uy", "M
 
 @dp.message_handler(CommandStart(), state='*')
 async def bot_start(message: types.Message, state: FSMContext):
+    print(message.from_user.full_name)
 
     await message.answer(
         text="FinanceBotga xush kelibsiz!",
