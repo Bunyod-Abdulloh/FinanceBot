@@ -12,29 +12,6 @@ def make_callback_data(level, category="0", subcategory="0"):
     )
 
 
-async def main_menu():
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(
-        InlineKeyboardButton(
-            text='📥 Kirim',
-            callback_data='incoming'
-        )
-    )
-    markup.add(
-        InlineKeyboardButton(
-            text='📤 Chiqim',
-            callback_data='outgoing'
-        )
-    )
-    markup.add(
-        InlineKeyboardButton(
-            text='📔 Yon daftar',
-            callback_data='notebook'
-        )
-    )
-    return markup
-
-
 # Kategoriyalar uchun keyboard yasab olamiz
 async def categories_keyboard(user_id: int):
     CURRENT_LEVEL = 0

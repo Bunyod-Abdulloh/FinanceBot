@@ -86,6 +86,35 @@ class Database:
     async def drop_users(self):
         await self.execute("DROP TABLE Users", execute=True)
 
+    # ============================ INCOMING TABLE ============================
+    async def create_table_incoming(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS Incoming (
+        id SERIAL,
+        user_id BIGINT NOT NULL,
+        incoming_name VARCHAR(100) NOT NULL,
+        summary INT NULL,
+        date TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+        """
+        await self.execute(sql, execute=True)
+
+    async def add_incoming(self, user_id, incoming_name, summary):
+        sql = """INSERT INTO Incoming (user_id, incoming_name, summary) VALUES($1, $2, $3) returning*"""
+        return await self.execute(sql, user_id, incoming_name, summary, fetchrow=True)
+
+    async def get_user_incoming(self, user_id):
+        sql = """SELECT * FROM Incoming WHERE user_id=$1"""
+        return await self.execute(sql, fetch=True)
+
+    async def update_incoming_name(self, incoming_name, user_id):
+        sql = f"UPDATE Incoming SET incoming_name='{incoming_name}' WHERE user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
+
+    async def update_incoming_summary(self, summary, user_id):
+        sql = f"UPDATE Incoming SET summary='{summary}' WHERE user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
+
     # ============================ OUTGOING TABLE ============================
     async def create_table_outgoing(self):
         sql = """
@@ -104,14 +133,6 @@ class Database:
         sql = ("INSERT INTO Outgoing (category_name, subcategory_name, user_id, summary) "
                "VALUES ($1, $2, $3, $4) returning *")
         return await self.execute(sql, category_name, subcategory_name, user_id, summary,  fetchrow=True)
-
-    async def add_history(self, user_id, history, subcategory_name):
-        sql = """INSERT INTO Outgoing (user_id, history, subcategory_name) VALUES ($1, $2, $3) returning *"""
-        return await self.execute(sql, user_id, history, subcategory_name, fetchrow=True)
-
-    async def get_history(self, user_id, subcategory_name):
-        sql = "SELECT history FROM Outgoing WHERE user_id=$1 AND subcategory_name=$2"
-        return await self.execute(sql, user_id, subcategory_name, fetchrow=True)
 
     # ==================== SUMMARY ====================
     async def get_sum_all_out(self, user_id):
@@ -136,16 +157,12 @@ class Database:
         return await self.execute(sql, execute=True)
 
     async def update_subcategoryname_out(self, new_subcategory, old_subcategory, user_id):
-            sql = f"UPDATE Outgoing SET date='{new_subcategory}' WHERE date='{old_subcategory}' AND user_id='{user_id}'"
-            return await self.execute(sql, execute=True)
+        sql = f"UPDATE Outgoing SET date='{new_subcategory}' WHERE date='{old_subcategory}' AND user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
 
     async def update_productname_out(self, new_product, old_product_id, user_id):
         sql = f"UPDATE Outgoing SET productname='{new_product}' WHERE id='{old_product_id}' AND user_id='{user_id}'"
         return await self.execute(sql, execute=True)
-
-    async def update_user_id(self, product_id, user_id):
-            sql = f"UPDATE Outgoing SET user_id='{user_id}' WHERE id='{product_id}'"
-            return await self.execute(sql, execute=True)
 
     async def get_categories_out(self, user_id, all_data=False):
         if all_data:
