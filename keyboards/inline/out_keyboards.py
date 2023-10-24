@@ -55,13 +55,11 @@ async def categories_keyboard(user_id: int):
                     callback_data=callback_data
                 )
             )
-        markup.add(
+        markup.row(
             InlineKeyboardButton(
-                text="ℹ️ Excel(xls) shaklda yuklab olish",
+                text="ℹ️ Excel yuklab olish",
                 callback_data="downloadall"
-            )
-        )
-        markup.add(
+            ),
             InlineKeyboardButton(
                 text="📜 To'lovlar tarixi",
                 callback_data=f"historycategory"
@@ -91,7 +89,6 @@ async def categories_keyboard(user_id: int):
     return markup
 
 
-# Berilgan kategoriya ostidagi kategoriyalarni qaytaruvchi keyboard
 async def subcategories_keyboard(category_name, user_id: int):
     CURRENT_LEVEL = 1
     markup = InlineKeyboardMarkup(row_width=3)
@@ -127,7 +124,7 @@ async def subcategories_keyboard(category_name, user_id: int):
     )
     markup.add(
         InlineKeyboardButton(
-            text="ℹ️ Excel(xls) shaklda yuklab olish",
+            text="ℹ️ Excel yuklab olish",
             callback_data=f"downloadcategory_{category_name}"
         )
     )
@@ -177,7 +174,7 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
     )
     markup.add(
         InlineKeyboardButton(
-            text="ℹ️ Excel(xls) shaklda yuklab olish",
+            text="ℹ️ Excel yuklab olish",
             callback_data=f"downloadsub_{category_name}"
         )
     )

@@ -29,3 +29,9 @@ class PayHistoryOut(StatesGroup):
     one = State()
     subcategory = State()
     category = State()
+
+
+class DownloadHistoryOut(StatesGroup):
+    category = State()
+    subcategory = State()
+    product = State()

@@ -51,10 +51,10 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
                                      reply_markup=markup)
 
 
-async def list_subcategories(callback: CallbackQuery, category, **kwargs):
-    markup = await subcategories_keyboard(category_name=category, user_id=int(callback.from_user.id))
+async def list_subcategories(callback: CallbackQuery, category):
+    markup = await subcategories_keyboard(category_name=category, user_id=callback.from_user.id)
 
-    summa = await db.get_sum_category(user_id=int(callback.from_user.id),
+    summa = await db.get_sum_category(user_id=callback.from_user.id,
                                       category_name=category)
 
     await callback.message.edit_text(text=f"<b>📤 Chiqim > "
@@ -102,7 +102,7 @@ async def navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
     # Ost-kategoriya (har doim ham bo'lavermaydi)
     subcategory = callback_data.get("subcategory")
 
-    # Mahsulot ID raqami (har doim ham bo'lavermaydi)
+    # # Mahsulot ID raqami (har doim ham bo'lavermaydi)
     item_id = callback_data.get("item_id")
 
     # Har bir Level (qavatga) mos funksiyalarni yozib chiqamiz
@@ -117,7 +117,5 @@ async def navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
 
     # Tanlangan funksiyani chaqiramiz va kerakli parametrlarni uzatamiz
     await current_level_function(
-        call, category=category, subcategory=subcategory, item_id=item_id
+        call, category=category, subcategory=subcategory
     )
-
-# "3": show_item,  # Mahsulotni ko'rsatamiz
