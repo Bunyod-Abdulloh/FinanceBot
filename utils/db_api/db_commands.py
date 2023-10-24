@@ -147,8 +147,11 @@ class Database:
             sql = f"UPDATE Outgoing SET user_id='{user_id}' WHERE id='{product_id}'"
             return await self.execute(sql, execute=True)
 
-    async def get_categories_out(self, user_id):
-        sql = f"SELECT DISTINCT category_name FROM Outgoing WHERE user_id='{user_id}'"
+    async def get_categories_out(self, user_id, all_data=False):
+        if all_data:
+            sql = f"SELECT * FROM Outgoing WHERE user_id='{user_id}'"
+        else:
+            sql = f"SELECT DISTINCT category_name FROM Outgoing WHERE user_id='{user_id}'"
         return await self.execute(sql, fetch=True)
 
     async def get_subsummary_out(self, category_name, user_id):

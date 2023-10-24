@@ -7,7 +7,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from states.user_states import DownloadHistoryOut
 
-from keyboards.inline.out_keyboards import back_download, main_menu
+from keyboards.inline.out_keyboards import back_download, main_menu, categories_keyboard
 from loader import bot, db, dp
 
 
@@ -17,7 +17,7 @@ async def dco_category_one(call: types.CallbackQuery, state: FSMContext):
         await call.message.delete()
 
         user_id = call.from_user.id
-        category = await db.get_categories_out(user_id=user_id)
+        category = await db.get_categories_out(user_id=user_id, all_data=True)
         all_summary = await db.get_sum_all_out(user_id=user_id)
 
         if all_summary == 0:
@@ -30,14 +30,16 @@ async def dco_category_one(call: types.CallbackQuery, state: FSMContext):
 
             ws = wb.active
 
-            ws.append(["Bo'lim nomi", "Summa (so'm)"])
+            ws.append(["Chiqim", "Kategoriya", "Subkategoriya", "Summa (so'm)", "Sana"])
 
             for data in category:
-                summary = await db.get_sum_category(user_id=user_id, category_name=data[0])
+                # summary = await db.get_sum_category(user_id=user_id, category_name=data[0])
 
-                ws.append([data[0], summary])
+                ws.append(["Chiqim", data[2], data[3], data[5], data[6]])
 
-            ws.append(["Jami:", f"{all_summary}"])
+            ws.append(["Jami:", " ", " ", " ", f"{all_summary}"])
+            last_row = ws.max_row
+            ws.merge_cells(f"A{last_row}:D{last_row}")
 
             wb.save("Chiqim_IqtisodchiRobot.xlsx")
 
@@ -58,6 +60,6 @@ async def dco_back_menu(call: types.CallbackQuery, state: FSMContext):
     await call.message.delete()
     await call.message.answer(
         text="<b>📤 Chiqim</b>",
-        reply_markup=await main_menu()
+        reply_markup=await categories_keyboard(user_id=call.from_user.id)
     )
     await state.finish()
