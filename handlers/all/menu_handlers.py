@@ -86,36 +86,30 @@ async def navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
     :param callback_data: Tugma bosilganda kelgan ma'lumotlar
     :param state: Levelni stateda saqlash
     """
-
     await state.finish()
 
     current_level = callback_data.get("level")
+    category = callback_data.get("category")
+    subcategory = callback_data.get("subcategory")
 
     for key, value in callback_data.items():
         await state.update_data(
             {key: value}
         )
 
-    # Foydalanuvchi so'ragan Kategoriya
-    category = callback_data.get("category")
-
-    # Ost-kategoriya (har doim ham bo'lavermaydi)
-    subcategory = callback_data.get("subcategory")
-
-    # # Mahsulot ID raqami (har doim ham bo'lavermaydi)
-    item_id = callback_data.get("item_id")
-
-    # Har bir Level (qavatga) mos funksiyalarni yozib chiqamiz
     levels = {
-        "0": list_categories,  # Kategoriyalarni qaytaramiz
-        "1": list_subcategories,  # Ost-kategoriyalarni qaytaramiz
-        "2": list_items,  # Mahsulotlarni qaytaramiz
+        "0": list_categories,
+        "1": list_subcategories,
+        "2": list_items
     }
 
-    # Foydalanuvchidan kelgan Level qiymatiga mos funksiyani chaqiramiz
     current_level_function = levels[current_level]
 
-    # Tanlangan funksiyani chaqiramiz va kerakli parametrlarni uzatamiz
-    await current_level_function(
-        call, category=category, subcategory=subcategory
-    )
+    if subcategory == "0":
+        await current_level_function(
+            call, category=category
+        )
+    else:
+        await current_level_function(
+            call, category=category, subcategory=subcategory
+        )

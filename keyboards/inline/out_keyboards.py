@@ -122,12 +122,6 @@ async def subcategories_keyboard(category_name, user_id: int):
             callback_data=f"historysub_{category_name}"
         )
     )
-    markup.add(
-        InlineKeyboardButton(
-            text="ℹ️ Excel yuklab olish",
-            callback_data=f"downloadcategory_{category_name}"
-        )
-    )
     markup.row(
         InlineKeyboardButton(
             text="⬅️ Ortga",
@@ -170,12 +164,6 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
         InlineKeyboardButton(
             text=f'❌ {subcategory_name} o\'chirish',
             callback_data=f'deletesubcategory_{subcategory_name}'
-        )
-    )
-    markup.add(
-        InlineKeyboardButton(
-            text="ℹ️ Excel yuklab olish",
-            callback_data=f"downloadsub_{category_name}"
         )
     )
     markup.add(

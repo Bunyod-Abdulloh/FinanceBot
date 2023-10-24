@@ -7,7 +7,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from states.user_states import DownloadHistoryOut
 
-from keyboards.inline.out_keyboards import back_download, main_menu, categories_keyboard
+from keyboards.inline.out_keyboards import back_download, categories_keyboard
 from loader import bot, db, dp
 
 
@@ -33,9 +33,8 @@ async def dco_category_one(call: types.CallbackQuery, state: FSMContext):
             ws.append(["Chiqim", "Kategoriya", "Subkategoriya", "Summa (so'm)", "Sana"])
 
             for data in category:
-                # summary = await db.get_sum_category(user_id=user_id, category_name=data[0])
 
-                ws.append(["Chiqim", data[2], data[3], data[5], data[6]])
+                ws.append(["Chiqim", data[2], data[3], data[4], data[5]])
 
             ws.append(["Jami:", " ", " ", " ", f"{all_summary}"])
             last_row = ws.max_row

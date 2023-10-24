@@ -86,14 +86,14 @@ class Database:
     async def drop_users(self):
         await self.execute("DROP TABLE Users", execute=True)
 
+    # ============================ OUTGOING TABLE ============================
     async def create_table_outgoing(self):
         sql = """
         CREATE TABLE IF NOT EXISTS Outgoing (
         id SERIAL,
         user_id BIGINT NULL,        
         category_name VARCHAR(50) NULL,
-        subcategory_name VARCHAR(50) NULL,              
-        history VARCHAR(5000) NULL,        
+        subcategory_name VARCHAR(50) NULL,             
         summary INT NULL,
         date TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
@@ -185,10 +185,6 @@ class Database:
         psql = (f"SELECT DISTINCT subcategory_name FROM Outgoing "
                 f"WHERE category_name='{category_name}' AND user_id='{user_id}'")
         return await self.execute(psql, fetch=True)
-
-        # sql = (f"SELECT subcategory_name, date, summary FROM Outgoing WHERE user_id='{user_id}' "
-        #        f"AND category_name='{category_name}'")
-        # return await self.execute(sql, fetch=True)
 
     async def delete_product_out(self, product_id):
         await self.execute("DELETE FROM Outgoing WHERE id=$1", product_id, execute=True)
