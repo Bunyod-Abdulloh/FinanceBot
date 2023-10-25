@@ -5,12 +5,12 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from data.config import ADMINS
+from keyboards.inline.main_menu_keyboard import main_menu
 from keyboards.inline.out_keyboards import (
     menu_cd,
     categories_keyboard,
     subcategories_keyboard,
-    items_keyboard,
-    main_menu
+    items_keyboard
 )
 from loader import dp, db
 

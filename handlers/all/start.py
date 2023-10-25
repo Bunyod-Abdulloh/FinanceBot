@@ -3,8 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from aiogram.dispatcher.filters.builtin import CommandStart
 
-from keyboards.inline.out_keyboards import main_menu
-from handlers.all.all_functions import openpyxl_downloader
+from keyboards.inline.main_menu_keyboard import main_menu
 from loader import dp, db
 
 category_name = ["Kommunal to`lovlar", "Internet", "Telefon"]
@@ -20,7 +19,7 @@ async def bot_start(message: types.Message, state: FSMContext):
     print(message.from_user.full_name)
 
     await message.answer(
-        text="FinanceBotga xush kelibsiz!",
+        text="IqtisodchiRobotga xush kelibsiz!",
         reply_markup=await main_menu()
     )
     await state.finish()
@@ -80,13 +79,3 @@ async def back_main_menu(call: types.CallbackQuery, state: FSMContext):
         reply_markup=await main_menu()
     )
     await state.finish()
-
-
-@dp.message_handler(text='salom', state='*')
-async def salom_sample(message: types.Message):
-
-    await openpyxl_downloader(filename="salom",
-                              a="Category",
-                              b="Subcategory"
-                              )
-    await message.answer('Ishladi')

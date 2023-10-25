@@ -13,6 +13,7 @@ async def on_startup(dispatcher):
     await db.drop_table_out()
     # await db.create_table_users()
     await db.create_table_outgoing()
+    await db.create_table_incoming()
 
     await set_default_commands(dispatcher)
 

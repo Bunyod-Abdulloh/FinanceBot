@@ -35,3 +35,7 @@ class DownloadHistoryOut(StatesGroup):
     category = State()
     subcategory = State()
     product = State()
+
+
+class IncomingStates(StatesGroup):
+    add = State()

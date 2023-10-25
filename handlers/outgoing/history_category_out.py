@@ -5,7 +5,8 @@ from aiogram.dispatcher import FSMContext
 
 from handlers.all.menu_handlers import navigate
 from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
-from keyboards.inline.out_keyboards import main_menu
+from keyboards.inline.main_menu_keyboard import main_menu
+
 from loader import dp, db
 from states.user_states import PayHistoryOut
 
