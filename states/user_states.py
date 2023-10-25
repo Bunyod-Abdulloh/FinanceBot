@@ -38,4 +38,5 @@ class DownloadHistoryOut(StatesGroup):
 
 
 class IncomingStates(StatesGroup):
-    add = State()
+    add_name = State()
+    add_summary = State()

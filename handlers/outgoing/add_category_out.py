@@ -8,9 +8,6 @@ from loader import dp, db
 from states.user_states import FinanceCategory
 
 
-digits = "\n(faqat raqam kiritilishi lozim!):"
-
-
 @dp.callback_query_handler(text='add_category', state='*')
 async def add_category_call(call: types.CallbackQuery):
     await call.message.delete()
@@ -58,7 +55,7 @@ async def add_subcategory_out(message: types.Message, state: FSMContext):
              f"\nKategoriya: <b>{data['category_name']}</b>"
              f"\nSubkategoriya: <b>{message.text}</b>"
              f"\n\nHarajat summasini kiriting"
-             f"{digits}"
+             f"{raqam}"
     )
     await FinanceCategory.summary.set()
 

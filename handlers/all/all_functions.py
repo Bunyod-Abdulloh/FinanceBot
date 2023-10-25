@@ -31,3 +31,5 @@ async def replace_float(message):
 
 warning_text = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "
                 "foydalanmasligingizni iltimos qilamiz!")
+
+raqam = "\n(faqat raqam kiritilishi lozim!):"
