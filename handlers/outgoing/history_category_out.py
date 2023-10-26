@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 
 from handlers.all.menu_handlers import navigate
 from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
-from keyboards.inline.main_menu_keyboard import main_menu
+from keyboards.inline.out_in_keys import main_menu
 
 from loader import dp, db
 from states.user_states import PayHistoryOut
@@ -22,12 +22,15 @@ async def get_user_details(call: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(text="back_category", state="*")
 async def hc_back_category(call: types.CallbackQuery, state: FSMContext):
-    await call.message.edit_text(text="Bosh menyu", reply_markup=await main_menu())
+    await call.message.edit_text(
+        text="Bosh menyu",
+        reply_markup=await main_menu()
+    )
     await state.finish()
 
 
 @dp.callback_query_handler(text_contains="pages", state="*")
-async def display_page(call: types.CallbackQuery):
+async def hc_display_page(call: types.CallbackQuery):
     current_page = call.data.split("_")[1]
     await call.answer(text=f"Siz {current_page} - sahifadasiz!", show_alert=True)
 

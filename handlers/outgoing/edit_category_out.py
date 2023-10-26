@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from handlers.all.all_functions import replace_point_bottom_line, warning_text
-from keyboards.inline.out_keyboards import categories_keyboard
+from keyboards.inline.outgoing_keyboards import categories_keyboard
 from loader import dp, db
 from states.user_states import FinanceEdit
 

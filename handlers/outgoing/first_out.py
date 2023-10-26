@@ -1,7 +1,7 @@
 from aiogram import types
 
 from data.config import ADMINS
-from keyboards.inline.out_keyboards import categories_keyboard
+from keyboards.inline.outgoing_keyboards import categories_keyboard
 from loader import dp, db
 
 

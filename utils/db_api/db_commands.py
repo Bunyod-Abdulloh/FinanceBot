@@ -167,7 +167,8 @@ class Database:
         return await self.execute(sql, execute=True)
 
     async def update_subcategoryname_out(self, new_subcategory, old_subcategory, user_id):
-        sql = f"UPDATE Outgoing SET date='{new_subcategory}' WHERE date='{old_subcategory}' AND user_id='{user_id}'"
+        sql = f"""UPDATE Outgoing SET subcategory_name='{new_subcategory}' WHERE subcategory_name='{old_subcategory}' 
+        AND user_id='{user_id}'"""
         return await self.execute(sql, execute=True)
 
     async def update_productname_out(self, new_product, old_product_id, user_id):

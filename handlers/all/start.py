@@ -3,20 +3,15 @@ from aiogram.dispatcher import FSMContext
 
 from aiogram.dispatcher.filters.builtin import CommandStart
 
-from keyboards.inline.main_menu_keyboard import main_menu
+from keyboards.inline.out_in_keys import main_menu
 from loader import dp, db
 
 category_name = ["Kommunal to`lovlar", "Internet", "Telefon"]
 subcategory_name = ["Issiq suv", "Sovuq suv", "Elektr energiya", "Gaz", "Uy", "Mening raqamim"]
 
-# for n in category_name:
-#     if "'" in category_name:
-#     category_name = category_name.replace("'", "`")
-
 
 @dp.message_handler(CommandStart(), state='*')
 async def bot_start(message: types.Message, state: FSMContext):
-    print(message.from_user.full_name)
 
     await message.answer(
         text="IqtisodchiRobotga xush kelibsiz!",

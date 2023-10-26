@@ -5,7 +5,8 @@ from aiogram.dispatcher import FSMContext
 
 from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text
 from keyboards.default.start_keyboard import menu
-from keyboards.inline.out_keyboards import categories_keyboard, yes_no_buttons
+from keyboards.inline.out_in_keys import yes_no_buttons
+from keyboards.inline.outgoing_keyboards import categories_keyboard
 from loader import dp, db
 from states.user_states import FinanceSubcategory
 

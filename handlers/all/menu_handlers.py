@@ -5,8 +5,9 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from data.config import ADMINS
-from keyboards.inline.main_menu_keyboard import main_menu
-from keyboards.inline.out_keyboards import (
+from keyboards.inline.out_in_keys import main_menu
+
+from keyboards.inline.outgoing_keyboards import (
     menu_cd,
     categories_keyboard,
     subcategories_keyboard,

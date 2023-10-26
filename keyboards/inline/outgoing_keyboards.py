@@ -153,18 +153,3 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
         )
     )
     return markup
-
-
-yes_no_buttons = InlineKeyboardMarkup(row_width=2)
-yes_no_buttons.add(InlineKeyboardButton(text="✅ Ha",
-                                        callback_data="yes_button"))
-yes_no_buttons.insert(InlineKeyboardButton(text="♻️ Qayta kiritish",
-                                           callback_data="again_button"))
-
-back_download = InlineKeyboardMarkup(row_width=1)
-back_download.add(
-    InlineKeyboardButton(
-        text="⬅️ Ortga",
-        callback_data="back_download"
-    )
-)
