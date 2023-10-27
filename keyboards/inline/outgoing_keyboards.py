@@ -140,7 +140,7 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
     markup.add(
         InlineKeyboardButton(
             text=f'❌ {subcategory_name} o\'chirish',
-            callback_data=f'deletesubcategory_{subcategory_name}'
+            callback_data=f'deletesub'
         )
     )
     markup.add(

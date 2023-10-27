@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from handlers.all.all_functions import replace_float
-from keyboards.inline.outgoing_keyboards import items_keyboard
+from keyboards.inline.outgoing_keyboards import items_keyboard, subcategories_keyboard
 from loader import dp, db
 from states.user_states import MoneyOut
 
@@ -53,10 +53,9 @@ async def add_money_out(message: types.Message, state: FSMContext):
             text=f"Bo'lim: <b>Chiqim</b>"
                  f"\nKategoriya: <b>{category}</b>"
                  f"\nSubkategoriya: <b>{subcategory}</b>",
-            reply_markup=await items_keyboard(
+            reply_markup=await subcategories_keyboard(
                 user_id=user_id,
-                category_name=category,
-                subcategory_name=subcategory
+                category_name=category
             )
         )
 
