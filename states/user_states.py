@@ -12,6 +12,7 @@ class FinanceSubcategory(StatesGroup):
     aso_subcategory = State()
     aso_summary = State()
     aso_summary_check = State()
+    delete_subcategory = State()
 
 
 class FinanceEdit(StatesGroup):

@@ -214,8 +214,9 @@ class Database:
                 f"WHERE category_name='{category_name}' AND user_id='{user_id}'")
         return await self.execute(psql, fetch=True)
 
-    async def delete_subcategory_out(self, subcategory):
-        await self.execute("DELETE FROM Outgoing WHERE subcategory_name=$1", subcategory, execute=True)
+    async def delete_subcategory_out(self, subcategory, user_id):
+        await self.execute("DELETE FROM Outgoing WHERE subcategory_name=$1 AND user_id=$2",
+                           subcategory, user_id, execute=True)
 
     async def delete_product_out(self, product_id):
         await self.execute("DELETE FROM Outgoing WHERE id=$1", product_id, execute=True)
