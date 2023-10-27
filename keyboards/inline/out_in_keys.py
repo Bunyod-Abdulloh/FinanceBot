@@ -37,3 +37,15 @@ back_download.add(
         callback_data="back_download"
     )
 )
+
+check_no_button = InlineKeyboardMarkup(row_width=2)
+check_no_button.row(
+    InlineKeyboardButton(
+        text="✅ Ha",
+        callback_data="yes_delete"
+    ),
+    InlineKeyboardButton(
+        text="🛑 Yo'q",
+        callback_data="no_delete"
+    )
+)

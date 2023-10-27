@@ -90,7 +90,7 @@ async def subcategories_keyboard(category_name, user_id: int):
     markup.add(
         InlineKeyboardButton(
             text=f'📝 {category_name} o\'zgartirish',
-            callback_data=f'editcategory_{category_name}'
+            callback_data=f'editcategory'
         )
     )
     markup.add(
@@ -134,7 +134,7 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
     markup.add(
         InlineKeyboardButton(
             text=f'📝 {subcategory_name} o\'zgartirish',
-            callback_data=f'editsubcategory_{subcategory_name}'
+            callback_data=f'editsubcategory'
         )
     )
     markup.add(

@@ -4,20 +4,17 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from handlers.all.all_functions import replace_point_bottom_line, warning_text
-from keyboards.inline.outgoing_keyboards import categories_keyboard, items_keyboard
+from keyboards.inline.outgoing_keyboards import items_keyboard, subcategories_keyboard
 from loader import dp, db
 from states.user_states import FinanceEdit
 
 
-@dp.callback_query_handler(text_contains='editsubcategory', state='*')
+@dp.callback_query_handler(text='editsubcategory', state='*')
 async def state_edit_subcategory(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
 
-    await call.message.delete()
-
-    old_subcategory = call.data.split('_')[1]
-
-    await call.message.answer(
-        text=f'Subkategoriya: {old_subcategory}'
+    await call.message.edit_text(
+        text=f'Subkategoriya: {data["subcategory"]}'
              f'\n\n{warning_text}'
              f'\n\nSubkategoriya uchun yangi nom kiriting:'
     )
@@ -30,9 +27,9 @@ async def state_edit_subcategory_(message: types.Message, state: FSMContext):
         new_subcategory = await replace_point_bottom_line(message=message.text)
 
         data = await state.get_data()
+        user_id = message.from_user.id
         category = data['category']
         subcategory = data['subcategory']
-        user_id = message.from_user.id
 
         await db.update_subcategoryname_out(
             user_id=user_id,
@@ -45,14 +42,12 @@ async def state_edit_subcategory_(message: types.Message, state: FSMContext):
         )
 
         await message.answer(
-            text=f"<b>📤 Chiqim > {category} > {subcategory}</b>",
-            reply_markup=await items_keyboard(
-                user_id=user_id,
+            text=f"<b>📤 Chiqim > {category}</b>",
+            reply_markup=await subcategories_keyboard(
                 category_name=category,
-                subcategory_name=subcategory
+                user_id=user_id
             )
         )
-        print(data)
         await state.finish()
     except Exception as err:
         logging.error(err)

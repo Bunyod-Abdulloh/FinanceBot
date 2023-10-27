@@ -142,7 +142,7 @@ class Database:
     async def first_add_out(self, category_name, subcategory_name, user_id, summary):
         sql = ("INSERT INTO Outgoing (category_name, subcategory_name, user_id, summary) "
                "VALUES ($1, $2, $3, $4) returning *")
-        return await self.execute(sql, category_name, subcategory_name, user_id, summary,  fetchrow=True)
+        return await self.execute(sql, category_name, subcategory_name, user_id, summary, fetchrow=True)
 
     # ==================== SUMMARY ====================
     async def get_sum_all_out(self, user_id):
@@ -166,7 +166,7 @@ class Database:
                f"user_id='{user_id}'")
         return await self.execute(sql, execute=True)
 
-    async def update_subcategoryname_out(self, new_subcategory, old_subcategory, user_id):
+    async def update_subcategoryname_out(self, user_id, old_subcategory, new_subcategory):
         sql = f"""UPDATE Outgoing SET subcategory_name='{new_subcategory}' WHERE subcategory_name='{old_subcategory}' 
         AND user_id='{user_id}'"""
         return await self.execute(sql, execute=True)
@@ -213,6 +213,9 @@ class Database:
         psql = (f"SELECT DISTINCT subcategory_name FROM Outgoing "
                 f"WHERE category_name='{category_name}' AND user_id='{user_id}'")
         return await self.execute(psql, fetch=True)
+
+    async def delete_subcategory_out(self, subcategory):
+        await self.execute("DELETE FROM Outgoing WHERE subcategory_name=$1", subcategory, execute=True)
 
     async def delete_product_out(self, product_id):
         await self.execute("DELETE FROM Outgoing WHERE id=$1", product_id, execute=True)

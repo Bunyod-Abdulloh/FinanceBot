@@ -100,8 +100,12 @@ async def all_users_check_out(call: types.CallbackQuery, state: FSMContext):
             summary=summary
         )
         await call.message.edit_text(
-            text="Harajat bazaga qo'shildi!",
+            text="<b>📤 Chiqim</b>",
             reply_markup=await categories_keyboard(user_id=user_id)
+        )
+        await call.answer(
+            text="Harajat bazaga qo'shildi!",
+            show_alert=True
         )
         await state.finish()
 
