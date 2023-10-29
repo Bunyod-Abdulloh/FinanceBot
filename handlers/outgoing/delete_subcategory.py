@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from keyboards.inline.out_in_keys import check_no_button
-from keyboards.inline.outgoing_keyboards import items_keyboard, subcategories_keyboard
+from keyboards.inline.outgoing_keyboards import subcategories_keyboard
 from loader import dp, db
 from states.user_states import FinanceSubcategory
 
@@ -52,5 +52,4 @@ async def delete_subcategory_(call: types.CallbackQuery, state: FSMContext):
                 user_id=user_id
             )
         )
-
     await state.finish()
