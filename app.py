@@ -11,6 +11,7 @@ async def on_startup(dispatcher):
     await db.create()
     # await db.drop_users()
     await db.drop_table_out()
+    await db.drop_table_inc()
     # await db.create_table_users()
     await db.create_table_outgoing()
     await db.create_table_incoming()

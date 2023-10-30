@@ -24,11 +24,11 @@ async def main_menu():
     return markup
 
 
-yes_no_buttons = InlineKeyboardMarkup(row_width=2)
-yes_no_buttons.add(InlineKeyboardButton(text="✅ Ha",
-                                        callback_data="yes_button"))
-yes_no_buttons.insert(InlineKeyboardButton(text="♻️ Qayta kiritish",
-                                           callback_data="again_button"))
+yes_again_buttons = InlineKeyboardMarkup(row_width=2)
+yes_again_buttons.add(InlineKeyboardButton(text="✅ Ha",
+                                           callback_data="yes"))
+yes_again_buttons.insert(InlineKeyboardButton(text="♻️ Qayta kiritish",
+                                              callback_data="again"))
 
 back_download = InlineKeyboardMarkup(row_width=1)
 back_download.add(

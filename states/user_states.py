@@ -38,7 +38,13 @@ class DownloadHistoryOut(StatesGroup):
     product = State()
 
 
-class IncomingStates(StatesGroup):
+class IncomingMainMenu(StatesGroup):
     add_name = State()
     add_summary = State()
     add_check = State()
+
+
+class IncomingCategory(StatesGroup):
+    add_name = State()
+    add_summary = State()
+    check_summary = State()

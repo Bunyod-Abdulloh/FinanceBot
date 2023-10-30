@@ -58,30 +58,38 @@ class Database:
         sql = """INSERT INTO Incoming (user_id, incoming_name, summary) VALUES($1, $2, $3) returning*"""
         return await self.execute(sql, user_id, incoming_name, summary, fetchrow=True)
 
-    async def get_user_incoming(self, user_id):
-        sql = """SELECT incoming_name, summary FROM Incoming WHERE user_id=$1"""
-        return await self.execute(sql, user_id, fetch=True)
+    async def get_userall_inc(self, user_id, distinct=False):
+        if distinct:
+            sql = """SELECT DISTINCT incoming_name FROM Incoming WHERE user_id=$1"""
+            return await self.execute(sql, user_id, fetch=True)
+        else:
+            sql = """SELECT incoming_name, summary FROM Incoming WHERE user_id=$1"""
+            return await self.execute(sql, user_id, fetch=True)
 
-    async def get_user_incoming_(self, user_id, incoming_name):
+    async def get_user_inc(self, user_id, incoming_name):
         sql = """SELECT incoming_name, summary FROM Incoming WHERE user_id=$1 AND incoming_name=$2"""
-        return await self.execute(sql, user_id, incoming_name, fetch=True)
+        return await self.execute(sql, user_id, incoming_name, fetchrow=True)
 
-    async def update_incoming_name(self, incoming_name, user_id):
+    async def update_inc_name(self, incoming_name, user_id):
         sql = f"UPDATE Incoming SET incoming_name='{incoming_name}' WHERE user_id='{user_id}'"
         return await self.execute(sql, execute=True)
 
-    async def update_incoming_summary(self, summary, user_id):
+    async def update_inc_summary(self, summary, user_id):
         sql = f"UPDATE Incoming SET summary='{summary}' WHERE user_id='{user_id}'"
         return await self.execute(sql, execute=True)
 
-    async def summary_incoming(self, user_id):
+    async def summary_category_inc(self, user_id, incoming_name):
+        sql = f"SELECT SUM(summary) FROM Incoming WHERE user_id=$1 AND incoming_name=$2"
+        return await self.execute(sql, user_id, incoming_name, fetchval=True)
+
+    async def summary_all_inc(self, user_id):
         sql = f"SELECT SUM(summary) FROM Incoming WHERE user_id=$1"
         return await self.execute(sql, user_id, fetchval=True)
 
-    async def delete_row_incoming(self, incoming_name):
+    async def delete_row_inc(self, incoming_name):
         await self.execute("DELETE FROM Incoming WHERE incoming_name=$1", incoming_name, execute=True)
 
-    async def drop_table_incoming(self):
+    async def drop_table_inc(self):
         await self.execute("DROP TABLE Incoming", execute=True)
 
     # ============================ OUTGOING TABLE ============================

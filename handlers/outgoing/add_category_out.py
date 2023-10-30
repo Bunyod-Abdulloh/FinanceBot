@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text
 from keyboards.default.start_keyboard import menu
-from keyboards.inline.out_in_keys import yes_no_buttons
+from keyboards.inline.out_in_keys import yes_again_buttons
 from keyboards.inline.outgoing_keyboards import categories_keyboard
 from loader import dp, db
 from states.user_states import FinanceCategory
@@ -78,7 +78,7 @@ async def all_users_out(message: types.Message, state: FSMContext):
              f"\nSubkategoriya: <b>{data['subcategory_name']}</b>"
              f"\nHarajat summasi: <b>{summary}</b>"
              f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
-        reply_markup=yes_no_buttons
+        reply_markup=yes_again_buttons
     )
     await FinanceCategory.summary_check.set()
 
@@ -92,7 +92,7 @@ async def all_users_check_out(call: types.CallbackQuery, state: FSMContext):
     subcategory_name = data['subcategory_name']
     summary = data['summary']
 
-    if call.data == "yes_button":
+    if call.data == "yes":
         await db.first_add_out(
             user_id=user_id,
             category_name=category_name,
@@ -104,12 +104,12 @@ async def all_users_check_out(call: types.CallbackQuery, state: FSMContext):
             reply_markup=await categories_keyboard(user_id=user_id)
         )
         await call.answer(
-            text="Harajat bazaga qo'shildi!",
+            text="Harajat ma'lumotlari saqlandi!",
             show_alert=True
         )
         await state.finish()
 
-    elif call.data == "again_button":
+    elif call.data == "again":
         await call.message.edit_text(
             text=f"Bo'lim: <b>📤 Chiqim</b>"
                  f"\n\nKategoriya nomini kiriting:")
