@@ -1,10 +1,9 @@
-from openpyxl import Workbook
 
 
 async def replace_point_bottom_line(message):
 
     if "'" in message:
-        incoming = message.replace("'", "")
+        incoming = message.replace("'", "`")
 
     elif "_" in message:
         incoming = message.replace("_", "")
@@ -30,6 +29,6 @@ async def replace_float(message):
 
 
 warning_text = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "
-                "foydalanmasligingizni iltimos qilamiz!")
+                "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
 
 raqam = "\n(faqat raqam kiritilishi lozim!):"

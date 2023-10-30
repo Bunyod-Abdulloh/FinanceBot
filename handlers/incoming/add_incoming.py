@@ -9,7 +9,7 @@ from states.user_states import IncomingMainMenu
 
 
 # ========================== ADD INCOMING ==============================
-@dp.callback_query_handler(text="incoming_add", state="*")
+@dp.callback_query_handler(text="inc-add", state="*")
 async def ih_add_incoming(call: types.CallbackQuery):
     await call.message.edit_text(
         text=f"<b>📥 Kirim</b>"
@@ -24,13 +24,13 @@ async def ih_add_incoming_(message: types.Message, state: FSMContext):
 
     message_ = await replace_point_bottom_line(message=message.text)
     await state.update_data(
-        incoming_name=message_
+        ai_incoming_name=message_
     )
     await message.answer(
         text=f"Summani kiriting"
              f"{raqam}"
     )
-    await IncomingStates.add_summary.set()
+    await IncomingMainMenu.add_summary.set()
 
 
 @dp.message_handler(state=IncomingMainMenu.add_summary)
@@ -40,12 +40,12 @@ async def ih_add_summary(message: types.Message, state: FSMContext):
     summary = await replace_float(message=message.text)
 
     await state.update_data(
-        incoming_summary=summary
+        ai_incoming_summary=summary
     )
 
     await message.answer(
-        text=f"Kirim nomi: <b>{data['incoming_name']}</b>"
-             f"\nSumma: <b>{summary}</b>"
+        text=f"Kirim nomi: <b>{data['ai_incoming_name']}</b>"
+             f"\nSumma: <b>{summary}</b> so'm"
              f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
         reply_markup=yes_again_buttons
     )
@@ -59,8 +59,8 @@ async def ih_add_check(call: types.CallbackQuery, state: FSMContext):
     if call.data == "yes":
 
         await db.add_incoming(user_id=call.from_user.id,
-                              incoming_name=data['incoming_name'],
-                              summary=data['incoming_summary'])
+                              incoming_name=data['ai_incoming_name'],
+                              summary=data['ai_incoming_summary'])
 
         await call.answer(
             text="Kiritilgan ma'lumotlar saqlandi!",

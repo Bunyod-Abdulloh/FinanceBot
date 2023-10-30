@@ -23,21 +23,21 @@ async def incoming_main_menu(user_id: int):
         markup.row(
             InlineKeyboardButton(
                 text="ℹ️ Excel yuklab olish",
-                callback_data="dowload_incoming"
+                callback_data="download-inc"
             ),
             InlineKeyboardButton(
                 text="📜 Kirimlar tarixi",
-                callback_data="history_incoming"
+                callback_data="history-inc"
             )
         )
     markup.row(
         InlineKeyboardButton(
             text="⬅️ Ortga",
-            callback_data="back_incomingmain"
+            callback_data="back-main-menu"
         ),
         InlineKeyboardButton(
             text="➕ Qo'shish",
-            callback_data="incoming_add"
+            callback_data="inc-add"
         )
     )
     return markup
@@ -57,25 +57,25 @@ async def incoming_category(user_id: int, incoming_name: str):
         ),
         InlineKeyboardButton(
             text="📜 Kirimlar tarixi",
-            callback_data=f"historyincoming_{incoming[0]}"
+            callback_data=f"historyinc_{incoming[0]}"
         )
     )
     markup.add(
         InlineKeyboardButton(
             text=f"{incoming[0]} o'zgatirish",
-            callback_data=f"editincoming_{incoming[0]}"
+            callback_data=f"editinc_{incoming[0]}"
         )
     )
     markup.add(
         InlineKeyboardButton(
             text=f'❌ {incoming[0]} o\'chirish',
-            callback_data=f'deleteincoming_{incoming[0]}'
+            callback_data=f'deleteinc_{incoming[0]}'
         )
     )
     markup.add(
         InlineKeyboardButton(
             text="⬅️ Ortga",
-            callback_data="back_incoming"
+            callback_data="back-inc-main"
         )
     )
     return markup
