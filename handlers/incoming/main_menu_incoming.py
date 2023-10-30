@@ -30,7 +30,7 @@ async def incoming_main_(call: types.CallbackQuery):
 
     await call.message.edit_text(
         text=f"<b>📥 Kirim bo'limi</b>"
-             f"\n\nJami: <b>{all_summary}</b> so'm",
+             f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so'm",
         reply_markup=await incoming_main_menu(
             user_id=user_id
         )
@@ -42,14 +42,18 @@ async def incoming_main_(call: types.CallbackQuery):
 async def mmi_go_incoming_category(call: types.CallbackQuery):
     user_id = call.from_user.id
     incoming_name = call.data.split("_")[1]
+
     summary = await db.summary_category_inc(
         user_id=user_id,
         incoming_name=incoming_name
     )
 
+    if summary is None:
+        summary = 0
+
     await call.message.edit_text(
         text=f"<b>📥 Kirim > {incoming_name}</b>"
-             f"\n\nJami: <b>{summary}</b> so'm",
+             f"\n\n{incoming_name} uchun jami kirim: <b>{summary}</b> so'm",
         reply_markup=await incoming_category(
             user_id=call.from_user.id,
             incoming_name=incoming_name

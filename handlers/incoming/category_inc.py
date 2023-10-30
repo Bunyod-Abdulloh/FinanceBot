@@ -2,13 +2,34 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from handlers.all.all_functions import replace_float
-from keyboards.inline.incoming_keyboards import incoming_category
+from keyboards.inline.incoming_keyboards import incoming_category, incoming_main_menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from loader import dp, db
 from states.user_states import IncomingCategory
 
 
 # ========================== KIRIM CATEGORY > ==========================
+
+# BACK BUTTON
+@dp.callback_query_handler(text="back-inc-main", state="*")
+async def ci_back_button(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    all_summary = await db.summary_all_inc(
+        user_id=user_id
+    )
+
+    if all_summary is None:
+        all_summary = 0
+
+    await call.message.edit_text(
+        text=f"<b>📥 Kirim bo'limi</b>"
+             f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so'm",
+        reply_markup=await incoming_main_menu(
+            user_id=user_id
+        )
+    )
+
 
 # ADD SUMMARY
 @dp.callback_query_handler(text_contains="addsummaryinc_", state="*")
@@ -68,7 +89,7 @@ async def ci_check_summary(call: types.CallbackQuery, state: FSMContext):
 
         await call.message.edit_text(
             text=f"<b>📥 Kirim > {incoming_name}</b>"
-                 f"\n\nJami: <b>{summary_category}</b>",
+                 f"\n\n{incoming_name} uchun jami kirim: <b>{summary_category}</b>",
             reply_markup=await incoming_category(
                 user_id=user_id,
                 incoming_name=incoming_name

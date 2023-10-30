@@ -55,10 +55,11 @@ async def ih_add_summary(message: types.Message, state: FSMContext):
 @dp.callback_query_handler(state=IncomingMainMenu.add_check)
 async def ih_add_check(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
+    user_id = call.from_user.id
 
     if call.data == "yes":
 
-        await db.add_incoming(user_id=call.from_user.id,
+        await db.add_incoming(user_id=user_id,
                               incoming_name=data['ai_incoming_name'],
                               summary=data['ai_incoming_summary'])
 
@@ -66,11 +67,16 @@ async def ih_add_check(call: types.CallbackQuery, state: FSMContext):
             text="Kiritilgan ma'lumotlar saqlandi!",
             show_alert=True
         )
+        
+        summary = await db.summary_all_inc(user_id=user_id)
+        if summary is None:
+            summary = 0
 
         await call.message.edit_text(
-            text="<b>📥 Kirim bo'limi</b>",
+            text=f"<b>📥 Kirim bo'limi</b>"
+                 f"\n\n📥 Kirim bo'limi uchun jami: {summary} so'm",
             reply_markup=await incoming_main_menu(
-                user_id=call.from_user.id
+                user_id=user_id
             )
         )
         await state.finish()

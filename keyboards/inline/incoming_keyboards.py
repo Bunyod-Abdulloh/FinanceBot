@@ -62,7 +62,7 @@ async def incoming_category(user_id: int, incoming_name: str):
     )
     markup.add(
         InlineKeyboardButton(
-            text=f"{incoming[0]} o'zgatirish",
+            text=f"📝 {incoming[0]} o'zgatirish",
             callback_data=f"editinc_{incoming[0]}"
         )
     )
