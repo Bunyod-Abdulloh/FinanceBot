@@ -38,6 +38,7 @@ class DownloadHistoryOut(StatesGroup):
     product = State()
 
 
+# Incoming States
 class IncomingMainMenu(StatesGroup):
     add_name = State()
     add_summary = State()
@@ -48,3 +49,7 @@ class IncomingCategory(StatesGroup):
     add_name = State()
     add_summary = State()
     check_summary = State()
+
+
+class PayHistoryIncoming(StatesGroup):
+    category = State()

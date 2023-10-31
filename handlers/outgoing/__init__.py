@@ -3,7 +3,7 @@ from . import delete_subcategory
 from . import add_subcategory_out
 from . import edit_category_out
 from . import edit_subcategory_out
-from . import first_out
+from . import main_menu_out
 from . import add_money_out
 from . import history_category_out
 from . import history_subcategory_out

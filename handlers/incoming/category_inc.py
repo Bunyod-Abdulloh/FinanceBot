@@ -29,6 +29,7 @@ async def ci_back_button(call: types.CallbackQuery, state: FSMContext):
             user_id=user_id
         )
     )
+    await state.finish()
 
 
 # ADD SUMMARY

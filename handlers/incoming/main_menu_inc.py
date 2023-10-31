@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from handlers.all.all_functions import check_summary_main_inc
 from keyboards.inline.incoming_keyboards import incoming_main_menu, incoming_category
 from keyboards.inline.out_in_keys import main_menu
 from loader import dp, db
@@ -21,23 +22,13 @@ async def incoming_back(call: types.CallbackQuery, state: FSMContext):
 async def incoming_main_(call: types.CallbackQuery):
     user_id = call.from_user.id
 
-    all_summary = await db.summary_all_inc(
-        user_id=user_id
-    )
-
-    if all_summary is None:
-        all_summary = 0
-
-    await call.message.edit_text(
-        text=f"<b>📥 Kirim bo'limi</b>"
-             f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so'm",
-        reply_markup=await incoming_main_menu(
-            user_id=user_id
-        )
+    await check_summary_main_inc(
+        user_id=user_id,
+        callback=call
     )
 
 
-# ========================== KIRIM > ==========================
+# ========================== KIRIM > CATEGORY ==========================
 @dp.callback_query_handler(text_contains="incoming_")
 async def mmi_go_incoming_category(call: types.CallbackQuery):
     user_id = call.from_user.id

@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from handlers.all.all_functions import all_summary_main_out
 from keyboards.inline.out_in_keys import check_no_button
 from keyboards.inline.outgoing_keyboards import subcategories_keyboard
 from loader import dp, db
@@ -36,13 +37,24 @@ async def delete_subcategory_(call: types.CallbackQuery, state: FSMContext):
             text="Ma'lumotlar bazadan o'chirildi!",
             show_alert=True
         )
-        await call.message.edit_text(
-            text=f"<b>📤 Chiqim > {category} > {subcategory}</b>",
-            reply_markup=await subcategories_keyboard(
-                category_name=category,
-                user_id=user_id
-            )
+        category_check = await db.get_subdistinct_out(
+            user_id=user_id,
+            category_name=category
         )
+
+        if category_check:
+            await call.message.edit_text(
+                text=f"<b>📤 Chiqim > {category} > {subcategory}</b>",
+                reply_markup=await subcategories_keyboard(
+                    category_name=category,
+                    user_id=user_id
+                )
+            )
+        else:
+            await all_summary_main_out(
+                user_id=user_id,
+                callback=call
+            )
 
     elif call.data == "no_delete":
         await call.message.edit_text(

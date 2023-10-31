@@ -1,10 +1,9 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text
+from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text, all_summary_main_out
 from keyboards.default.start_keyboard import menu
 from keyboards.inline.out_in_keys import yes_again_buttons
-from keyboards.inline.outgoing_keyboards import categories_keyboard
 from loader import dp, db
 from states.user_states import FinanceCategory
 
@@ -99,10 +98,12 @@ async def all_users_check_out(call: types.CallbackQuery, state: FSMContext):
             subcategory_name=subcategory_name,
             summary=summary
         )
-        await call.message.edit_text(
-            text="<b>📤 Chiqim</b>",
-            reply_markup=await categories_keyboard(user_id=user_id)
+
+        await all_summary_main_out(
+            user_id=user_id,
+            callback=call
         )
+
         await call.answer(
             text="Harajat ma'lumotlari saqlandi!",
             show_alert=True

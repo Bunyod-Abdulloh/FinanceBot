@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 PAGE_COUNT = 50
 
 
-def buttons_generator(current_page: int, all_pages: int, subcategory: str, category=False):
+def buttons_generator(current_page: int, all_pages: int, subcategory: str = None, category=False, incoming_main=False):
     key = InlineKeyboardMarkup(
         row_width=3
     )
@@ -30,6 +30,13 @@ def buttons_generator(current_page: int, all_pages: int, subcategory: str, categ
             InlineKeyboardButton(
                 text=f"↩️ {subcategory}ga qaytish",
                 callback_data="back_category"
+            )
+        )
+    elif incoming_main:
+        key.add(
+            InlineKeyboardButton(
+                text="📥 Kirim bo'limiga qaytish",
+                callback_data="back-inc-main"
             )
         )
     else:

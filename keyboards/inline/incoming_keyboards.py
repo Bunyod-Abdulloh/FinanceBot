@@ -27,7 +27,7 @@ async def incoming_main_menu(user_id: int):
             ),
             InlineKeyboardButton(
                 text="📜 Kirimlar tarixi",
-                callback_data="history-inc"
+                callback_data="historymain-inc"
             )
         )
     markup.row(
@@ -57,7 +57,7 @@ async def incoming_category(user_id: int, incoming_name: str):
         ),
         InlineKeyboardButton(
             text="📜 Kirimlar tarixi",
-            callback_data=f"historyinc_{incoming[0]}"
+            callback_data=f"historycategoryinc_{incoming[0]}"
         )
     )
     markup.add(
