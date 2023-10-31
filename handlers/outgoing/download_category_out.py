@@ -14,7 +14,7 @@ from loader import bot, db, dp
 
 
 @dp.callback_query_handler(text="downloadall", state="*")
-async def dco_category_one(call: types.CallbackQuery, state: FSMContext):
+async def dco_category_one(call: types.CallbackQuery):
     try:
         await call.message.delete()
 
@@ -32,11 +32,11 @@ async def dco_category_one(call: types.CallbackQuery, state: FSMContext):
 
             ws = wb.active
 
-            ws.append(["Chiqim", "Kategoriya", "Subkategoriya", "Summa (so'm)", "Sana"])
+            ws.append(["Chiqim", "Kategoriya", "Subkategoriya", "Sana", "Summa (so'm)"])
 
             for data in category:
 
-                ws.append(["Chiqim", data[2], data[3], data[4], data[5]])
+                ws.append(["Chiqim", data[2], data[3], data[5], data[4]])
 
             ws.append(["Jami:", " ", " ", " ", f"{all_summary}"])
             last_row = ws.max_row

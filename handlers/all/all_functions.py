@@ -47,21 +47,29 @@ async def all_summary_main_out(user_id: int, callback: types.CallbackQuery):
 
 
 # CHECK SUMMARY INCOMING
-async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery):
+async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery, no_edit=False):
     all_summary = await db.summary_all_inc(
         user_id=user_id
     )
 
     if all_summary is None:
         all_summary = 0
-
-    await callback.message.edit_text(
-        text=f"<b>📥 Kirim bo'limi</b>"
-             f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so'm",
-        reply_markup=await incoming_main_menu(
-            user_id=user_id
+    if no_edit:
+        await callback.message.answer(
+            text=f"<b>📥 Kirim bo'limi</b>"
+                 f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so'm",
+            reply_markup=await incoming_main_menu(
+                user_id=user_id
+            )
         )
-    )
+    else:
+        await callback.message.edit_text(
+            text=f"<b>📥 Kirim bo'limi</b>"
+                 f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so'm",
+            reply_markup=await incoming_main_menu(
+                user_id=user_id
+            )
+        )
 
 
 warning_text = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "

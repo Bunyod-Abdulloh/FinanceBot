@@ -63,7 +63,7 @@ class Database:
             sql = """SELECT DISTINCT incoming_name FROM Incoming WHERE user_id=$1"""
             return await self.execute(sql, user_id, fetch=True)
         else:
-            sql = """SELECT incoming_name, summary FROM Incoming WHERE user_id=$1"""
+            sql = """SELECT incoming_name, summary, date FROM Incoming WHERE user_id=$1"""
             return await self.execute(sql, user_id, fetch=True)
 
     async def get_user_inc(self, user_id, incoming_name):

@@ -53,3 +53,4 @@ class IncomingCategory(StatesGroup):
 
 class PayHistoryIncoming(StatesGroup):
     category = State()
+    back_main = State()
