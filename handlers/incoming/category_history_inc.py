@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from keyboards.inline.out_in_keys import back_history_inc_button
 from loader import dp, db
 
@@ -16,7 +17,7 @@ async def chi_back_history_button(call: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query_handler(text_contains="historycategoryinc_", state="*")
-async def chi_history(call: types.CallbackQuery):
+async def chi_history(call: types.CallbackQuery, state: FSMContext):
     incoming_name = call.data.split("_")[1]
     user_id = call.from_user.id
 
@@ -27,6 +28,18 @@ async def chi_history(call: types.CallbackQuery):
 
     all_summary = await db.summary_category_inc(user_id=user_id,
                                                 incoming_name=incoming_name)
+
+    await call.message.delete()
+    current_page = 1
+
+    if len(incoming_db) % PAGE_COUNT == 0:
+        all_pages = len(incoming_db) // PAGE_COUNT
+    else:
+        all_pages = len(incoming_db) // PAGE_COUNT + 1
+
+    key = buttons_generator(current_page=current_page, all_pages=all_pages,
+                            subcategory=incoming_name)
+
     history = " "
 
     for n in incoming_db:
