@@ -53,23 +53,23 @@ async def incoming_category(user_id: int, incoming_name: str):
     markup.row(
         InlineKeyboardButton(
             text="➕ Summa qo'shish",
-            callback_data=f"addsummaryinc_{incoming[0]}"
+            callback_data=f"addsummaryinc_{incoming[0][0]}"
         ),
         InlineKeyboardButton(
             text="📜 Kirimlar tarixi",
-            callback_data=f"historycategoryinc_{incoming[0]}"
+            callback_data=f"historycategoryinc_{incoming[0][0]}"
         )
     )
     markup.add(
         InlineKeyboardButton(
-            text=f"📝 {incoming[0]}ni o'zgatirish",
-            callback_data=f"editinc_{incoming[0]}"
+            text=f"📝 {incoming[0][0]}ni o'zgatirish",
+            callback_data=f"editinc_{incoming[0][0]}"
         )
     )
     markup.add(
         InlineKeyboardButton(
-            text=f'❌ {incoming[0]}ni o\'chirish',
-            callback_data=f'deleteinc_{incoming[0]}'
+            text=f'❌ {incoming[0][0]}ni o\'chirish',
+            callback_data=f'deleteinc_{incoming[0][0]}'
         )
     )
     markup.add(

@@ -1,7 +1,8 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_point_bottom_line, warning_text_uz_latin, raqam, replace_float
+from handlers.all.all_functions import (replace_point_bottom_line, warning_text_uz_latin, warning_number_uz_latin,
+                                        replace_float)
 from keyboards.inline.incoming_keyboards import incoming_main_menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from loader import dp, db
@@ -28,7 +29,7 @@ async def ih_add_incoming_(message: types.Message, state: FSMContext):
     )
     await message.answer(
         text=f"Summani kiriting"
-             f"{raqam}"
+             f"{warning_number_uz_latin}"
     )
     await IncomingMainMenu.add_summary.set()
 
