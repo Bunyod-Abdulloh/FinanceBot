@@ -1,5 +1,7 @@
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
+from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from keyboards.inline.incoming_keyboards import incoming_main_menu
 from keyboards.inline.outgoing_keyboards import categories_keyboard
 from loader import db
@@ -72,7 +74,40 @@ async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery, no
         )
 
 
-warning_text_uz_latin = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "
+# BUTTONS GENERATOR
+async def generate_history_button_one(current_page: int, database: list, back_name: str, all_summary: int,
+                                      call: types.CallbackQuery, state: FSMContext, section: str, history_name: str,
+                                      total: str, currency: str):
+
+    if len(database) % PAGE_COUNT == 0:
+        all_pages = len(database) // PAGE_COUNT
+    else:
+        all_pages = len(database) // PAGE_COUNT + 1
+
+    key = buttons_generator(current_page=current_page, all_pages=all_pages,
+                            subcategory=back_name)
+
+    history = " "
+
+    for n in database[:PAGE_COUNT]:
+        history += f"{n[2]} | {n[0]} | {n[1]} {currency}\n"
+
+    await call.message.answer(
+        text=f"<b>{section} > {history_name}</b>"
+             f"\n\n{history}\n{total}: {all_summary} {currency}",
+        reply_markup=key
+    )
+    await state.update_data(
+        current_page=current_page,
+        all_pages=all_pages
+    )
+    history = " "
+
+
+async def generate_history_button_two(call: types.CallbackQuery,):
+    print(call.data)
+
+warning_text_uz_latin = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan regex"
                          "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
 
 warning_text_uz_kirill = ("Бот ишлашида муаммо бўлмаслиги учун киритилаётган матнда _, !, ? каби белгилардан"

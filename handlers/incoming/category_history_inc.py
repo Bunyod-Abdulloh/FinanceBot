@@ -1,9 +1,11 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from handlers.all.all_functions import generate_history_button
 from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from keyboards.inline.out_in_keys import back_history_inc_button
 from loader import dp, db
+from states.user_states import PayHistoryIncoming
 
 
 @dp.callback_query_handler(text="back-history-inc", state="*")
@@ -30,23 +32,20 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
                                                 incoming_name=incoming_name)
 
     await call.message.delete()
-    current_page = 1
 
-    if len(incoming_db) % PAGE_COUNT == 0:
-        all_pages = len(incoming_db) // PAGE_COUNT
-    else:
-        all_pages = len(incoming_db) // PAGE_COUNT + 1
+    await generate_history_button(current_page=1, database=incoming_db, back_name=incoming_name,
+                                  all_summary=all_summary, call=call, state=state,
+                                  section="📥 Kirim", history_name="📜 Kirimlar tarixi",
+                                  total="Jami", currency="so'm")
 
-    key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=incoming_name)
+    await PayHistoryIncoming.chi_one.set()
 
-    history = " "
 
-    for n in incoming_db:
-        history += f"{n[2]} | {n[0]} | {n[1]} so'm\n"
+@dp.callback_query_handler(state=PayHistoryIncoming.chi_one):
+async def chi_pay_history(call: types.CallbackQuery, state: FSMContext):
 
-    await call.message.edit_text(
-        text=f"<b>📥 Kirim > 📜 Kirimlar tarixi</b>"
-             f"\n\n{history}\n\nJami: {all_summary} so'm",
-        reply_markup=back_history_inc_button
-    )
+    await call.message.delete()
+
+
+
+

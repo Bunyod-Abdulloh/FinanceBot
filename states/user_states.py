@@ -54,6 +54,7 @@ class IncomingCategory(StatesGroup):
 class PayHistoryIncoming(StatesGroup):
     category = State()
     back_main = State()
+    chi_one = State()
 
 
 class EditIncoming(StatesGroup):
