@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_point_bottom_line, warning_text, raqam, replace_float
+from handlers.all.all_functions import replace_point_bottom_line, warning_text_uz_latin, raqam, replace_float
 from keyboards.inline.incoming_keyboards import incoming_main_menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from loader import dp, db
@@ -13,7 +13,7 @@ from states.user_states import IncomingMainMenu
 async def ih_add_incoming(call: types.CallbackQuery):
     await call.message.edit_text(
         text=f"<b>📥 Kirim</b>"
-             f"\n\n{warning_text}"
+             f"\n\n{warning_text_uz_latin}"
              f"\n\nKirim uchun nom kiriting:"
     )
     await IncomingMainMenu.add_name.set()
@@ -85,7 +85,7 @@ async def ih_add_check(call: types.CallbackQuery, state: FSMContext):
 
         await call.message.edit_text(
             text=f"<b>📥 Kirim</b>"
-                 f"\n\n{warning_text}"
+                 f"\n\n{warning_text_uz_latin}"
                  f"\n\nKirim uchun nom kiriting:"
         )
         await IncomingMainMenu.add_name.set()

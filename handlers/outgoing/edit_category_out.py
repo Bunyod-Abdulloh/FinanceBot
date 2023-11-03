@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_point_bottom_line, warning_text
+from handlers.all.all_functions import replace_point_bottom_line, warning_text_uz_latin
 from keyboards.inline.outgoing_keyboards import categories_keyboard
 from loader import dp, db
 from states.user_states import FinanceEdit
@@ -14,7 +14,7 @@ async def edit_category_(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.edit_text(
         text=f"Kategoriya: <b>{data['category']}</b>"
-             f"\n\n{warning_text}"
+             f"\n\n{warning_text_uz_latin}"
              f"\n\nKategoriya uchun yangi nom kiriting:"
 
     )

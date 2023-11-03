@@ -3,7 +3,7 @@ import math
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text
+from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text_uz_latin
 from keyboards.default.start_keyboard import menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from keyboards.inline.outgoing_keyboards import categories_keyboard, subcategories_keyboard
@@ -22,7 +22,7 @@ async def aso_step_one(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer(
         text=f"Bo'lim: <b>📤 Chiqim</b>"
              f"\nKategoriya: <b>{category_name}</b>"
-             f"\n\n{warning_text}"
+             f"\n\n{warning_text_uz_latin}"
              f"\n\nSubkategoriya nomini kiriting:",
         reply_markup=menu
     )

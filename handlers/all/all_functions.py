@@ -72,7 +72,17 @@ async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery, no
         )
 
 
-warning_text = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "
-                "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
+warning_text_uz_latin = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "
+                         "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
 
-raqam = "\n(faqat raqam kiritilishi lozim!):"
+warning_text_uz_kirill = ("Бот ишлашида муаммо бўлмаслиги учун киритилаётган матнда _, !, ? каби белгилардан"
+                          "фойдаланмаслигингизни ҳамда 64 та белгидан кўп белги киритмаслигингизни илтимос қиламиз!")
+
+# warning_text_ru = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "
+#                          "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
+
+warning_number_uz_latin = "\n(faqat raqam kiritilishi lozim!):"
+
+warning_number_uz_kirill = "\n(faqat raqam kiritilishi lozim!):"
+
+warning_number_ru = "\n(faqat raqam kiritilishi lozim!):"

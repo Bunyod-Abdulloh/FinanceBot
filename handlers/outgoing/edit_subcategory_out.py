@@ -3,7 +3,7 @@ import logging
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_point_bottom_line, warning_text
+from handlers.all.all_functions import replace_point_bottom_line, warning_text_uz_latin
 from keyboards.inline.outgoing_keyboards import items_keyboard, subcategories_keyboard
 from loader import dp, db
 from states.user_states import FinanceEdit
@@ -15,7 +15,7 @@ async def state_edit_subcategory(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.edit_text(
         text=f'Subkategoriya: {data["subcategory"]}'
-             f'\n\n{warning_text}'
+             f'\n\n{warning_text_uz_latin}'
              f'\n\nSubkategoriya uchun yangi nom kiriting:'
     )
     await FinanceEdit.subcategory.set()
