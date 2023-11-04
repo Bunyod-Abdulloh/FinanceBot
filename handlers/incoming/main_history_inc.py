@@ -21,6 +21,7 @@ async def mhi_history(call: types.CallbackQuery, state: FSMContext):
         all_summary=all_summary,
         call=call,
         state=state,
+        c
         section_one="",
         section_two="",
         total="Jami",

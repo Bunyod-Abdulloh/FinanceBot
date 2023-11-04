@@ -77,7 +77,8 @@ async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery, no
 # BUTTONS GENERATOR
 async def generate_history_button_one(current_page: int, database: list, back_name: str, all_summary: int,
                                       call: types.CallbackQuery, state: FSMContext, section_one: str, section_two: str,
-                                      section_three: str, total: str, currency: str, incoming_category=False):
+                                      section_three: str, total: str, currency: str, incoming_category=False,
+                                      two_columns=False, three_columns=False):
     if len(database) % PAGE_COUNT == 0:
         all_pages = len(database) // PAGE_COUNT
     else:
@@ -87,9 +88,11 @@ async def generate_history_button_one(current_page: int, database: list, back_na
                             subcategory=back_name, incoming_category=incoming_category)
 
     history = " "
-
-    for data in database[:PAGE_COUNT]:
-        history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
+    if two_columns:
+        pass
+    elif three_columns:
+        for data in database[:PAGE_COUNT]:
+            history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
 
     await call.message.answer(
         text=f"<b>{section_one} > {section_two} > {section_three}</b>"
