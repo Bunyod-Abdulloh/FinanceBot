@@ -1,9 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import generate_history_button
-from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
-from keyboards.inline.out_in_keys import back_history_inc_button
+from handlers.all.all_functions import generate_history_button_one, generate_history_button_two
 from loader import dp, db
 from states.user_states import PayHistoryIncoming
 
@@ -30,21 +28,41 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
 
     all_summary = await db.summary_category_inc(user_id=user_id,
                                                 incoming_name=incoming_name)
+    await state.update_data(
+        chi_incoming_name=incoming_name,
+        chi_all_summary=all_summary
+    )
 
     await call.message.delete()
 
-    await generate_history_button(current_page=1, database=incoming_db, back_name=incoming_name,
-                                  all_summary=all_summary, call=call, state=state,
-                                  section="📥 Kirim", history_name="📜 Kirimlar tarixi",
-                                  total="Jami", currency="so'm")
+    await generate_history_button_one(current_page=1, database=incoming_db, back_name=incoming_name,
+                                      all_summary=all_summary, call=call, state=state, section_one="📥 Kirim",
+                                      section_two="📜 Kirimlar tarixi", total="Jami", currency="so'm",
+                                      incoming_category=True)
 
     await PayHistoryIncoming.chi_one.set()
 
 
-@dp.callback_query_handler(state=PayHistoryIncoming.chi_one):
+@dp.callback_query_handler(state=PayHistoryIncoming.chi_one)
 async def chi_pay_history(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.delete()
+
+    data = await state.get_data()
+    current_page = data['current_page']
+    all_pages = data['all_pages']
+    all_summary = data['chi_all_summary']
+    incoming_name = data['chi_incoming_name']
+    database = await db.get_user_inc(
+        user_id=call.from_user.id,
+        incoming_name=incoming_name
+    )
+
+    await generate_history_button_two(call=call, current_page=current_page, all_pages=all_pages,
+                                      back_name=incoming_name, database=database, section_one="📥 Kirim",
+                                      section_two="📜 Kirimlar tarixi", section_three=incoming_name, three_columns=True,
+                                      currency="so'm", total="Jami", all_summary=all_summary, state=state)
+    print(call.data)
 
 
 

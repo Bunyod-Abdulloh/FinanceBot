@@ -76,24 +76,23 @@ async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery, no
 
 # BUTTONS GENERATOR
 async def generate_history_button_one(current_page: int, database: list, back_name: str, all_summary: int,
-                                      call: types.CallbackQuery, state: FSMContext, section: str, history_name: str,
-                                      total: str, currency: str):
-
+                                      call: types.CallbackQuery, state: FSMContext, section_one: str, section_two: str,
+                                      total: str, currency: str, incoming_category=False):
     if len(database) % PAGE_COUNT == 0:
         all_pages = len(database) // PAGE_COUNT
     else:
         all_pages = len(database) // PAGE_COUNT + 1
 
     key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=back_name)
+                            subcategory=back_name, incoming_category=incoming_category)
 
     history = " "
 
-    for n in database[:PAGE_COUNT]:
-        history += f"{n[2]} | {n[0]} | {n[1]} {currency}\n"
+    for data in database[:PAGE_COUNT]:
+        history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
 
     await call.message.answer(
-        text=f"<b>{section} > {history_name}</b>"
+        text=f"<b>{section_one} > {section_two}</b>"
              f"\n\n{history}\n{total}: {all_summary} {currency}",
         reply_markup=key
     )
@@ -104,8 +103,50 @@ async def generate_history_button_one(current_page: int, database: list, back_na
     history = " "
 
 
-async def generate_history_button_two(call: types.CallbackQuery,):
-    print(call.data)
+async def generate_history_button_two(call: types.CallbackQuery, current_page: int, all_pages: int, database: list,
+                                      back_name: str, section_one: str, section_two: str, currency: str, total: str,
+                                      all_summary: int, state: FSMContext, section_three: str = None,
+                                      section_four: str = None, two_columns=False, three_columns=False):
+    if call.data == "prev":
+        if current_page == 1:
+            current_page = all_pages
+        else:
+            current_page -= 1
+    if call.data == 'next':
+        if current_page == all_pages:
+            current_page = 1
+        else:
+            current_page += 1
+
+    all_messages = database[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
+
+    key = buttons_generator(current_page, all_pages, back_name)
+
+    history = " "
+
+    if two_columns:
+        for data in all_messages:
+            history += f"{data[0]} | {data[1]} {currency}\n"
+
+        await call.message.answer(text=f"<b>{section_one} > {section_two} > {section_three} > {section_four}</b>"
+                                       f"\n\n{history}\n{total}: {all_summary} {currency}",
+                                  reply_markup=key)
+    elif three_columns:
+        for data in all_messages:
+            history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
+
+        await call.message.answer(
+            text=f"<b>{section_one} > {section_two} > {section_three}</b>"
+                 f"\n\n{history}\n{total}: {all_summary} {currency}",
+            reply_markup=key
+        )
+
+    history = " "
+
+    await state.update_data(
+        current_page=current_page, all_pages=all_pages
+    )
+
 
 warning_text_uz_latin = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan regex"
                          "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
