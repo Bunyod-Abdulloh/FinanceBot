@@ -77,7 +77,7 @@ async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery, no
 # BUTTONS GENERATOR
 async def generate_history_button_one(current_page: int, database: list, back_name: str, all_summary: int,
                                       call: types.CallbackQuery, state: FSMContext, section_one: str, section_two: str,
-                                      total: str, currency: str, incoming_category=False):
+                                      section_three: str, total: str, currency: str, incoming_category=False):
     if len(database) % PAGE_COUNT == 0:
         all_pages = len(database) // PAGE_COUNT
     else:
@@ -92,7 +92,7 @@ async def generate_history_button_one(current_page: int, database: list, back_na
         history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
 
     await call.message.answer(
-        text=f"<b>{section_one} > {section_two}</b>"
+        text=f"<b>{section_one} > {section_two} > {section_three}</b>"
              f"\n\n{history}\n{total}: {all_summary} {currency}",
         reply_markup=key
     )
@@ -106,7 +106,8 @@ async def generate_history_button_one(current_page: int, database: list, back_na
 async def generate_history_button_two(call: types.CallbackQuery, current_page: int, all_pages: int, database: list,
                                       back_name: str, section_one: str, section_two: str, currency: str, total: str,
                                       all_summary: int, state: FSMContext, section_three: str = None,
-                                      section_four: str = None, two_columns=False, three_columns=False):
+                                      section_four: str = None, two_columns=False, three_columns=False,
+                                      incoming_category=False):
     if call.data == "prev":
         if current_page == 1:
             current_page = all_pages
@@ -120,7 +121,8 @@ async def generate_history_button_two(call: types.CallbackQuery, current_page: i
 
     all_messages = database[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
 
-    key = buttons_generator(current_page, all_pages, back_name)
+    key = buttons_generator(current_page=current_page, all_pages=all_pages,
+                            subcategory=back_name, incoming_category=incoming_category)
 
     history = " "
 

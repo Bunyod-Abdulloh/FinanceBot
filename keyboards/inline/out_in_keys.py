@@ -38,14 +38,6 @@ back_download.add(
     )
 )
 
-back_history_inc_button = InlineKeyboardMarkup(row_width=1)
-back_history_inc_button.add(
-    InlineKeyboardButton(
-        text="⬅️ Ortga",
-        callback_data="back-history-inc"
-    )
-)
-
 check_no_button = InlineKeyboardMarkup(row_width=2)
 check_no_button.row(
     InlineKeyboardButton(

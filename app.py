@@ -16,6 +16,10 @@ async def on_startup(dispatcher):
     await db.create_table_outgoing()
     await db.create_table_incoming()
 
+    await db.add_incoming(user_id=1041847396,
+                          incoming_name="Salom",
+                          summary=15)
+
     await set_default_commands(dispatcher)
 
     await on_startup_notify(dispatcher)

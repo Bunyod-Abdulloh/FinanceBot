@@ -3,6 +3,7 @@ import logging
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from handlers.all.all_functions import generate_history_button_one
 from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from loader import dp, db
 from states.user_states import PayHistoryIncoming
@@ -13,6 +14,18 @@ async def mhi_history(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
     category = await db.get_userall_inc(user_id=user_id, distinct=True)
     all_summary = await db.summary_all_inc(user_id=user_id)
+
+    await generate_history_button_one(
+        current_page=1,
+        database=category,
+        all_summary=all_summary,
+        call=call,
+        state=state,
+        section_one="",
+        section_two="",
+        total="Jami",
+        currency="so'm"
+    )
     try:
         if all_summary is None:
             await call.answer(text=f"Kirimlar uchun mavjud emas!",
