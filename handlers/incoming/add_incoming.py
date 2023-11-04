@@ -23,34 +23,42 @@ async def ih_add_incoming(call: types.CallbackQuery):
 @dp.message_handler(state=IncomingMainMenu.add_name)
 async def ih_add_incoming_(message: types.Message, state: FSMContext):
 
-    message_ = await replace_point_bottom_line(message=message.text)
-    await state.update_data(
-        ai_incoming_name=message_
-    )
-    await message.answer(
-        text=f"Summani kiriting"
-             f"{warning_number_uz_latin}"
-    )
-    await IncomingMainMenu.add_summary.set()
+    if message.text.isalpha():
+        await state.update_data(
+            ai_incoming_name=message.text
+        )
+        await message.answer(
+            text=f"Summani kiriting:"
+                 f"{warning_number_uz_latin}"
+        )
+        await IncomingMainMenu.add_summary.set()
+    else:
+        await message.answer(
+            text=f"{warning_text_uz_latin}"
+        )
 
 
 @dp.message_handler(state=IncomingMainMenu.add_summary)
 async def ih_add_summary(message: types.Message, state: FSMContext):
     data = await state.get_data()
 
-    summary = await replace_float(message=message.text)
+    if message.text.isdigit():
+        summary = int(message.text)
+        await state.update_data(
+            ai_incoming_summary=summary
+        )
 
-    await state.update_data(
-        ai_incoming_summary=summary
-    )
-
-    await message.answer(
-        text=f"Kirim nomi: <b>{data['ai_incoming_name']}</b>"
-             f"\nSumma: <b>{summary}</b> so'm"
-             f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
-        reply_markup=yes_again_buttons
-    )
-    await IncomingMainMenu.add_check.set()
+        await message.answer(
+            text=f"Kirim nomi: <b>{data['ai_incoming_name']}</b>"
+                 f"\nSumma: <b>{summary}</b> so'm"
+                 f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
+            reply_markup=yes_again_buttons
+        )
+        await IncomingMainMenu.add_check.set()
+    else:
+        await message.answer(
+            text=f"{warning_number_uz_latin}"
+        )
 
 
 @dp.callback_query_handler(state=IncomingMainMenu.add_check)

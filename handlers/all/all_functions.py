@@ -153,8 +153,8 @@ async def generate_history_button_two(call: types.CallbackQuery, current_page: i
     )
 
 
-warning_text_uz_latin = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan regex"
-                         "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
+warning_text_uz_latin = ("Bot ishlashida muammo bo'lmasligi uchun 64 ta belgidan ko'p belgi kiritmaslingizni hamda "
+                         "faqat harflardan foydalanishingizni iltimos qilamiz!")
 
 warning_text_uz_kirill = ("Бот ишлашида муаммо бўлмаслиги учун киритилаётган матнда _, !, ? каби белгилардан"
                           "фойдаланмаслигингизни ҳамда 64 та белгидан кўп белги киритмаслигингизни илтимос қиламиз!")
@@ -162,7 +162,7 @@ warning_text_uz_kirill = ("Бот ишлашида муаммо бўлмасли
 # warning_text_ru = ("Bot ishlashida muammo bo'lmasligi uchun kiritilayotgan matnda _, !, ? kabi belgilardan "
 #                          "foydalanmasligingizni hamda 64 ta belgidan ko'p belgi kiritmaslingizni iltimos qilamiz!")
 
-warning_number_uz_latin = "\n(faqat raqam kiritilishi lozim!):"
+warning_number_uz_latin = "\n\n(faqat raqam kiritilishi lozim!\nMasalan: 15000)"
 
 warning_number_uz_kirill = "\n(faqat raqam kiritilishi lozim!):"
 
