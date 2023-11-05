@@ -3,7 +3,7 @@ import logging
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_point_bottom_line, warning_text_uz_latin
+from handlers.all.all_functions import warning_text_uz_latin
 from keyboards.inline.outgoing_keyboards import items_keyboard, subcategories_keyboard
 from loader import dp, db
 from states.user_states import FinanceEdit
@@ -23,9 +23,8 @@ async def state_edit_subcategory(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=FinanceEdit.subcategory)
 async def state_edit_subcategory_(message: types.Message, state: FSMContext):
-    try:
-        new_subcategory = await replace_point_bottom_line(message=message.text)
 
+    if message.text.isalpha():
         data = await state.get_data()
         user_id = message.from_user.id
         category = data['category']
@@ -49,5 +48,7 @@ async def state_edit_subcategory_(message: types.Message, state: FSMContext):
             )
         )
         await state.finish()
-    except Exception as err:
-        logging.error(err)
+    else:
+        await message.answer(
+            text=warning_text_uz_latin
+        )

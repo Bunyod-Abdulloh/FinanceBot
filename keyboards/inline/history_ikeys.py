@@ -36,7 +36,7 @@ def buttons_generator(current_page: int, all_pages: int, subcategory: str = None
     elif incoming_main:
         key.add(
             InlineKeyboardButton(
-                text="📥 Kirim bo'limiga qaytish",
+                text="↩️ 📥 Kirim bo'limiga qaytish",
                 callback_data="back-inc-main"
             )
         )

@@ -3,7 +3,7 @@ import logging
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_float
+from handlers.all.all_functions import warning_number_uz_latin
 from keyboards.inline.outgoing_keyboards import items_keyboard, subcategories_keyboard
 from loader import dp, db
 from states.user_states import MoneyOut
@@ -18,8 +18,8 @@ async def ph_addmoney(call: types.CallbackQuery, state: FSMContext):
     product = await db.get_product_out(product_id=product_id)
 
     await state.update_data(
-        category_name=product[0],
-        subcategory_name=product[1]
+        amo_category_name=product[0],
+        amo_subcategory_name=product[1]
     )
 
     await call.message.edit_text(
@@ -34,17 +34,16 @@ async def ph_addmoney(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=MoneyOut.add_money)
 async def add_money_out(message: types.Message, state: FSMContext):
-    try:
-        data = await state.get_data()
-        category = data['category_name']
-        subcategory = data['subcategory_name']
-        user_id = message.from_user.id
 
-        money = await replace_float(message=message.text)
+    if message.text.isdigit():
+        data = await state.get_data()
+        category = data['amo_category_name']
+        subcategory = data['amo_subcategory_name']
+        user_id = message.from_user.id
 
         await db.first_add_out(category_name=category,
                                subcategory_name=subcategory,
-                               summary=money,
+                               summary=int(message.text),
                                user_id=user_id)
 
         await message.answer(text="Summa qo'shildi")
@@ -60,10 +59,10 @@ async def add_money_out(message: types.Message, state: FSMContext):
         )
 
         await state.finish()
-    except Exception as err:
-        await message.answer(text="<b>Xatolik❗️❗️❗️"
-                                  "\n\nIltimos, qayta /start buyrug'ini kiriting!</b>")
-        logging.error(err)
+    else:
+        await message.answer(
+            text=warning_number_uz_latin
+        )
 
 # ======================REDUCE_AMOUNT======================
 # @dp.callback_query_handler(text_contains="reduceamount", state="*")

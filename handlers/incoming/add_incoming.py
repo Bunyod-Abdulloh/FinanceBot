@@ -1,8 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import (replace_point_bottom_line, warning_text_uz_latin, warning_number_uz_latin,
-                                        replace_float)
+from handlers.all.all_functions import warning_text_uz_latin, warning_number_uz_latin
 from keyboards.inline.incoming_keyboards import incoming_main_menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from loader import dp, db
@@ -78,8 +77,6 @@ async def ih_add_check(call: types.CallbackQuery, state: FSMContext):
         )
         
         summary = await db.summary_all_inc(user_id=user_id)
-        if summary is None:
-            summary = 0
 
         await call.message.edit_text(
             text=f"<b>📥 Kirim bo'limi</b>"

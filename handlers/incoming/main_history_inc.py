@@ -1,9 +1,7 @@
-import logging
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext, filters
 
-from handlers.all.all_functions import generate_history_button_one
+from handlers.all.all_functions import first_button_all_history_inc
 from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from loader import dp, db
 from states.user_states import PayHistoryIncoming
@@ -15,54 +13,43 @@ async def mhi_history(call: types.CallbackQuery, state: FSMContext):
     category = await db.get_userall_inc(user_id=user_id, distinct=True)
     all_summary = await db.summary_all_inc(user_id=user_id)
 
-    # await generate_history_button_one(
-    #     current_page=1,
-    #     database=category,
-    #     all_summary=all_summary,
-    #     call=call,
-    #     state=state,
-    #     section_one="",
-    #     section_two="",
-    #     total="Jami",
-    #     currency="so'm"
-    # )
-    try:
-        if all_summary is None:
-            await call.answer(text=f"Kirimlar uchun mavjud emas!",
-                              show_alert=True)
-        else:
-            await call.message.delete()
-
-            current_page = 1
-
-            if len(category) % PAGE_COUNT == 0:
-                all_pages = len(category) // PAGE_COUNT
-            else:
-                all_pages = len(category) // PAGE_COUNT + 1
-
-            key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                                    incoming_main=True)
-            history = " "
-
-            for data in category[:PAGE_COUNT]:
-                summary = await db.summary_category_inc(user_id=user_id, incoming_name=data[0])
-                history += f"{data[0]} | {summary} so'm\n"
-
-            await call.message.answer(text=f"<b>📥 Kirim > 📜 Kirimlar tarixi</b>"
-                                           f"\n\n{history}\n\n📥 Kirim bo'limi uchun jami: {all_summary} so'm",
-                                      reply_markup=key)
-            await state.update_data(
-                current_page=current_page, all_pages=all_pages
-            )
-            history = " "
-            await PayHistoryIncoming.category.set()
-
-    except Exception as err:\
-        logging.error(err)
+    if all_summary is None:
+        await call.answer(text=f"Kirimlar mavjud emas!",
+                          show_alert=True)
+    else:
+        await call.message.delete()
+        await first_button_all_history_inc(
+            current_page=1,
+            database=category,
+            call=call,
+            state=state,
+            back_name="📥 Kirim",
+            currency="so'm",
+            section_one="📥 Kirim",
+            section_two="📜 Kirimlar tarixi",
+            total="Kirim bo'limi uchun jami:",
+            all_summary=all_summary
+        )
+        # await generate_history_button_one(
+        #     two_columns=True,
+        #     summary_inc=True,
+        #     current_page=1,
+        #     database=category,
+        #     back_name="📥 Kirim",
+        #     all_summary=all_summary,
+        #     call=call,
+        #     state=state,
+        #     section_one="📥 Kirim",
+        #     section_two="📜 Kirimlar tarixi",
+        #     total="Jami",
+        #     currency="so'm"
+        # )
+        await PayHistoryIncoming.category.set()
 
 
 @dp.callback_query_handler(state=PayHistoryIncoming.category)
 async def mhi_history_(call: types.CallbackQuery, state: FSMContext):
+
     await call.message.delete()
 
     data = await state.get_data()

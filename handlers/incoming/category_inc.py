@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_float
+from handlers.all.all_functions import warning_number_uz_latin
 from keyboards.inline.incoming_keyboards import incoming_category, incoming_main_menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from loader import dp, db
@@ -38,34 +38,37 @@ async def ci_addsummary(call: types.CallbackQuery, state: FSMContext):
     incoming_name = call.data.split("_")[1]
 
     await state.update_data(
-        incoming_name=incoming_name
+        ci_incoming_name=incoming_name
     )
     await call.message.edit_text(
         text=f"<b>📥 Kirim > {incoming_name} > ➕ Summa qo'shish</b>"
              f"\n\nSummani kiriting:"
+             f"{warning_number_uz_latin}"
     )
     await IncomingCategory.add_summary.set()
 
 
 @dp.message_handler(state=IncomingCategory.add_summary)
 async def ci_check_summary(message: types.Message, state: FSMContext):
-    data = await state.get_data()
+    if message.text.isdigit():
+        data = await state.get_data()
 
-    summary = await replace_float(
-        message=message.text
-    )
-    await state.update_data(
-        incoming_summary=summary
-    )
+        await state.update_data(
+            ci_incoming_summary=int(message.text)
+        )
 
-    await message.answer(
-        text=f"<b>📥 Kirim > {data['incoming_name']} > ➕ Summa qo'shish</b>"
-             f"\n\nKirim nomi: {data['incoming_name']}"
-             f"\nSumma: {summary} so'm"
-             f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
-        reply_markup=yes_again_buttons
-    )
-    await IncomingCategory.check_summary.set()
+        await message.answer(
+            text=f"<b>📥 Kirim > {data['ci_incoming_name']} > ➕ Summa qo'shish</b>"
+                 f"\n\nKirim nomi: {data['ci_incoming_name']}"
+                 f"\nSumma: {message.text} so'm"
+                 f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
+            reply_markup=yes_again_buttons
+        )
+        await IncomingCategory.check_summary.set()
+    else:
+        await message.answer(
+            text=warning_number_uz_latin
+        )
 
 
 @dp.callback_query_handler(state=IncomingCategory.check_summary)
@@ -73,8 +76,8 @@ async def ci_check_summary(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
 
     user_id = call.from_user.id
-    incoming_name = data['incoming_name']
-    summary = data['incoming_summary']
+    incoming_name = data['ci_incoming_name']
+    summary = data['ci_incoming_summary']
 
     if call.data == "yes":
         await db.add_incoming(
@@ -106,5 +109,6 @@ async def ci_check_summary(call: types.CallbackQuery, state: FSMContext):
         await call.message.edit_text(
             text=f"<b>📥 Kirim > {data['incoming_name']} > ➕ Summa qo'shish</b>"
                  f"\n\nSummani qayta kiriting:"
+                 f"{warning_number_uz_latin}"
         )
         await IncomingCategory.add_summary.set()

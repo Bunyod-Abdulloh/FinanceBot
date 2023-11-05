@@ -24,7 +24,10 @@ async def incoming_main_(call: types.CallbackQuery):
 
     await check_summary_main_inc(
         user_id=user_id,
-        callback=call
+        callback=call,
+        section_name="📥 Kirim",
+        total="📥 Kirim bo'limi uchun jami:",
+        currency="so'm"
     )
 
 

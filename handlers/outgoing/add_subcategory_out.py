@@ -3,7 +3,7 @@ import math
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text_uz_latin
+from handlers.all.all_functions import warning_text_uz_latin, warning_number_uz_latin
 from keyboards.default.start_keyboard import menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from keyboards.inline.outgoing_keyboards import categories_keyboard, subcategories_keyboard
@@ -15,7 +15,7 @@ from states.user_states import FinanceSubcategory
 async def aso_step_one(call: types.CallbackQuery, state: FSMContext):
     category_name = call.data.split('_')[-1]
     await state.update_data(
-        category_name=category_name
+        aso_category_name=category_name
     )
     await call.message.delete()
 
@@ -32,42 +32,48 @@ async def aso_step_one(call: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(state=FinanceSubcategory.aso_subcategory)
 async def aso_step_two(message: types.Message, state: FSMContext):
 
-    subcategory_name = await replace_point_bottom_line(message=message.text)
+    if message.text.isalpha():
+        data = await state.get_data()
 
-    data = await state.get_data()
+        await message.answer(
+            text=f"Bo'lim: <b>📤 Chiqim</b>"
+                 f"\nKategoriya: <b>{data['aso_category_name']}</b>"
+                 f"\nSubkategoriya: <b>{subcategory_name}</b>"
+                 f"\n\nHarajat summasini kiriting"
+                 f"\n{warning_number_uz_latin}:")
 
-    await message.answer(
-        text=f"Bo'lim: <b>📤 Chiqim</b>"
-             f"\nKategoriya: <b>{data['category_name']}</b>"
-             f"\nSubkategoriya: <b>{subcategory_name}</b>"
-             f"\n\nHarajat summasini kiriting"
-             f"\n(faqat raqam kiritilishi lozim!):")
-
-    await state.update_data(
-        subcategory_name=subcategory_name
-    )
-    await FinanceSubcategory.aso_summary.set()
+        await state.update_data(
+            aso_subcategory_name=subcategory_name
+        )
+        await FinanceSubcategory.aso_summary.set()
+    else:
+        await message.answer(
+            text=warning_text_uz_latin
+        )
 
 
 @dp.message_handler(state=FinanceSubcategory.aso_summary)
 async def subcategory_summary_out(message: types.Message, state: FSMContext):
 
-    summary = await replace_float(message=message.text)
+    if message.text.isdigit():
+        await state.update_data(
+            aso_summary=int(message.text)
+        )
+        data = await state.get_data()
 
-    await state.update_data(
-        summary=int(summary)
-    )
-    data = await state.get_data()
-
-    await message.answer(
-        text=f"Bo'lim: <b>📤 Chiqim</b>"
-             f"\nKategoriya: <b>{data['category_name']}</b>"
-             f"\nSubkategoriya: <b>{data['subcategory_name']}</b>"
-             f"\nHarajat summasi: <b>{summary} so'm</b>"
-             f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
-        reply_markup=yes_again_buttons
-    )
-    await FinanceSubcategory.aso_summary_check.set()
+        await message.answer(
+            text=f"Bo'lim: <b>📤 Chiqim</b>"
+                 f"\nKategoriya: <b>{data['aso_category_name']}</b>"
+                 f"\nSubkategoriya: <b>{data['aso_subcategory_name']}</b>"
+                 f"\nHarajat summasi: <b>{message.text} so'm</b>"
+                 f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
+            reply_markup=yes_again_buttons
+        )
+        await FinanceSubcategory.aso_summary_check.set()
+    else:
+        await message.answer(
+            text=warning_number_uz_latin
+        )
 
 
 @dp.callback_query_handler(state=FinanceSubcategory.aso_summary_check)
@@ -75,9 +81,9 @@ async def aso_summary_check(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
 
     user_id = call.from_user.id
-    category_name = data['category_name']
-    subcategory_name = data['subcategory_name']
-    summary = data['summary']
+    category_name = data['aso_category_name']
+    subcategory_name = data['aso_subcategory_name']
+    summary = data['aso_summary']
 
     if call.data == "yes":
         await db.first_add_out(
@@ -103,5 +109,6 @@ async def aso_summary_check(call: types.CallbackQuery, state: FSMContext):
         await call.message.edit_text(
             text=f"Bo'lim: <b>📤 Chiqim</b>"
                  f"\nKategoriya: <b>{category_name}</b>"
-                 f"\n\nSubkategoriya nomini kiriting:")
+                 f"\n\nSubkategoriya nomini kiriting:"
+                 f"{warning_text_uz_latin}")
         await FinanceSubcategory.aso_subcategory.set()

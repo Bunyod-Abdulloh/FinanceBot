@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import replace_float, replace_point_bottom_line, warning_text_uz_latin, all_summary_main_out
+from handlers.all.all_functions import warning_text_uz_latin, warning_number_uz_latin, all_summary_main_out
 from keyboards.default.start_keyboard import menu
 from keyboards.inline.out_in_keys import yes_again_buttons
 from loader import dp, db
@@ -24,62 +24,71 @@ async def add_category_call(call: types.CallbackQuery):
 @dp.message_handler(state=FinanceCategory.add_category)
 async def add_category(message: types.Message, state: FSMContext):
 
-    category_name = await replace_point_bottom_line(message=message.text)
+    if message.text.isalpha():
+        await state.update_data(
+            aco_category_name=message.text
+        )
 
-    await state.update_data(
-        category_name=category_name
-    )
-
-    await message.answer(
-        text=f"Bo'lim: <b>📤 Chiqim</b>"
-             f"\nKategoriya: <b>{category_name}</b>"
-             f"\n\n{warning_text_uz_latin}"
-             f"\n\nSubkategoriya nomini kiriting:"
-    )
-    await FinanceCategory.add_subcategory.set()
+        await message.answer(
+            text=f"Bo'lim: <b>📤 Chiqim</b>"
+                 f"\nKategoriya: <b>{message.text}</b>"
+                 f"\n\n{warning_text_uz_latin}"
+                 f"\n\nSubkategoriya nomini kiriting:"
+        )
+        await FinanceCategory.add_subcategory.set()
+    else:
+        await message.answer(
+            text=warning_text_uz_latin
+        )
 
 
 @dp.message_handler(state=FinanceCategory.add_subcategory)
 async def add_subcategory_out(message: types.Message, state: FSMContext):
 
-    subcategory_name = await replace_point_bottom_line(message=message.text)
+    if message.text.isalpha():
+        await state.update_data(
+            aco_subcategory_name=message.text
+        )
 
-    await state.update_data(
-        subcategory_name=subcategory_name
-    )
+        data = await state.get_data()
 
-    data = await state.get_data()
-
-    await message.answer(
-        text=f"Bo'lim: <b>📤 Chiqim</b>"
-             f"\nKategoriya: <b>{data['category_name']}</b>"
-             f"\nSubkategoriya: <b>{message.text}</b>"
-             f"\n\nHarajat summasini kiriting"
-             f"{raqam}"
-    )
-    await FinanceCategory.summary.set()
+        await message.answer(
+            text=f"Bo'lim: <b>📤 Chiqim</b>"
+                 f"\nKategoriya: <b>{data['aco_category_name']}</b>"
+                 f"\nSubkategoriya: <b>{message.text}</b>"
+                 f"\n\nHarajat summasini kiriting"
+                 f"{warning_number_uz_latin}"
+        )
+        await FinanceCategory.summary.set()
+    else:
+        await message.answer(
+            text=warning_text_uz_latin
+        )
 
 
 @dp.message_handler(state=FinanceCategory.summary)
 async def all_users_out(message: types.Message, state: FSMContext):
 
-    summary = await replace_float(message=message.text)
+    if message.text.isdigit():
+        data = await state.get_data()
 
-    data = await state.get_data()
+        await state.update_data(
+            aco_summary=int(message.text)
+        )
 
-    await state.update_data(
-        summary=int(summary)
-    )
-
-    await message.answer(
-        text=f"Bo'lim: <b>📤 Chiqim</b>"
-             f"\nKategoriya: <b>{data['category_name']}</b>"
-             f"\nSubkategoriya: <b>{data['subcategory_name']}</b>"
-             f"\nHarajat summasi: <b>{summary}</b>"
-             f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
-        reply_markup=yes_again_buttons
-    )
-    await FinanceCategory.summary_check.set()
+        await message.answer(
+            text=f"Bo'lim: <b>📤 Chiqim</b>"
+                 f"\nKategoriya: <b>{data['aco_category_name']}</b>"
+                 f"\nSubkategoriya: <b>{data['aco_subcategory_name']}</b>"
+                 f"\nHarajat summasi: <b>{message.text}</b>"
+                 f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
+            reply_markup=yes_again_buttons
+        )
+        await FinanceCategory.summary_check.set()
+    else:
+        await message.answer(
+            text=warning_number_uz_latin
+        )
 
 
 @dp.callback_query_handler(state=FinanceCategory.summary_check)
@@ -87,9 +96,9 @@ async def all_users_check_out(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
 
     user_id = call.from_user.id
-    category_name = data['category_name']
-    subcategory_name = data['subcategory_name']
-    summary = data['summary']
+    category_name = data['aco_category_name']
+    subcategory_name = data['aco_subcategory_name']
+    summary = data['aco_summary']
 
     if call.data == "yes":
         await db.first_add_out(
@@ -113,5 +122,6 @@ async def all_users_check_out(call: types.CallbackQuery, state: FSMContext):
     elif call.data == "again":
         await call.message.edit_text(
             text=f"Bo'lim: <b>📤 Chiqim</b>"
-                 f"\n\nKategoriya nomini kiriting:")
+                 f"\n\nKategoriya nomini kiriting:"
+                 f"{warning_text_uz_latin}")
         await FinanceCategory.add_category.set()
