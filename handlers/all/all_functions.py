@@ -192,7 +192,11 @@ async def second_category_history_button_inc(
         current_page: int,
         all_pages: int,
         database: list,
-        section_name: str
+        section_name: str,
+        section_summary: str,
+        currency: str,
+        language: str,
+        state: FSMContext
 ):
     if call.data == "prev":
         if current_page == 1:
@@ -215,70 +219,22 @@ async def second_category_history_button_inc(
     for data in all_messages:
         history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
 
-    await call.message.answer(
-        text=f"<b>{section_one} > {section_two} > {section_three}</b>"
-             f"\n\n{history}\n{total}: {summary_section} {currency}",
-        reply_markup=key
-    )
-
-    history = " "
-
-    await state.update_data(
-        current_page=current_page, all_pages=all_pages
-    )
-async def generate_history_button_two(call: types.CallbackQuery, current_page: int, all_pages: int, database: list,
-                                      back_name: str, section_one: str, section_two: str, currency: str, total: str,
-                                      state: FSMContext, summary_section: int, all_summary: int = None,
-                                      section_three: str = None, section_four: str = None, two_columns=False,
-                                      three_columns=False, incoming_category=False, summary_inc=False,
-                                      summary_out=False):
-    if call.data == "prev":
-        if current_page == 1:
-            current_page = all_pages
-        else:
-            current_page -= 1
-    if call.data == 'next':
-        if current_page == all_pages:
-            current_page = 1
-        else:
-            current_page += 1
-
-    all_messages = database[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
-
-    key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=back_name, incoming_category=incoming_category)
-
-    history = " "
-
-    if two_columns:
-        if summary_inc:
-            for data in all_messages:
-                data_two = await db.summary_category_inc(
-                    user_id=call.from_user.id,
-                    incoming_name=data[0])
-                history += f"{data[0]} | {data_two} {currency}\n"
-        elif summary_out:
-            pass
-
-        await call.message.answer(text=f"<b>{section_one} > {section_two}</b>"
-                                       f"\n\n{history}\n{total}: {all_summary} {currency}",
-                                  reply_markup=key)
-    elif three_columns:
-        for data in all_messages:
-            history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
-
+    if language == "uz_latin":
         await call.message.answer(
-            text=f"<b>{section_one} > {section_two} > {section_three}</b>"
-                 f"\n\n{history}\n{total}: {summary_section} {currency}",
+            text=f"<b>📥 Kirim > 📜 Kirimlar tarixi > {section_name}</b>"
+                 f"\n\n{history}\n{section_name} uchun jami: {section_summary} {currency}",
             reply_markup=key
         )
+    if language == "uz_cyrillic":
+        pass
+    if language == "ru":
+        pass
 
     history = " "
 
     await state.update_data(
         current_page=current_page, all_pages=all_pages
     )
-
 
 warning_text_uz_latin = ("Bot ishlashida muammo bo'lmasligi uchun faqat harflar kiritilishi hamda ularning "
                          "uzunligi 64 tadan oshmasligi lozim!")

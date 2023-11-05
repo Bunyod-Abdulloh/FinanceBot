@@ -1,8 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import generate_history_button_two, \
-    first_category_history_button_inc
+from handlers.all.all_functions import first_category_history_button_inc, second_category_history_button_inc
 from keyboards.inline.incoming_keyboards import incoming_category
 from loader import dp, db
 from states.user_states import PayHistoryIncoming
@@ -36,7 +35,7 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
                                                     incoming_name=incoming_name)
     await state.update_data(
         chi_incoming_name=incoming_name,
-        chi_summary_section=summary_section
+        chi_summary_section=section_summary
     )
     await call.message.delete()
     await first_category_history_button_inc(
@@ -52,6 +51,10 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
     await PayHistoryIncoming.chi_one.set()
 
 
+def second_category_history_buttons_inc():
+    pass
+
+
 @dp.callback_query_handler(state=PayHistoryIncoming.chi_one)
 async def chi_pay_history(call: types.CallbackQuery, state: FSMContext):
 
@@ -60,25 +63,22 @@ async def chi_pay_history(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     current_page = data['current_page']
     all_pages = data['all_pages']
-    summary_section = data['chi_summary_section']
+    section_summary = data['chi_summary_section']
     incoming_name = data['chi_incoming_name']
+
     database = await db.get_user_inc(
         user_id=call.from_user.id,
         incoming_name=incoming_name
     )
-    await generate_history_button_two(
-        three_columns=True,
+
+    await second_category_history_button_inc(
         call=call,
         current_page=current_page,
         all_pages=all_pages,
-        back_name=incoming_name,
         database=database,
-        section_one="📥 Kirim",
-        section_two="📜 Kirimlar tarixi",
-        section_three=incoming_name,
+        section_name=incoming_name,
+        section_summary=section_summary,
         currency="so'm",
-        total="Jami",
-        summary_section=summary_section,
-        state=state,
-        incoming_category=True
+        language="uz_latin",
+        state=state
     )
