@@ -41,18 +41,14 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
     await call.message.delete()
     await first_category_history_button_inc(
         current_page=1,
-        back_button=incoming_name,
         database=incoming_db,
+        language="uz_latin",
         currency="so'm",
         call=call,
-        section_one="📥 Kirim",
-        section_two="📜 Kirimlar tarixi",
-        section_three=incoming_name,
-        total=f"{incoming_name} uchun jami:",
+        section_name=incoming_name,
         summary_section=summary_section,
         state=state
     )
-
     await PayHistoryIncoming.chi_one.set()
 
 
