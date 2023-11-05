@@ -52,7 +52,7 @@ async def check_summary_main_inc(user_id: int, callback: types.CallbackQuery, se
 
 # BUTTONS GENERATOR
 
-async def first_button_all_history_inc(
+async def first_all_history_button_inc(
         current_page: int,
         database: list,
         call: types.CallbackQuery,
@@ -92,13 +92,18 @@ async def first_button_all_history_inc(
     history = " "
 
 
-async def second_button_all_history_inc(
+async def second_all_history_button_inc(
         call: types.CallbackQuery,
         current_page: int,
         all_pages: int,
         database: list,
         back_button: str,
-        currency: str
+        currency: str,
+        section_one: str,
+        section_two: str,
+        total: str,
+        all_summary: int,
+        state: FSMContext
 ):
 
     if call.data == "prev":
@@ -115,7 +120,7 @@ async def second_button_all_history_inc(
     all_messages = database[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
 
     key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=back_button, incoming_category=True)
+                            subcategory=back_button, incoming_main=True)
 
     history = " "
     for data in all_messages:
@@ -123,57 +128,52 @@ async def second_button_all_history_inc(
             user_id=call.from_user.id,
             incoming_name=data[0])
         history += f"{data[0]} | {data_two} {currency}\n"
+    await call.message.answer(
+        text=f"<b>{section_one} > {section_two}</b>"
+             f"\n\n{history}\n{total} {all_summary} {currency}",
+        reply_markup=key
+    )
+    await state.update_data(
+        current_page=current_page,
+        all_pages=all_pages
+    )
 
 
-async def generate_history_button_one(current_page: int, database: list, back_name: str, call: types.CallbackQuery,
-                                      state: FSMContext, section_one: str, section_two: str,
-                                      total: str, currency: str, summary_section: int = None, section_three: str = None,
-                                      all_summary: int = None, incoming_category=False, two_columns=False,
-                                      three_columns=False, summary_inc=False, summary_out=False):
+async def first_category_history_button_inc(
+        current_page: int,
+        back_button: str,
+        database: list,
+        currency: str,
+        call: types.CallbackQuery,
+        section_one: str,
+        section_two: str,
+        section_three: str,
+        total: str,
+        summary_section: int,
+        state: FSMContext
+):
     if len(database) % PAGE_COUNT == 0:
         all_pages = len(database) // PAGE_COUNT
     else:
         all_pages = len(database) // PAGE_COUNT + 1
-
     history = " "
-    if two_columns:
-        if summary_inc:
-            key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                                    subcategory=back_name, incoming_category=incoming_category,
-                                    incoming_main=True)
+    key = buttons_generator(current_page=current_page, all_pages=all_pages,
+                            subcategory=back_button, incoming_category=True)
+    for data in database[:PAGE_COUNT]:
+        history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
 
-            for data in database[:PAGE_COUNT]:
-                data_two = await db.summary_category_inc(
-                    user_id=call.from_user.id,
-                    incoming_name=data[0])
-                history += f"{data[0]} | {data_two} {currency}\n"
-            await call.message.answer(
-                text=f"<b>{section_one} > {section_two}</b>"
-                     f"\n\n{history}\n{total}: {all_summary} {currency}",
-                reply_markup=key
-            )
-        elif summary_out:
-            pass
-
-        # for data in database[:PAGE_COUNT]:
-        #     history += f"{data[0]} | {summary} {currency}\n"
-
-    elif three_columns:
-        key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                                subcategory=back_name, incoming_category=incoming_category)
-        for data in database[:PAGE_COUNT]:
-            history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
-
-        await call.message.answer(
-            text=f"<b>{section_one} > {section_two} > {section_three}</b>"
-                 f"\n\n{history}\n{total}: {summary_section} {currency}",
-            reply_markup=key
-        )
+    await call.message.answer(
+        text=f"<b>{section_one} > {section_two} > {section_three}</b>"
+             f"\n\n{history}\n{total} {summary_section} {currency}",
+        reply_markup=key
+    )
     await state.update_data(
         current_page=current_page,
         all_pages=all_pages
     )
     history = " "
+
+
 
 
 async def generate_history_button_two(call: types.CallbackQuery, current_page: int, all_pages: int, database: list,
