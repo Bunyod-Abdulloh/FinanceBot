@@ -188,7 +188,29 @@ async def first_category_history_button_inc(
 
 
 
+async def second_category_history_button_inc(
+        call: types.CallbackQuery,
+        current_page: int,
+        all_pages: int,
+        database: list
+):
+    if call.data == "prev":
+        if current_page == 1:
+            current_page = all_pages
+        else:
+            current_page -= 1
+    if call.data == 'next':
+        if current_page == all_pages:
+            current_page = 1
+        else:
+            current_page += 1
 
+    all_messages = database[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
+
+    key = buttons_generator(current_page=current_page, all_pages=all_pages,
+                            subcategory=back_name, incoming_category=incoming_category)
+
+    history = " "
 async def generate_history_button_two(call: types.CallbackQuery, current_page: int, all_pages: int, database: list,
                                       back_name: str, section_one: str, section_two: str, currency: str, total: str,
                                       state: FSMContext, summary_section: int, all_summary: int = None,
