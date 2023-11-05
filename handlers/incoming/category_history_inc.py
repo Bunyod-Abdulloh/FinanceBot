@@ -32,7 +32,7 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
         user_id=user_id,
         incoming_name=incoming_name
     )
-    summary_section = await db.summary_category_inc(user_id=user_id,
+    section_summary = await db.summary_category_inc(user_id=user_id,
                                                     incoming_name=incoming_name)
     await state.update_data(
         chi_incoming_name=incoming_name,
@@ -46,7 +46,7 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
         currency="so'm",
         call=call,
         section_name=incoming_name,
-        summary_section=summary_section,
+        section_summary=section_summary,
         state=state
     )
     await PayHistoryIncoming.chi_one.set()

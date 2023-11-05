@@ -156,7 +156,7 @@ async def first_category_history_button_inc(
         currency: str,
         call: types.CallbackQuery,
         section_name: str,
-        summary_section: int,
+        section_summary: int,
         state: FSMContext
 ):
     if len(database) % PAGE_COUNT == 0:
@@ -172,7 +172,7 @@ async def first_category_history_button_inc(
     if language == 'uz_latin':
         await call.message.answer(
             text=f"<b>📥 Kirim > 📜 Kirimlar tarixi > {section_name}</b>"
-                 f"\n\n{history}\n{section_name} uchun jami: {summary_section} {currency}",
+                 f"\n\n{history}\n{section_name} uchun jami: {section_summary} {currency}",
             reply_markup=key
         )
     if language == 'uz_cyrillic':
@@ -187,12 +187,12 @@ async def first_category_history_button_inc(
     history = " "
 
 
-
 async def second_category_history_button_inc(
         call: types.CallbackQuery,
         current_page: int,
         all_pages: int,
-        database: list
+        database: list,
+        section_name: str
 ):
     if call.data == "prev":
         if current_page == 1:
@@ -208,9 +208,24 @@ async def second_category_history_button_inc(
     all_messages = database[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
 
     key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=back_name, incoming_category=incoming_category)
+                            subcategory=section_name, incoming_category=True)
 
     history = " "
+
+    for data in all_messages:
+        history += f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
+
+    await call.message.answer(
+        text=f"<b>{section_one} > {section_two} > {section_three}</b>"
+             f"\n\n{history}\n{total}: {summary_section} {currency}",
+        reply_markup=key
+    )
+
+    history = " "
+
+    await state.update_data(
+        current_page=current_page, all_pages=all_pages
+    )
 async def generate_history_button_two(call: types.CallbackQuery, current_page: int, all_pages: int, database: list,
                                       back_name: str, section_one: str, section_two: str, currency: str, total: str,
                                       state: FSMContext, summary_section: int, all_summary: int = None,
