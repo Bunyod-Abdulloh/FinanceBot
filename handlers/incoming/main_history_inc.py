@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import first_all_history_button_inc, second_all_history_button_inc
+from handlers.incoming.function_inc import first_all_history_button_inc, second_all_history_button_inc
 from loader import dp, db
 from states.user_states import PayHistoryIncoming
 

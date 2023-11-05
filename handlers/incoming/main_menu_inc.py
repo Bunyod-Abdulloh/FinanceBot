@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import check_summary_main_inc
+from handlers.incoming.function_inc import check_summary_main_inc
 from keyboards.inline.incoming_keyboards import incoming_main_menu, incoming_category
 from keyboards.inline.out_in_keys import main_menu
 from loader import dp, db

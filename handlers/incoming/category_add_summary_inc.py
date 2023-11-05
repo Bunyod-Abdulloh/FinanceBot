@@ -107,7 +107,7 @@ async def ci_check_summary(call: types.CallbackQuery, state: FSMContext):
 
     elif call.data == "again":
         await call.message.edit_text(
-            text=f"<b>📥 Kirim > {data['incoming_name']} > ➕ Summa qo'shish</b>"
+            text=f"<b>📥 Kirim > {incoming_name} > ➕ Summa qo'shish</b>"
                  f"\n\nSummani qayta kiriting:"
                  f"{warning_number_uz_latin}"
         )

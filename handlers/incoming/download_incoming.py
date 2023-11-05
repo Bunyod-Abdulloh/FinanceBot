@@ -6,7 +6,7 @@ from openpyxl import Workbook
 
 from aiogram import types
 
-from handlers.all.all_functions import check_summary_main_inc
+from handlers.incoming.function_inc import check_summary_main_inc
 from keyboards.inline.out_in_keys import back_download
 from loader import bot, db, dp
 from states.user_states import PayHistoryIncoming
@@ -51,6 +51,9 @@ async def di_back_incmain(call: types.CallbackQuery, state: FSMContext):
     await check_summary_main_inc(
         user_id=call.from_user.id,
         callback=call,
-        no_edit=True
+        no_edit=True,
+        currency="so'm",
+        section_name="📥 Kirim",
+        total="📥 Kirim uchun jami:"
     )
     await state.finish()

@@ -1,8 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers.all.all_functions import warning_text_uz_latin, replace_point_bottom_line, replace_float, \
-    warning_number_uz_latin
+from handlers.all.all_functions import warning_text_uz_latin, warning_number_uz_latin
 from keyboards.inline.out_in_keys import yes_again_buttons
 from states.user_states import EditIncoming
 from loader import dp, db
@@ -14,9 +13,14 @@ async def ei_edit_incoming(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(
         ei_old_name=incoming_name
     )
+    current_name_summary = await db.get_user_inc(user_id=call.from_user.id,
+                                                 incoming_name=incoming_name)
+    print(current_name_summary)
     await call.message.edit_text(
         text=f"<b>📥 Kirim > {incoming_name}</b>"
              f"\n\n{warning_text_uz_latin}"
+             f"\n\nJoriy nom: {incoming_name}"
+             f"\nJoriy summa:"
              f"\n\nYangi nom kiriting:"
     )
     await EditIncoming.add_name.set()
