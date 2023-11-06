@@ -21,7 +21,7 @@ async def first_all_history_button_out(
         all_pages = len(database) // PAGE_COUNT + 1
 
     key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=back_button, incoming_main=True)
+                            subcategory=back_button, category=True)
     for data in database[:PAGE_COUNT]:
         summary = await db.get_summary_out(
             category=True,
@@ -38,7 +38,7 @@ async def first_all_history_button_out(
     if language == "uz_latin":
         await call.message.answer(
             text=f"<b>📤 Chiqim > 📜 Chiqimlar tarixi</b>"
-                 f"\n\n{history[0]}\n📥 📤 Chiqim bo'limi uchun jami: {all_summary} {currency}",
+                 f"\n\n{history[0]}\n📤 Chiqim bo'limi uchun jami: {all_summary} {currency}",
             reply_markup=key
         )
     if language == "uz_cyrillic":
@@ -54,7 +54,7 @@ async def first_all_history_button_out(
     )
 
 
-async def second_all_history_button_inc(
+async def second_all_history_button_out(
         call: types.CallbackQuery,
         current_page: int,
         all_pages: int,
@@ -79,25 +79,25 @@ async def second_all_history_button_inc(
     all_messages = database[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
 
     key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=back_button, incoming_main=True)
+                            subcategory=back_button, category=True)
 
     for data in all_messages:
-        summary = await db.summary_category_inc(
+        summary = await db.get_summary_out(
+            category=True,
             user_id=call.from_user.id,
-            incoming_name=data[0]
+            category_name=data[0]
         )
-        await db.update_inc_history(
+        await db.update_out_history(
             user_id=call.from_user.id,
             history=f"{data[0]} | {summary} {currency}\n"
         )
-
-    history = await db.get_user_inc(user_id=call.from_user.id,
-                                    history=True)
-
+    history = await db.get_out_history(
+        user_id=call.from_user.id
+    )
     if language == 'uz_latin':
         await call.message.answer(
-            text=f"<b>📥 Kirim > 📜 Kirimlar tarixi</b>"
-                 f"\n\n{history[0]}\n📥 Kirim bo'limi uchun jami: {all_summary} {currency}",
+            text=f"<b>📤 Chiqim > 📜 Chiqimlar tarixi</b>"
+                 f"\n\n{history[0]}\n📤 Chiqim bo`limi uchun jami: {all_summary} {currency}",
             reply_markup=key
         )
 
@@ -107,8 +107,9 @@ async def second_all_history_button_inc(
     if language == 'ru':
         pass
 
-    await db.clear_history_inc(user_id=call.from_user.id)
-
+    await db.clear_out_history(
+        user_id=call.from_user.id
+    )
     await state.update_data(
         current_page=current_page,
         all_pages=all_pages
