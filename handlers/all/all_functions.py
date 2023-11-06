@@ -12,7 +12,8 @@ async def all_summary_main_out(
         total: str,
         currency: str
 ):
-    all_summ = await db.get_sum_all_out(
+    all_summ = await db.get_summary_out(
+        all_outgoing=True,
         user_id=user_id
     )
     if all_summ is None:

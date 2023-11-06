@@ -18,11 +18,18 @@ async def categories_keyboard(user_id: int):
 
     markup = InlineKeyboardMarkup(row_width=2)
 
-    categories = await db.get_categories_out(user_id=user_id)
+    categories = await db.get_userall_out(
+        user_id=user_id,
+        distinct_category=True
+    )
 
     if categories:
         for category in categories:
-            summary = await db.get_sum_category(user_id=user_id, category_name=category[0])
+            summary = await db.get_summary_out(
+                category=True,
+                user_id=user_id,
+                category_name=category[0]
+            )
             callback_data = make_callback_data(
                 level=CURRENT_LEVEL + 1, category=f"{category[0]}"
             )
@@ -70,10 +77,18 @@ async def subcategories_keyboard(category_name, user_id: int):
     CURRENT_LEVEL = 1
     markup = InlineKeyboardMarkup(row_width=3)
 
-    subcategories = await db.get_subdistinct_out(category_name=category_name, user_id=user_id)
+    subcategories = await db.get_subcategory_out(
+        distinct_subcategory=True,
+        user_id=user_id,
+        category_name=category_name
+    )
 
     for subcategory in subcategories:
-        summary = await db.get_sum_subcategory(user_id=user_id, subcategory_name=subcategory[0])
+        summary = await db.get_summary_out(
+            subcategory=True,
+            user_id=user_id,
+            subcategory_name=subcategory[0]
+        )
         button_text = f"{subcategory[0]} | {summary} so'm"
 
         callback_data = make_callback_data(

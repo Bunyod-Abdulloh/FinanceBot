@@ -23,7 +23,7 @@ async def get_user_details(call: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(text="back_category", state="*")
 async def hc_back_category(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text(
-        text="Bosh menyu",
+        text="<b>Bosh sahifa</b>",
         reply_markup=await main_menu()
     )
     await state.finish()

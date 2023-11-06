@@ -33,8 +33,10 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
     else:
         user_id = int(user_id)
 
-    summary = await db.get_sum_all_out(user_id=user_id)
-
+    summary = await db.get_summary_out(
+        all_outgoing=True,
+        user_id=user_id
+    )
     markup = await categories_keyboard(user_id=user_id)
 
     # Agar foydalanuvchidan Message kelsa Keyboardni yuboramiz
@@ -55,9 +57,11 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
 async def list_subcategories(callback: CallbackQuery, category):
     markup = await subcategories_keyboard(category_name=category, user_id=callback.from_user.id)
 
-    summa = await db.get_sum_category(user_id=callback.from_user.id,
-                                      category_name=category)
-
+    summa = await db.get_summary_out(
+        subcategory=True,
+        user_id=callback.from_user.id,
+        category_name=category
+    )
     await callback.message.edit_text(text=f"<b>📤 Chiqim > "
                                           f"{category}</b>"
                                           f"\n\n{category} uchun jami harajat: <b>{summa} so'm</b>",
@@ -69,9 +73,11 @@ async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
     markup = await items_keyboard(category_name=category,
                                   subcategory_name=subcategory,
                                   user_id=callback.from_user.id)
-    summa = await db.get_sum_subcategory(user_id=callback.from_user.id,
-                                         subcategory_name=subcategory)
-
+    summa = await db.get_summary_out(
+        subcategory=True,
+        user_id=callback.from_user.id,
+        subcategory_name=subcategory
+    )
     await callback.message.edit_text(text="<b>📤 Chiqim > "
                                           f"{category} > "
                                           f"{subcategory}</b>"
