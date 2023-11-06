@@ -39,38 +39,44 @@ async def hc_display_page(call: types.CallbackQuery):
 async def hc_one(call: types.CallbackQuery, state: FSMContext):
     try:
         user_id = call.from_user.id
-        category = await db.get_categories_out(user_id=user_id)
-        all_summary = await db.get_sum_all_out(user_id=user_id)
+        category = await db.get_userall_out(
+            user_id=user_id,
+            distinct_category=True
+        )
+        all_summary = await db.get_summary_out(
+            all_outgoing=True,
+            user_id=user_id
+        )
 
         if all_summary == 0:
-            await call.answer(text=f"📤 Chiqim uchun to'lovlar mavjud emas!", show_alert=True)
+            await call.answer(text=f"📤 Chiqimlar mavjud emas!", show_alert=True)
 
-        else:
-            await call.message.delete()
-
-            current_page = 1
-
-            if len(category) % PAGE_COUNT == 0:
-                all_pages = len(category) // PAGE_COUNT
-            else:
-                all_pages = len(category) // PAGE_COUNT + 1
-
-            key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                                    subcategory="📤 Chiqim", category=True)
-            history = " "
-
-            for data in category[:PAGE_COUNT]:
-                summary = await db.get_sum_category(user_id=user_id, category_name=data[0])
-                history += f"{data[0]} | {summary} so'm\n"
-
-            await call.message.answer(text=f"<b>📤 Chiqim > 📜 To'lovlar tarixi</b>"
-                                           f"\n\n{history}\nJami: {all_summary} so'm",
-                                      reply_markup=key)
-            await state.update_data(
-                current_page=current_page, all_pages=all_pages
-            )
-            history = " "
-            await PayHistoryOut.category.set()
+        # else:
+        #     await call.message.delete()
+        #
+        #     current_page = 1
+        #
+        #     if len(category) % PAGE_COUNT == 0:
+        #         all_pages = len(category) // PAGE_COUNT
+        #     else:
+        #         all_pages = len(category) // PAGE_COUNT + 1
+        #
+        #     key = buttons_generator(current_page=current_page, all_pages=all_pages,
+        #                             subcategory="📤 Chiqim", category=True)
+        #     history = " "
+        #
+        #     for data in category[:PAGE_COUNT]:
+        #         summary = await db.get_sum_category(user_id=user_id, category_name=data[0])
+        #         history += f"{data[0]} | {summary} so'm\n"
+        #
+        #     await call.message.answer(text=f"<b>📤 Chiqim > 📜 To'lovlar tarixi</b>"
+        #                                    f"\n\n{history}\nJami: {all_summary} so'm",
+        #                               reply_markup=key)
+        #     await state.update_data(
+        #         current_page=current_page, all_pages=all_pages
+        #     )
+        #     history = " "
+        #     await PayHistoryOut.category.set()
     except Exception as err:
         logging.error(err)
 

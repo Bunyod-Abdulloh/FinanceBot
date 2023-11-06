@@ -45,7 +45,7 @@ async def categories_keyboard(user_id: int):
                 callback_data="downloadall"
             ),
             InlineKeyboardButton(
-                text="📜 To'lovlar tarixi",
+                text="📜 Chiqimlar tarixi",
                 callback_data=f"historycategory"
             )
         )

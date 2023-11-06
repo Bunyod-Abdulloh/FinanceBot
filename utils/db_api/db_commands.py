@@ -82,6 +82,10 @@ class Database:
         sql = f"UPDATE Incoming SET history=history||'{history}' WHERE user_id='{user_id}'"
         return await self.execute(sql, execute=True)
 
+    async def clear_inc_history(self, user_id):
+        sql = f"UPDATE Incoming SET history='' WHERE user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
+
     async def summary_category_inc(self, user_id, incoming_name):
         sql = f"SELECT SUM(summary) FROM Incoming WHERE user_id=$1 AND incoming_name=$2"
         return await self.execute(sql, user_id, incoming_name, fetchval=True)
@@ -89,10 +93,6 @@ class Database:
     async def summary_all_inc(self, user_id):
         sql = f"SELECT SUM(summary) FROM Incoming WHERE user_id=$1"
         return await self.execute(sql, user_id, fetchval=True)
-
-    async def clear_history_inc(self, user_id):
-        sql = f"UPDATE Incoming SET history='' WHERE user_id='{user_id}'"
-        return await self.execute(sql, execute=True)
 
     async def delete_row_inc(self, user_id, incoming_name):
         await self.execute("DELETE FROM Incoming WHERE user_id=$1 AND incoming_name=$2",
@@ -110,6 +110,7 @@ class Database:
         category_name VARCHAR(50) NULL,
         subcategory_name VARCHAR(50) NULL,             
         summary INT NULL,
+        history VARCHAR(3000) NULL,
         date TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
         """
@@ -169,6 +170,18 @@ class Database:
     # async def update_productname_out(self, new_product, old_product_id, user_id):
     #     sql = f"UPDATE Outgoing SET productname='{new_product}' WHERE id='{old_product_id}' AND user_id='{user_id}'"
     #     return await self.execute(sql, execute=True)
+    # ================================================ HISTORY_OUTGOING ================================================
+    async def update_out_history(self, user_id, history):
+        sql = f"UPDATE Outgoing SET history=history||'{history}' WHERE user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
+
+    async def get_out_history(self, user_id):
+        sql = """SELECT history FROM Outgoing WHERE user_id=$1"""
+        return await self.execute(sql, user_id, fetchrow=True)
+
+    async def clear_out_history(self, user_id):
+        sql = f"UPDATE Outgoing SET history='' WHERE user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
 
     async def get_products_out(self, subcategory_name, user_id):
         sql = f"SELECT id FROM Outgoing WHERE subcategory_name='{subcategory_name}' AND user_id='{user_id}'"
