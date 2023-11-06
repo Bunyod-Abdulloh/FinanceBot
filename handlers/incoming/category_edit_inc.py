@@ -2,6 +2,8 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from handlers.all.all_functions import warning_text_uz_latin, warning_number_uz_latin
+from keyboards.default.out_default import back_menu
+from keyboards.inline.incoming_keyboards import incoming_category
 from keyboards.inline.out_in_keys import yes_again_buttons
 from states.user_states import EditIncoming
 from loader import dp, db
@@ -13,15 +15,18 @@ async def ei_edit_incoming(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(
         ei_old_name=incoming_name
     )
-    current_name_summary = await db.get_user_inc(user_id=call.from_user.id,
-                                                 incoming_name=incoming_name)
-    print(current_name_summary)
-    await call.message.edit_text(
-        text=f"<b>📥 Kirim > {incoming_name}</b>"
-             f"\n\n{warning_text_uz_latin}"
-             f"\n\nJoriy nom: {incoming_name}"
-             f"\nJoriy summa:"
-             f"\n\nYangi nom kiriting:"
+    current_name_summary = await db.summary_category_inc(user_id=call.from_user.id,
+                                                         incoming_name=incoming_name)
+
+    await call.message.delete()
+
+    await call.message.answer(
+        text=f"<b>📥 Kirim > {incoming_name} > 📝 {incoming_name}ni o'zgatirish</b>"
+             f"\n\nJoriy nom: <b>{incoming_name}</b>"
+             f"\nJoriy summa: <b>{current_name_summary} so`m</b>"
+             f"\n\n{warning_text_uz_latin}"             
+             f"\n\nYangi nom kiriting:",
+        reply_markup=back_menu
     )
     await EditIncoming.add_name.set()
 
@@ -59,9 +64,9 @@ async def ei_add_summary(message: types.Message, state: FSMContext):
 
         await message.answer(
             text=f"<b>📥 Kirim > {data['ei_old_name']}</b>"
-                 f"\n\nKirim nomi: {data['ei_new_name']},"
-                 f"Summa: {summary}'] so'm"
-                 f"Kiritilgan ma'lumotlarni tasdiqlaysizmi?",
+                 f"\n\nKirim nomi: {data['ei_new_name']}"
+                 f"\nSumma: {summary} so'm"
+                 f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
             reply_markup=yes_again_buttons
         )
         await EditIncoming.check.set()
@@ -87,7 +92,12 @@ async def ei_check_summary(call: types.CallbackQuery, state: FSMContext):
             user_id=user_id
         )
         await call.message.edit_text(
-            text=f"<b>📥 Kirim > {new_name}</b>",
+            text=f"<b>📥 Kirim > {new_name}</b>"
+                 f"\n\n{new_name} uchun jami kirim: {summary} so`m",
+            reply_markup=await incoming_category(
+                user_id=user_id,
+                incoming_name=new_name
+            )
         )
 
     elif call.data == "again":

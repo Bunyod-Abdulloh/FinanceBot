@@ -75,16 +75,8 @@ class Database:
             sql = """SELECT incoming_name, summary, date FROM Incoming WHERE user_id=$1 AND incoming_name=$2"""
             return await self.execute(sql, user_id, incoming_name, fetch=True)
 
-    # async def update_inc_name_or_summary(self, incoming_name, summary, user_id, name=False, summ=False):
-    #     if name:
-    #         sql = f"UPDATE Incoming SET incoming_name='{incoming_name}' WHERE user_id='{user_id}'"
-    #         return await self.execute(sql, execute=True)
-    #     elif summ:
-    #         sql = f"UPDATE Incoming SET summary='{summary}' WHERE user_id='{user_id}'"
-    #         return await self.execute(sql, execute=True)
-
     async def update_inc_name_and_summary(self, incoming_name, summary, user_id):
-        sql = f"UPDATE Incoming SET incoming_name='{incoming_name}' AND summary='{summary}' WHERE user_id='{user_id}'"
+        sql = f"UPDATE Incoming SET incoming_name='{incoming_name}', summary='{summary}' WHERE user_id='{user_id}'"
         return await self.execute(sql, execute=True)
 
     async def update_inc_history(self, user_id, history):

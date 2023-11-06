@@ -11,7 +11,7 @@ from loader import dp, db
 @dp.callback_query_handler(text="back-main-menu", state="*")
 async def incoming_back(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text(
-        text="Bosh menyu",
+        text="<b>Bosh sahifa</b>",
         reply_markup=await main_menu()
     )
     await state.finish()
