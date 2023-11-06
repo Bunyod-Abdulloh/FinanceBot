@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-PAGE_COUNT = 50
+PAGE_COUNT = 25
 
 
 def buttons_generator(current_page: int, all_pages: int, subcategory: str = None, category=False, incoming_main=False,

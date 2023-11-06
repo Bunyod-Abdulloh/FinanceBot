@@ -49,6 +49,7 @@ class Database:
         user_id BIGINT NOT NULL,
         incoming_name VARCHAR(100) NOT NULL,
         summary INT NULL,
+        history VARCHAR(4000) NULL DEFAULT '',
         date TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
         """
@@ -63,12 +64,16 @@ class Database:
             sql = """SELECT DISTINCT incoming_name FROM Incoming WHERE user_id=$1"""
             return await self.execute(sql, user_id, fetch=True)
         else:
-            sql = """SELECT incoming_name, summary, date FROM Incoming WHERE user_id=$1"""
+            sql = """SELECT * FROM Incoming WHERE user_id=$1"""
             return await self.execute(sql, user_id, fetch=True)
 
-    async def get_user_inc(self, user_id, incoming_name):
-        sql = """SELECT incoming_name, summary, date FROM Incoming WHERE user_id=$1 AND incoming_name=$2"""
-        return await self.execute(sql, user_id, incoming_name, fetch=True)
+    async def get_user_inc(self, user_id, incoming_name=None, history=False):
+        if history:
+            sql = """SELECT history FROM Incoming WHERE user_id=$1 """
+            return await self.execute(sql, user_id, fetchrow=True)
+        else:
+            sql = """SELECT incoming_name, summary, date FROM Incoming WHERE user_id=$1 AND incoming_name=$2"""
+            return await self.execute(sql, user_id, incoming_name, fetch=True)
 
     # async def update_inc_name_or_summary(self, incoming_name, summary, user_id, name=False, summ=False):
     #     if name:
@@ -82,6 +87,10 @@ class Database:
         sql = f"UPDATE Incoming SET incoming_name='{incoming_name}' AND summary='{summary}' WHERE user_id='{user_id}'"
         return await self.execute(sql, execute=True)
 
+    async def update_inc_history(self, user_id, history):
+        sql = f"UPDATE Incoming SET history=history||'{history}' WHERE user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
+
     async def summary_category_inc(self, user_id, incoming_name):
         sql = f"SELECT SUM(summary) FROM Incoming WHERE user_id=$1 AND incoming_name=$2"
         return await self.execute(sql, user_id, incoming_name, fetchval=True)
@@ -89,6 +98,10 @@ class Database:
     async def summary_all_inc(self, user_id):
         sql = f"SELECT SUM(summary) FROM Incoming WHERE user_id=$1"
         return await self.execute(sql, user_id, fetchval=True)
+
+    async def clear_history_inc(self, user_id):
+        sql = f"UPDATE Incoming SET history='' WHERE user_id='{user_id}'"
+        return await self.execute(sql, execute=True)
 
     async def delete_row_inc(self, incoming_name):
         await self.execute("DELETE FROM Incoming WHERE incoming_name=$1", incoming_name, execute=True)

@@ -7,6 +7,12 @@ from loader import dp, db
 from states.user_states import PayHistoryIncoming
 
 
+@dp.message_handler(text="ada", state="*")
+async def sampleada(message: types.Message):
+    h = await db.get_userall_inc(user_id=message.from_user.id)
+    print(h)
+
+
 @dp.callback_query_handler(text="back-inc-category", state="*")
 async def chi_back_history_button(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
@@ -42,7 +48,7 @@ async def chi_history(call: types.CallbackQuery, state: FSMContext):
         current_page=1,
         database=incoming_db,
         language="uz_latin",
-        currency="so'm",
+        currency="so`m",
         call=call,
         section_name=incoming_name,
         section_summary=section_summary,
@@ -78,7 +84,7 @@ async def chi_pay_history(call: types.CallbackQuery, state: FSMContext):
         database=database,
         section_name=incoming_name,
         section_summary=section_summary,
-        currency="so'm",
+        currency="so`m",
         language="uz_latin",
         state=state
     )

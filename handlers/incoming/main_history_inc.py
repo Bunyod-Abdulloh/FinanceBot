@@ -24,7 +24,7 @@ async def mhi_history(call: types.CallbackQuery, state: FSMContext):
             language="uz_latin",
             state=state,
             back_button="📥 Kirim",
-            currency="so'm",
+            currency="so`m",
             all_summary=all_summary
         )
         await PayHistoryIncoming.category.set()
@@ -52,7 +52,7 @@ async def mhi_history_(call: types.CallbackQuery, state: FSMContext):
         all_pages=all_pages,
         database=category,
         back_button="📥 Kirim",
-        currency="so'm",
+        currency="so`m",
         all_summary=all_summary,
         state=state
     )
