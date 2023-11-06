@@ -1,3 +1,5 @@
+import re
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -23,47 +25,37 @@ async def add_category_call(call: types.CallbackQuery):
 
 @dp.message_handler(state=FinanceCategory.add_category)
 async def add_category(message: types.Message, state: FSMContext):
+    text = re.sub(r"[^\w\s]", "", message.text)
 
-    if message.text.isalpha():
-        await state.update_data(
-            aco_category_name=message.text
-        )
-
-        await message.answer(
-            text=f"Bo'lim: <b>📤 Chiqim</b>"
-                 f"\nKategoriya: <b>{message.text}</b>"
-                 f"\n\n{warning_text_uz_latin}"
-                 f"\n\nSubkategoriya nomini kiriting:"
-        )
-        await FinanceCategory.add_subcategory.set()
-    else:
-        await message.answer(
-            text=warning_text_uz_latin
-        )
+    await state.update_data(
+        aco_category_name=text
+    )
+    await message.answer(
+        text=f"Bo'lim: <b>📤 Chiqim</b>"
+             f"\nKategoriya: <b>{text}</b>"
+             f"\n\n{warning_text_uz_latin}"
+             f"\n\nSubkategoriya nomini kiriting:"
+    )
+    await FinanceCategory.add_subcategory.set()
 
 
 @dp.message_handler(state=FinanceCategory.add_subcategory)
 async def add_subcategory_out(message: types.Message, state: FSMContext):
+    text = re.sub(r"[^\w\s]", "", message.text)
 
-    if message.text.isalpha():
-        await state.update_data(
-            aco_subcategory_name=message.text
-        )
+    await state.update_data(
+        aco_subcategory_name=text
+    )
+    data = await state.get_data()
 
-        data = await state.get_data()
-
-        await message.answer(
-            text=f"Bo'lim: <b>📤 Chiqim</b>"
-                 f"\nKategoriya: <b>{data['aco_category_name']}</b>"
-                 f"\nSubkategoriya: <b>{message.text}</b>"
-                 f"\n\nHarajat summasini kiriting"
-                 f"{warning_number_uz_latin}"
-        )
-        await FinanceCategory.summary.set()
-    else:
-        await message.answer(
-            text=warning_text_uz_latin
-        )
+    await message.answer(
+        text=f"Bo'lim: <b>📤 Chiqim</b>"
+             f"\nKategoriya: <b>{data['aco_category_name']}</b>"
+             f"\nSubkategoriya: <b>{text}</b>"
+             f"\n\nHarajat summasini kiriting"
+             f"{warning_number_uz_latin}"
+    )
+    await FinanceCategory.summary.set()
 
 
 @dp.message_handler(state=FinanceCategory.summary)

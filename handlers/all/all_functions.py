@@ -5,8 +5,13 @@ from loader import db
 
 
 #  CHECK SUMMARY OUTGOING
-async def all_summary_main_out(user_id: int, callback: types.CallbackQuery, section_name: str, total: str,
-                               currency: str):
+async def all_summary_main_out(
+        user_id: int,
+        callback: types.CallbackQuery,
+        section_name: str,
+        total: str,
+        currency: str
+):
     all_summ = await db.get_sum_all_out(
         user_id=user_id
     )

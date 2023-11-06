@@ -1,4 +1,5 @@
 import math
+import re
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -31,25 +32,22 @@ async def aso_step_one(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=FinanceSubcategory.aso_subcategory)
 async def aso_step_two(message: types.Message, state: FSMContext):
+    text = re.sub(r"[^\w\s]", "", message.text)
 
-    if message.text.isalpha():
-        data = await state.get_data()
+    data = await state.get_data()
 
-        await message.answer(
-            text=f"Bo'lim: <b>📤 Chiqim</b>"
-                 f"\nKategoriya: <b>{data['aso_category_name']}</b>"
-                 f"\nSubkategoriya: <b>{subcategory_name}</b>"
-                 f"\n\nHarajat summasini kiriting"
-                 f"\n{warning_number_uz_latin}:")
+    await message.answer(
+        text=f"Bo'lim: <b>📤 Chiqim</b>"
+             f"\nKategoriya: <b>{data['aso_category_name']}</b>"
+             f"\nSubkategoriya: <b>{text}</b>"
+             f"\n\nHarajat summasini kiriting"
+             f"\n{warning_number_uz_latin}:"
+    )
 
-        await state.update_data(
-            aso_subcategory_name=subcategory_name
-        )
-        await FinanceSubcategory.aso_summary.set()
-    else:
-        await message.answer(
-            text=warning_text_uz_latin
-        )
+    await state.update_data(
+        aso_subcategory_name=subcategory_name
+    )
+    await FinanceSubcategory.aso_summary.set()
 
 
 @dp.message_handler(state=FinanceSubcategory.aso_summary)

@@ -1,3 +1,5 @@
+import re
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -23,22 +25,25 @@ async def edit_category_(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=FinanceEdit.category)
 async def state_edit_category(message: types.Message, state: FSMContext):
+    text = re.sub(r"[^\w\s]", "", message.text)
+    summary = await db.get_sum_all_out(
+        user_id=message.from_user.id
+    )
+    data = await state.get_data()
 
-    if message.text.isalpha():
-        data = await state.get_data()
+    await db.update_categoryname_out(
+        user_id=message.from_user.id,
+        old_category=data['category'],
+        new_category=text
+    )
 
-        await db.update_categoryname_out(
-            user_id=message.from_user.id,
-            old_category=data['category'],
-            new_category=message.text
-        )
+    await message.answer(
+        text='Kategoriya nomi o\'zgartirildi!')
 
-        await message.answer(
-            text='Kategoriya nomi o\'zgartirildi!')
-
-        await message.answer(
-            text=f"Salom",
-            reply_markup=await categories_keyboard(
-                user_id=message.from_user.id)
-        )
-        await state.finish()
+    await message.edit_text(
+        text=f"📤 Chiqim"
+             f"\n\n📤 Chiqim uchun jami harajat: {summary} so'm",
+        reply_markup=await categories_keyboard(
+            user_id=message.from_user.id)
+    )
+    await state.finish()

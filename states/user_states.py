@@ -61,3 +61,7 @@ class EditIncoming(StatesGroup):
     add_name = State()
     add_summary = State()
     check = State()
+
+
+class DeleteIncoming(StatesGroup):
+    delete_uz_latin = State()

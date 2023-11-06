@@ -5,3 +5,4 @@ from . import category_add_summary_inc
 from . import main_history_inc
 from . import download_incoming
 from . import category_edit_inc
+from . import category_delete_inc

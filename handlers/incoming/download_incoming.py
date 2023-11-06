@@ -26,7 +26,7 @@ async def di_download(call: types.CallbackQuery):
         ws.append(["Kirim", "Nomi", "Sana", "Summa (so'm)"])
 
         for data in category:
-            ws.append(["Kirim", data[0], data[2], data[1]])
+            ws.append(["Kirim", data[2], data[5], data[3]])
         ws.append(["Jami:", "", "", f"{all_summary}"])
         last_row = ws.max_row
         ws.merge_cells(f"A{last_row}:C{last_row}")

@@ -95,8 +95,9 @@ class Database:
         sql = f"UPDATE Incoming SET history='' WHERE user_id='{user_id}'"
         return await self.execute(sql, execute=True)
 
-    async def delete_row_inc(self, incoming_name):
-        await self.execute("DELETE FROM Incoming WHERE incoming_name=$1", incoming_name, execute=True)
+    async def delete_row_inc(self, user_id, incoming_name):
+        await self.execute("DELETE FROM Incoming WHERE user_id=$1 AND incoming_name=$2",
+                           user_id, incoming_name, execute=True)
 
     async def drop_table_inc(self):
         await self.execute("DROP TABLE Incoming", execute=True)

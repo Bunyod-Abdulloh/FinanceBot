@@ -1,4 +1,5 @@
 import logging
+import re
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -23,32 +24,26 @@ async def state_edit_subcategory(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=FinanceEdit.subcategory)
 async def state_edit_subcategory_(message: types.Message, state: FSMContext):
+    text = re.sub(r"[^\w\s]", "", message.text)
 
-    if message.text.isalpha():
-        data = await state.get_data()
-        user_id = message.from_user.id
-        category = data['category']
-        subcategory = data['subcategory']
+    data = await state.get_data()
+    user_id = message.from_user.id
+    category = data['category']
+    subcategory = data['subcategory']
 
-        await db.update_subcategoryname_out(
-            user_id=user_id,
-            old_subcategory=subcategory,
-            new_subcategory=new_subcategory
+    await db.update_subcategoryname_out(
+        user_id=user_id,
+        old_subcategory=subcategory,
+        new_subcategory=text
+    )
+    await message.answer(
+        text='Subkategoriya nomi o\'zgartirildi!'
+    )
+    await message.edit_text(
+        text=f"<b>📤 Chiqim > {category}</b>",
+        reply_markup=await subcategories_keyboard(
+            category_name=category,
+            user_id=user_id
         )
-
-        await message.answer(
-            text='Subkategoriya nomi o\'zgartirildi!'
-        )
-
-        await message.answer(
-            text=f"<b>📤 Chiqim > {category}</b>",
-            reply_markup=await subcategories_keyboard(
-                category_name=category,
-                user_id=user_id
-            )
-        )
-        await state.finish()
-    else:
-        await message.answer(
-            text=warning_text_uz_latin
-        )
+    )
+    await state.finish()

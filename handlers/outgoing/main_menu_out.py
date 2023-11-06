@@ -11,5 +11,8 @@ async def outgoing_(call: types.CallbackQuery):
 
     await all_summary_main_out(
         user_id=user_id,
-        callback=call
+        callback=call,
+        section_name="📤 Chiqim",
+        total="📤 Chiqim bo'limi uchun jami harajat",
+        currency="so`m"
     )
