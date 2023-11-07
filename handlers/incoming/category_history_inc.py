@@ -21,7 +21,7 @@ async def chi_back_history_button(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.edit_text(
         text=f"<b>📥 Kirim > {incoming_name}</b>\n\n"
-             f"{incoming_name} uchun jami kirim: {data['chi_summary_section']} so'm",
+             f"{incoming_name} uchun jami kirim: {data['chi_summary_section']} so`m",
         reply_markup=await incoming_category(user_id=call.from_user.id,
                                              incoming_name=incoming_name)
     )

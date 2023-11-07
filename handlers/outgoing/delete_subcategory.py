@@ -14,8 +14,8 @@ async def ds_delete_subcategory(call: types.CallbackQuery, state: FSMContext):
     subcategory = data['subcategory']
 
     await call.message.edit_text(
-        text=f"E'tibor qiling, o'chirish tugmasini bossangiz <code>{subcategory}</code>dagi barcha ma'lumotlar o'chib "
-             f"ketadi!\n\nO'chirishni xohlaysizmi?",
+        text=f"E'tibor qiling, o`chirish tugmasini bossangiz <code>{subcategory}</code>dagi barcha ma'lumotlar o`chib "
+             f"ketadi!\n\nO`chirishni xohlaysizmi?",
         reply_markup=check_no_button
     )
     await FinanceSubcategory.delete_subcategory.set()
@@ -34,7 +34,7 @@ async def delete_subcategory_(call: types.CallbackQuery, state: FSMContext):
             user_id=user_id
         )
         await call.answer(
-            text="Ma'lumotlar bazadan o'chirildi!",
+            text="Ma`lumotlar bazadan o`chirildi!",
             show_alert=True
         )
         category_check = await db.get_subdistinct_out(

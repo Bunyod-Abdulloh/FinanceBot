@@ -63,7 +63,7 @@ async def subcategory_summary_out(message: types.Message, state: FSMContext):
             text=f"Bo'lim: <b>📤 Chiqim</b>"
                  f"\nKategoriya: <b>{data['aso_category_name']}</b>"
                  f"\nSubkategoriya: <b>{data['aso_subcategory_name']}</b>"
-                 f"\nHarajat summasi: <b>{message.text} so'm</b>"
+                 f"\nHarajat summasi: <b>{message.text} so`m</b>"
                  f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
             reply_markup=yes_again_buttons
         )

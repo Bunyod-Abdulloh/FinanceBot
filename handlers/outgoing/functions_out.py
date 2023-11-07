@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -5,6 +7,7 @@ from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from loader import db
 
 
+# ================== ALL_CATEGORIES =================
 async def first_all_history_button_out(
         current_page: int,
         database: list,
@@ -13,7 +16,10 @@ async def first_all_history_button_out(
         language: str,
         state: FSMContext,
         currency: str,
-        all_summary: int
+        all_summary: int,
+        total: str,
+        section_one: str = None,
+        section_two: str = None
 ):
     if len(database) % PAGE_COUNT == 0:
         all_pages = len(database) // PAGE_COUNT
@@ -33,11 +39,13 @@ async def first_all_history_button_out(
             history=f"{data[0]} | {summary} {currency}\n"
         )
 
-    history = await db.get_out_history(user_id=call.from_user.id)
+    history = await db.get_out_history(
+        user_id=call.from_user.id
+    )
 
     if language == "uz_latin":
         await call.message.answer(
-            text=f"<b>📤 Chiqim > 📜 Chiqimlar tarixi</b>"
+            text=f"<b>{section_one} > {section_two}</b>"
                  f"\n\n{history[0]}\n📤 Chiqim bo'limi uchun jami: {all_summary} {currency}",
             reply_markup=key
         )
@@ -63,7 +71,10 @@ async def second_all_history_button_out(
         back_button: str,
         currency: str,
         all_summary: int,
-        state: FSMContext
+        state: FSMContext,
+        total: str,
+        section_one: str = None,
+        section_two: str = None
 ):
     if call.data == "prev":
         if current_page == 1:
@@ -94,13 +105,13 @@ async def second_all_history_button_out(
     history = await db.get_out_history(
         user_id=call.from_user.id
     )
+
     if language == 'uz_latin':
         await call.message.answer(
-            text=f"<b>📤 Chiqim > 📜 Chiqimlar tarixi</b>"
-                 f"\n\n{history[0]}\n📤 Chiqim bo`limi uchun jami: {all_summary} {currency}",
+            text=f"<b>{section_one} > {section_two}</b>"
+                 f"\n\n{history[0]}\n📤 Chiqim bo'limi uchun jami: {all_summary} {currency}",
             reply_markup=key
         )
-
     if language == 'uz_cyrillic':
         pass
 
@@ -116,15 +127,19 @@ async def second_all_history_button_out(
     )
 
 
-async def first_category_history_button_inc(
+# ================== CATEGORIES > SUBCATEGORIES =================
+async def first_category_history_button_out(
         current_page: int,
         database: list,
         language: str,
         currency: str,
         call: types.CallbackQuery,
-        section_name: str,
+        total: str,
         section_summary: int,
-        state: FSMContext
+        state: FSMContext,
+        section_one: str = None,
+        section_two: str = None,
+        section_three: str = None
 ):
     if len(database) % PAGE_COUNT == 0:
         all_pages = len(database) // PAGE_COUNT
@@ -132,20 +147,25 @@ async def first_category_history_button_inc(
         all_pages = len(database) // PAGE_COUNT + 1
 
     key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                            subcategory=section_name, incoming_category=True)
+                            subcategory=section_two, incoming_category=True)
+
     for data in database[:PAGE_COUNT]:
-        await db.update_inc_history(
+        summary = await db.get_summary_out(
             user_id=call.from_user.id,
-            history=f"{data[2]} | {data[0]} | {data[1]} {currency}\n"
+            subcategory_name=data[0],
+            subcategory=True
         )
-
-    history = await db.get_user_inc(user_id=call.from_user.id,
-                                    history=True)
-
+        await db.update_out_history(
+            user_id=call.from_user.id,
+            history=f"{data[0]} | {summary} {currency}\n"
+        )
+    history = await db.get_out_history(
+        user_id=call.from_user.id
+    )
     if language == 'uz_latin':
         await call.message.answer(
-            text=f"<b>📥 Kirim > 📜 Kirimlar tarixi > {section_name}</b>"
-                 f"\n\n{history[0]}\n{section_name} uchun jami: {section_summary} {currency}",
+            text=f"<b>{section_one} > {section_two} > {section_three}</b>"
+                 f"\n\n{history[0]}\n{total} uchun jami: {section_summary} {currency}",
             reply_markup=key
         )
     if language == 'uz_cyrillic':
@@ -153,8 +173,9 @@ async def first_category_history_button_inc(
     if language == 'ru':
         pass
 
-    await db.clear_history_inc(user_id=call.from_user.id)
-
+    await db.clear_out_history(
+        user_id=call.from_user.id
+    )
     await state.update_data(
         current_page=current_page,
         all_pages=all_pages
@@ -213,3 +234,5 @@ async def second_category_history_button_inc(
     await state.update_data(
         current_page=current_page, all_pages=all_pages
     )
+
+# ================== CATEGORIES > SUBCATEGORIES > LATEST_SUBCATEGORY =================

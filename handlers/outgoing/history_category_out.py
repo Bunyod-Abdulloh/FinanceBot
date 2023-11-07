@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from aiogram import types
@@ -5,7 +6,6 @@ from aiogram.dispatcher import FSMContext
 
 from handlers.all.menu_handlers import navigate
 from handlers.outgoing.functions_out import first_all_history_button_out, second_all_history_button_out
-from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from keyboards.inline.out_in_keys import main_menu
 
 from loader import dp, db
@@ -62,7 +62,10 @@ async def hc_one(call: types.CallbackQuery, state: FSMContext):
             language="uz_latin",
             state=state,
             currency="so`m",
-            all_summary=all_summary
+            all_summary=all_summary,
+            total="📤 Chiqim bo'limi",
+            section_one="📤 Chiqim",
+            section_two="📜 Chiqimlar tarixi"
         )
         await PayHistoryOut.category.set()
     except Exception as err:
@@ -93,37 +96,9 @@ async def hs_handler(call: types.CallbackQuery, state: FSMContext):
         back_button="Bosh sahifa",
         currency="so`m",
         all_summary=all_summary,
-        state=state
+        state=state,
+        total="📤 Chiqim bo'limi",
+        section_one="📤 Chiqim",
+        section_two="📜 Chiqimlar tarixi"
     )
-    # if call.data == "prev":
-    #     if current_page == 1:
-    #         current_page = all_pages
-    #     else:
-    #         current_page -= 1
-    # if call.data == 'next':
-    #     if current_page == all_pages:
-    #         current_page = 1
-    #     else:
-    #         current_page += 1
-    #
-    # user_id = call.from_user.id
-    # category = await db.get_categories_out(user_id=user_id)
-    # all_summary = await db.get_sum_all_out(user_id=user_id)
-    #
-    # all_messages = category[(current_page - 1) * PAGE_COUNT: current_page * PAGE_COUNT]
-    #
-    # key = buttons_generator(current_page=current_page, all_pages=all_pages,
-    #                         subcategory="📤 Chiqim", category=True)
-    #
-    # history = " "
-    #
-    # for data in all_messages:
-    #     summary = await db.get_sum_category(user_id=user_id, category_name=data[0])
-    #     history += f"{data[0]} | {summary} so'm\n"
-    #
-    # await call.message.answer(text=f"<b>📤 Chiqim > 📜 To'lovlar tarixi</b>"
-    #                                f"\n\n{history}\nJami: {all_summary} so'm",
-    #                           reply_markup=key)
-    # history = " "
-    # await state.update_data(
-    #     current_page=current_page, all_pages=all_pages)
+    

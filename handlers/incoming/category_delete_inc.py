@@ -15,7 +15,7 @@ async def cdi_deleteinc(call: types.CallbackQuery, state: FSMContext):
         cdi_incoming_name=incoming_name
     )
     await call.message.edit_text(
-        text=f"{incoming_name}ni o'chirishni istaysizmi?",
+        text=f"{incoming_name}ni o`chirishni istaysizmi?",
         reply_markup=check_no_button
     )
     await DeleteIncoming.delete_uz_latin.set()
@@ -43,7 +43,7 @@ async def cdi_delete_uz_latin(call: types.CallbackQuery, state: FSMContext):
             currency="so`m"
         )
         await call.answer(
-            text=f"{incoming_name} ma'lumotlari o'chirildi!",
+            text=f"{incoming_name} ma`lumotlari o`chirildi!",
             show_alert=True
         )
 

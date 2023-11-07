@@ -3,6 +3,7 @@ import logging
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from handlers.outgoing.functions_out import first_all_history_button_out, first_category_history_button_out
 from keyboards.inline.history_ikeys import PAGE_COUNT, buttons_generator
 from loader import dp, db
 from states.user_states import PayHistoryOut
@@ -14,42 +15,34 @@ async def historysub_out(call: types.CallbackQuery, state: FSMContext):
     category = call.data.split("_")[1]
     user_id = call.from_user.id
 
-    try:
-        subcategory = await db.getdate_category_out(category_name=category, user_id=user_id)
-        category_summary = await db.get_sum_category(user_id=user_id, category_name=category)
+    database = await db.get_subcategory_out(
+        distinct_subcategory=True,
+        category_name=category,
+        user_id=user_id
+    )
+    category_summary = await db.get_summary_out(
+        category=True,
+        user_id=user_id,
+        category_name=category
+    )
+    if category_summary == 0:
+        await call.answer(text=f"{category} uchun to'lovlar mavjud emas!", show_alert=True)
 
-        if category_summary == 0:
-            await call.answer(text=f"{category} uchun to'lovlar mavjud emas!", show_alert=True)
-
-        else:
-            await call.message.delete()
-
-            current_page = 1
-
-            if len(subcategory) % PAGE_COUNT == 0:
-                all_pages = len(subcategory) // PAGE_COUNT
-            else:
-                all_pages = len(subcategory) // PAGE_COUNT + 1
-
-            key = buttons_generator(current_page=current_page, all_pages=all_pages,
-                                    subcategory=category)
-            history = " "
-
-            for data in subcategory[:PAGE_COUNT]:
-
-                summary = await db.get_sum_subcategory(user_id=user_id, subcategory_name=data[0])
-                history += f"{data[0]} | {summary} so'm\n"
-
-            await call.message.answer(text=f"<b>📤 Chiqim > {category} > 📜 To'lovlar tarixi</b>"
-                                           f"\n\n{history}\nJami: {category_summary} so'm",
-                                      reply_markup=key)
-            await state.update_data(
-                current_page=current_page, all_pages=all_pages
-            )
-            history = " "
-            await PayHistoryOut.subcategory.set()
-    except Exception as err:
-        logging.error(err)
+    else:
+        await call.message.delete()
+        await first_category_history_button_out(
+            current_page=1,
+            database=database,
+            language="uz_latin",
+            currency="so`m",
+            call=call,
+            total=category,
+            section_summary=category_summary,
+            state=state,
+            section_one="📤 Chiqim",
+            section_two=category,
+            section_three="📜 Bo`lim hisoboti"
+        )
 
 
 @dp.callback_query_handler(state=PayHistoryOut.subcategory)

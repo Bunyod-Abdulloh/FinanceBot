@@ -35,7 +35,7 @@ async def categories_keyboard(user_id: int):
             )
             markup.add(
                 InlineKeyboardButton(
-                    text=f"{category[0]} | {summary} so'm",
+                    text=f"{category[0]} | {summary} so`m",
                     callback_data=callback_data
                 )
             )
@@ -45,7 +45,7 @@ async def categories_keyboard(user_id: int):
                 callback_data="downloadall"
             ),
             InlineKeyboardButton(
-                text="📜 Chiqimlar tarixi",
+                text="📜 Bo`lim hisoboti",
                 callback_data=f"historycategory"
             )
         )
@@ -89,7 +89,7 @@ async def subcategories_keyboard(category_name, user_id: int):
             user_id=user_id,
             subcategory_name=subcategory[0]
         )
-        button_text = f"{subcategory[0]} | {summary} so'm"
+        button_text = f"{subcategory[0]} | {summary} so`m"
 
         callback_data = make_callback_data(
             level=CURRENT_LEVEL + 1,
@@ -110,7 +110,7 @@ async def subcategories_keyboard(category_name, user_id: int):
     )
     markup.add(
         InlineKeyboardButton(
-            text="📜 To'lovlar tarixi",
+            text="📜 Bo`lim hisoboti",
             callback_data=f"historysub_{category_name}"
         )
     )
@@ -142,7 +142,7 @@ async def items_keyboard(category_name, subcategory_name, user_id: int):
             callback_data=f"addmoney_{subcategory[0]}"
         ),
         InlineKeyboardButton(
-            text="📜 To'lovlar tarixi",
+            text="📜 Hisobot",
             callback_data=f"historyproduct_{subcategory_name}"
         )
     )

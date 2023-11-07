@@ -21,7 +21,7 @@ async def ei_edit_incoming(call: types.CallbackQuery, state: FSMContext):
     await call.message.delete()
 
     await call.message.answer(
-        text=f"<b>📥 Kirim > {incoming_name} > 📝 {incoming_name}ni o'zgatirish</b>"
+        text=f"<b>📥 Kirim > {incoming_name} > 📝 {incoming_name}ni o`zgatirish</b>"
              f"\n\nJoriy nom: <b>{incoming_name}</b>"
              f"\nJoriy summa: <b>{current_name_summary} so`m</b>"
              f"\n\n{warning_text_uz_latin}"             
@@ -65,7 +65,7 @@ async def ei_add_summary(message: types.Message, state: FSMContext):
         await message.answer(
             text=f"<b>📥 Kirim > {data['ei_old_name']}</b>"
                  f"\n\nKirim nomi: {data['ei_new_name']}"
-                 f"\nSumma: {summary} so'm"
+                 f"\nSumma: {summary} so`m"
                  f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
             reply_markup=yes_again_buttons
         )

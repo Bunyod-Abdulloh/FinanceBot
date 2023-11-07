@@ -24,7 +24,7 @@ async def ci_back_button(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.edit_text(
         text=f"<b>📥 Kirim bo'limi</b>"
-             f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so'm",
+             f"\n\n📥 Kirim bo'limi uchun jami: <b>{all_summary}</b> so`m",
         reply_markup=await incoming_main_menu(
             user_id=user_id
         )
@@ -60,7 +60,7 @@ async def ci_check_summary(message: types.Message, state: FSMContext):
         await message.answer(
             text=f"<b>📥 Kirim > {data['ci_incoming_name']} > ➕ Summa qo'shish</b>"
                  f"\n\nKirim nomi: {data['ci_incoming_name']}"
-                 f"\nSumma: {message.text} so'm"
+                 f"\nSumma: {message.text} so`m"
                  f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
             reply_markup=yes_again_buttons
         )

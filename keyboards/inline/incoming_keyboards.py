@@ -16,7 +16,7 @@ async def incoming_main_menu(user_id: int):
             )
             markup.add(
                 InlineKeyboardButton(
-                    text=f"{data[0]} | {summary} so'm",
+                    text=f"{data[0]} | {summary} so`m",
                     callback_data=f"incoming_{data[0]}"
                 )
             )
@@ -26,7 +26,7 @@ async def incoming_main_menu(user_id: int):
                 callback_data="download-inc"
             ),
             InlineKeyboardButton(
-                text="📜 Kirimlar tarixi",
+                text="📜 Bo`lim hisoboti",
                 callback_data="historymain-inc"
             )
         )
@@ -56,13 +56,13 @@ async def incoming_category(user_id: int, incoming_name: str):
             callback_data=f"addsummaryinc_{incoming[0][0]}"
         ),
         InlineKeyboardButton(
-            text="📜 Kirimlar tarixi",
+            text="📜 Bo`lim hisoboti",
             callback_data=f"historycategoryinc_{incoming[0][0]}"
         )
     )
     markup.add(
         InlineKeyboardButton(
-            text=f"📝 {incoming[0][0]}ni o'zgatirish",
+            text=f"📝 {incoming[0][0]}ni o`zgatirish",
             callback_data=f"editinc_{incoming[0][0]}"
         )
     )

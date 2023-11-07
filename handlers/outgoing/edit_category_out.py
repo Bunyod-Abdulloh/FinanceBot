@@ -42,7 +42,7 @@ async def state_edit_category(message: types.Message, state: FSMContext):
 
     await message.edit_text(
         text=f"📤 Chiqim"
-             f"\n\n📤 Chiqim uchun jami harajat: {summary} so'm",
+             f"\n\n📤 Chiqim uchun jami harajat: {summary} so`m",
         reply_markup=await categories_keyboard(
             user_id=message.from_user.id)
     )

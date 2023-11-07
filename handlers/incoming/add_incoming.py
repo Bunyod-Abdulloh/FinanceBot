@@ -49,7 +49,7 @@ async def ih_add_summary(message: types.Message, state: FSMContext):
 
         await message.answer(
             text=f"Kirim nomi: <b>{data['ai_incoming_name']}</b>"
-                 f"\nSumma: <b>{summary}</b> so'm"
+                 f"\nSumma: <b>{summary}</b> so`m"
                  f"\n\nKiritilgan ma'lumotlarni tasdiqlaysizmi?",
             reply_markup=yes_again_buttons
         )
@@ -80,7 +80,7 @@ async def ih_add_check(call: types.CallbackQuery, state: FSMContext):
 
         await call.message.edit_text(
             text=f"<b>📥 Kirim bo'limi</b>"
-                 f"\n\n📥 Kirim bo'limi uchun jami: {summary} so'm",
+                 f"\n\n📥 Kirim bo'limi uchun jami: {summary} so`m",
             reply_markup=await incoming_main_menu(
                 user_id=user_id
             )

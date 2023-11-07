@@ -27,7 +27,7 @@ async def incoming_main_(call: types.CallbackQuery):
         callback=call,
         section_name="📥 Kirim",
         total="📥 Kirim bo'limi uchun jami:",
-        currency="so'm"
+        currency="so`m"
     )
 
 
@@ -47,7 +47,7 @@ async def mmi_go_incoming_category(call: types.CallbackQuery):
 
     await call.message.edit_text(
         text=f"<b>📥 Kirim > {incoming_name}</b>"
-             f"\n\n{incoming_name} uchun jami kirim: <b>{summary}</b> so'm",
+             f"\n\n{incoming_name} uchun jami kirim: <b>{summary}</b> so`m",
         reply_markup=await incoming_category(
             user_id=call.from_user.id,
             incoming_name=incoming_name

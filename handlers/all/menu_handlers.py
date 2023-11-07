@@ -42,7 +42,7 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
     # Agar foydalanuvchidan Message kelsa Keyboardni yuboramiz
     if isinstance(message, Message):
         await message.answer(text=f"<b>📤 Chiqim</b>"
-                                  f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{summary} so'm</b>",
+                                  f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{summary} so`m</b>",
                              reply_markup=markup)
 
     # Agar foydalanuvchidan Callback kelsa Callback natbibi o'zgartiramiz
@@ -50,7 +50,7 @@ async def list_categories(message: Union[CallbackQuery, Message], **kwargs):
         call = message
 
         await call.message.edit_text(text=f"<b>📤 Chiqim</b>"
-                                          f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{summary} so'm</b>",
+                                          f"\n\n📤 Chiqim bo'limi uchun jami harajat: <b>{summary} so`m</b>",
                                      reply_markup=markup)
 
 
@@ -64,7 +64,7 @@ async def list_subcategories(callback: CallbackQuery, category):
     )
     await callback.message.edit_text(text=f"<b>📤 Chiqim > "
                                           f"{category}</b>"
-                                          f"\n\n{category} uchun jami harajat: <b>{summa} so'm</b>",
+                                          f"\n\n{category} uchun jami harajat: <b>{summa} so`m</b>",
                                      reply_markup=markup)
 
 
@@ -81,7 +81,7 @@ async def list_items(callback: CallbackQuery, category, subcategory, **kwargs):
     await callback.message.edit_text(text="<b>📤 Chiqim > "
                                           f"{category} > "
                                           f"{subcategory}</b>"
-                                          f"\n\n{subcategory} uchun jami harajat: <b>{summa} so'm</b>",
+                                          f"\n\n{subcategory} uchun jami harajat: <b>{summa} so`m</b>",
                                      reply_markup=markup)
 
 

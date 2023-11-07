@@ -52,7 +52,7 @@ async def di_back_incmain(call: types.CallbackQuery, state: FSMContext):
         user_id=call.from_user.id,
         callback=call,
         no_edit=True,
-        currency="so'm",
+        currency="so`m",
         section_name="📥 Kirim",
         total="📥 Kirim uchun jami:"
     )

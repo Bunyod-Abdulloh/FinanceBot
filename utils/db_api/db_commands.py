@@ -110,7 +110,7 @@ class Database:
         category_name VARCHAR(50) NULL,
         subcategory_name VARCHAR(50) NULL,             
         summary INT NULL,
-        history VARCHAR(3000) NULL,
+        history VARCHAR(3000) NULL DEFAULT '',
         date TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
         """
@@ -145,10 +145,10 @@ class Database:
         if all_outgoing:
             sql = f"SELECT SUM(summary) FROM Outgoing WHERE user_id=$1"
             return await self.execute(sql, user_id, fetchval=True)
-        elif category:
+        if category:
             sql = f"SELECT SUM(summary) FROM Outgoing WHERE user_id=$1 AND category_name=$2"
             return await self.execute(sql, user_id, category_name, fetchval=True)
-        elif subcategory:
+        if subcategory:
             sql = f"SELECT SUM(summary) FROM Outgoing WHERE user_id=$1 AND subcategory_name=$2"
             return await self.execute(sql, user_id, subcategory_name, fetchval=True)
 
